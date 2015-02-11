@@ -1,4 +1,4 @@
 
 public class Test {
-	public String foo = "bar";
+	public String foo = "barz";
 }
