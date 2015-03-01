@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -94,6 +95,34 @@ public class RunGroupInd implements RunGroup{
 		Run current = finishQueue.poll();
 		current.state = "dnf";
 		completedRuns.add(current);
+	}
+	
+	public void print() {
+		System.out.println("RUN      BIB      TIME");
+		
+		if ( !completedRuns.isEmpty() ) {
+			Iterator<Run> iterator = completedRuns.iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+				run.print();
+			}
+		}
+		if ( !finishQueue.isEmpty() ) {
+			Iterator<Run> iterator = finishQueue.iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+				run.print();
+			}
+		}
+		if ( !startQueue.isEmpty() ) {
+			Iterator<Run> iterator = startQueue.iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+				run.print();
+			}
+		}
+		
+				
 	}
 
 }

@@ -24,5 +24,13 @@ public class Run {
 		return 0;
 	}
 	
+	public void print() {
+		System.out.print( runNum + "      " + bibNum + "      " );
+		if ( state == "finished" ) System.out.print( getElapsed() );
+		if ( state == "dns" ) System.out.print("DNF");
+		if ( state == "waiting" ) System.out.print("WAITING");
+		if ( state == "inProgress" ) System.out.print("RUNNING");
+	}
+	
 
 }

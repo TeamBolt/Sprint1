@@ -109,7 +109,7 @@ public class ChronoTimer {
 		
 		// Create the appropriate command object.
 		switch (name.toUpperCase()){
-			case "TIME": 	if ( paramOne > 0 ) cmdObj = new Command_TIME(timestamp, args[1]);
+			case "TIME": 	if ( args.length > 1 ) cmdObj = new Command_TIME(timestamp, args[1]);
 							break;
 			case "ON":		cmdObj = new Command_On(timestamp);
 							break;
