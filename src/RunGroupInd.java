@@ -56,7 +56,6 @@ public class RunGroupInd implements RunGroup{
 			current.state = "finished";
 			completedRuns.add(current);
 		}
-		
 	}
 
 	/**
@@ -81,8 +80,6 @@ public class RunGroupInd implements RunGroup{
 			// Otherwise we just move the run back into the startQueue.
 			startQueue.add(current);
 		}
-		
-		
 	}
 
 	/**
@@ -97,7 +94,6 @@ public class RunGroupInd implements RunGroup{
 		Run current = finishQueue.poll();
 		current.state = "dnf";
 		completedRuns.add(current);
-		
 	}
 
 }

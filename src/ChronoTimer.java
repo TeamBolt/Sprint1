@@ -11,11 +11,11 @@ import java.util.HashSet;
 
 public class ChronoTimer {
 	
-	public static boolean isOn;
+	public static boolean isOn = false;
 	public static String eventType;
 	public static RunGroup current;
-	public static ArrayList<RunGroup> archive;
-	public static ArrayList<Channel> channels;
+	public static ArrayList<RunGroup> archive = new ArrayList<RunGroup>();
+	public static ArrayList<Channel> channels = new ArrayList<Channel>();
 	public static HashSet<String> eventLog = new HashSet<String>();
 
 	/**
@@ -78,8 +78,14 @@ public class ChronoTimer {
 	 */
 	public static void readCommand(long timestamp, String command) {
 		String[] args = command.split(" ");
-		if ( args[0].equalsIgnoreCase("EXIT") ) System.exit(0);
 		String name = args[0];
+		
+		// We can 'execute' the exit command right away.
+		if ( name.equalsIgnoreCase("EXIT") ) System.exit(0);
+		
+		// If the command isn't "ON" and the ChronoTimer is off, no command to read.
+		if ( !name.equalsIgnoreCase("ON") && !ChronoTimer.isOn ) return;
+		
 		Command cmdObj;
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
 		
