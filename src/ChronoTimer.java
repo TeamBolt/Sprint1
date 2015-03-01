@@ -11,11 +11,11 @@ import java.util.HashSet;
 
 public class ChronoTimer {
 	
-	boolean isOn;
-	RunGroup current;
-	ArrayList<RunGroup> archive;
-	ArrayList<Channel> channels;
-	HashSet<String> eventLog;
+	public static boolean isOn;
+	public static RunGroup current;
+	public static ArrayList<RunGroup> archive;
+	public static ArrayList<Channel> channels;
+	public static HashSet<String> eventLog = new HashSet<String>();
 
 	/**
 	 * @param args
@@ -38,7 +38,7 @@ public class ChronoTimer {
 					if ( input.equals("EXIT") ) System.exit(0);
 					
 					// We need to get the current timestamp from the system timer.
-					long timestamp = 0;
+					long timestamp = SystemTimer.getTime();
 					ChronoTimer.readCommand(timestamp, input);
 				}
 			} catch (IOException e) {
@@ -61,7 +61,7 @@ public class ChronoTimer {
 				String[] args = line.split("	");
 				
 				// We need to convert this string time into timestamp
-				long timestamp = 0;
+				long timestamp = SystemTimer.convertStringToLong(args[0]);
 				
 				//Then send the command to readCommand()
 				ChronoTimer.readCommand(timestamp, args[1]);
@@ -76,8 +76,9 @@ public class ChronoTimer {
 	public static void readCommand(long timestamp, String command) {
 		String[] args = command.split(" ");
 		String name = args[0];
-		System.out.println(name);
 		Command cmdObj;
+		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
+		
 		
 		// Create the appropriate command object.
 		switch (name) {
@@ -129,7 +130,10 @@ public class ChronoTimer {
 							break;
 				
 		}
-		System.out.println(cmdObj.toString());
+		
 		cmdObj.execute();
+		ChronoTimer.eventLog.add(event);
+		System.out.println(event);
+		
 	}
 }
