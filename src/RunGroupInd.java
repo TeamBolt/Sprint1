@@ -38,15 +38,18 @@ public class RunGroupInd implements RunGroup{
 	 * @param long timestamp	The time at which the trigger occured.
 	 */
 	@Override
-	public void trigger(int channel, long timestamp) {
+	public void trigger(int c, long timestamp) {
+		// If the channel is disabled, do nothing.
+		Channel channel = ChronoTimer.channels.get(c);
+		if ( channel.enabled == false ) return;
 		
-		if ( channel == startChannel && !startQueue.isEmpty() ) {
+		if ( c == startChannel && !startQueue.isEmpty() ) {
 			// Start channel was triggered, the run is off!
 			Run current = startQueue.poll();
 			current.startTime = timestamp;
 			current.state = "inProgress";
 			finishQueue.add(current);
-		} else if ( channel == finishChannel && !finishQueue.isEmpty()) {
+		} else if ( c == finishChannel && !finishQueue.isEmpty()) {
 			// Finish channel triggered, the run is completed.
 			Run current = finishQueue.poll();
 			current.finishTime = timestamp;
