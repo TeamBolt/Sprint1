@@ -37,7 +37,6 @@ public class ChronoTimer {
 				 
 				while( (input = br.readLine() ) != null ) {
 					long timestamp = SystemTimer.getTime(); //save the timestamp first.
-					if ( input.equalsIgnoreCase("EXIT") ) System.exit(0);
 					ChronoTimer.readCommand(timestamp, input);
 				}
 			} catch (IOException e) {
@@ -79,6 +78,7 @@ public class ChronoTimer {
 	 */
 	public static void readCommand(long timestamp, String command) {
 		String[] args = command.split(" ");
+		if ( args[0].equalsIgnoreCase("EXIT") ) System.exit(0);
 		String name = args[0];
 		Command cmdObj;
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
