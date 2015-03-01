@@ -12,7 +12,8 @@ public class Command_TIME implements Command{
 	@Override
 	public void execute() {
 		// Set the system timer to 'time'
-		
+		SystemTimer.setTime(time);
+		SystemTimer.start();
 	}
 
 }

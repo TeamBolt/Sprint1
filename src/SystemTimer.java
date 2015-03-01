@@ -26,6 +26,12 @@ public class SystemTimer {
 	}
 
 	public static void start(){
+		timer = new Timer(0, new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				++currentTime;							
+			}
+		});		
 		timer.start();
 	//	isOn = true;
 	}
