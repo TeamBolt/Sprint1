@@ -8,11 +8,12 @@ import java.util.Date;
 import javax.swing.Timer;
 
 public class SystemTimer {
-	private static long currentTime;
+	
 	private static Timer timer;
 	//private boolean isOn = true; //???not sure if we need this???
 	private static Calendar cal = Calendar.getInstance();
 	private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
+	private static long currentTime = cal.getTimeInMillis();
 
 	public SystemTimer() {		
 		currentTime = cal.getTimeInMillis();

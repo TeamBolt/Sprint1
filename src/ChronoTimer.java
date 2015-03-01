@@ -84,7 +84,7 @@ public class ChronoTimer {
 		switch (name) {
 			case "TIME": 	cmdObj = new Command_TIME(timestamp, args[1]);
 							break;
-			case "ON":		cmdObj = new Command_NULL();
+			case "ON":		cmdObj = new Command_On();
 							break;
 			case "OFF":		cmdObj = new Command_NULL();
 							break;
