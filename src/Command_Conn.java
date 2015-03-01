@@ -1,9 +1,10 @@
 
 public class Command_Conn implements Command {
 
-	public Command_Conn(String sensor, String channelNum) {
+	public Command_Conn(String snsr, String chnl) {
 		
-		execute(sensor, channelNum);
+		String sensor = snsr;
+		String channelNum = chnl;
 		
 	}
 

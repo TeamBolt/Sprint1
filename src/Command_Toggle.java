@@ -1,17 +1,12 @@
 
 public class Command_Toggle implements Command {
 
-	public Command_Toggle(String channel) {
+	public Command_Toggle(String chnl) {
 		// TODO Auto-generated constructor stub
 		
-		execute(channel);
+		String channel = chnl;
 	}
 
-	private void execute(String channel) {
-		// TODO Auto-generated method stub
-		
-		
-	}
 
 	@Override
 	public void execute() {

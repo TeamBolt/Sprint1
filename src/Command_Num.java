@@ -3,18 +3,10 @@ public class Command_Num implements Command {
 
 	Command_Num(String s){
 		
-		int num = Integer.parseInt(s);
-		execute(num);
+		String bib = s;
 		
 	}
 	
-	
-	public void execute(int num) {
-		// TODO Auto-generated method stub
-		
-		System.out.println("Num Command. Bib Number:  " + num);
-
-	}
 
 
 	@Override
