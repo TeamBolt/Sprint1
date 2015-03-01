@@ -15,27 +15,17 @@ public class SystemTimer {
 	private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
 	private static long currentTime = cal.getTimeInMillis();
 
-	public SystemTimer() {		
-		currentTime = cal.getTimeInMillis();
-
-		timer = new Timer(0, new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				++currentTime;							
-			}
-		});		
-	}
-
 	public static void start(){
-		timer = new Timer(0, new ActionListener(){
+		timer = new Timer(1, new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				++currentTime;							
+				++currentTime;	
 			}
 		});		
 		timer.start();
 	//	isOn = true;
 	}
+	
 	public static void stop(){
 		timer.stop();
 	//	isOn = false;

@@ -79,6 +79,14 @@ public class ChronoTimer {
 		Command cmdObj;
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
 		
+		int paramOne = 0;
+		int paramTwo = 0;
+		if ( args.length > 1 && args[1] != null ) {
+			paramOne = Integer.parseInt(args[1]);
+		}
+		if ( args.length > 2 && args[2] != null ) {
+			paramTwo = Integer.parseInt(args[1]);
+		}
 		
 		// Create the appropriate command object.
 		switch (name) {
