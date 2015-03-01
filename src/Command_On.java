@@ -10,6 +10,7 @@ public class Command_On implements Command {
 	public void execute() {
 		// Starts the SystemTimer
 		SystemTimer.start();
+		ChronoTimer.isOn = true;
 	}
 	
 	

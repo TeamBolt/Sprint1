@@ -86,11 +86,11 @@ public class ChronoTimer {
 		// If the command isn't "ON" and the ChronoTimer is off, no command to read.
 		if ( !name.equalsIgnoreCase("ON") && !ChronoTimer.isOn ) return;
 		
-		Command cmdObj;
+		Command cmdObj = new Command_NULL();
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
 		
-		int paramOne = 0;
-		int paramTwo = 0;
+		int paramOne = -1;
+		int paramTwo = -1;
 		if ( args.length > 1 && args[1] != null ) {
 			try {
 				paramOne = Integer.parseInt(args[1]); 
@@ -101,7 +101,7 @@ public class ChronoTimer {
 		}
 		if ( args.length > 2 && args[2] != null ) {
 			try {
-				paramTwo = Integer.parseInt(args[1]); 
+				paramTwo = Integer.parseInt(args[2]); 
 			} catch (NumberFormatException e) {
 				
 			}
@@ -109,17 +109,17 @@ public class ChronoTimer {
 		
 		// Create the appropriate command object.
 		switch (name.toUpperCase()){
-			case "TIME": 	cmdObj = new Command_TIME(timestamp, args[1]);
+			case "TIME": 	if ( paramOne > 0 ) cmdObj = new Command_TIME(timestamp, args[1]);
 							break;
 			case "ON":		cmdObj = new Command_On(timestamp);
 							break;
 			case "OFF":		cmdObj = new Command_Off(timestamp);
 							break;
-			case "CONN":	cmdObj = new Command_Conn(timestamp, args[1], paramTwo);
+			case "CONN":	if ( paramTwo > 0 ) cmdObj = new Command_Conn(timestamp, args[1], paramTwo);
 							break;
-			case "TOGGLE":	cmdObj = new Command_Toggle(timestamp, paramOne);
+			case "TOGGLE":	if ( paramOne > 0 ) cmdObj = new Command_Toggle(timestamp, paramOne);
 							break;
-			case "NUM":		cmdObj = new Command_Num(timestamp, paramOne);
+			case "NUM":		if ( paramOne > 0 ) cmdObj = new Command_Num(timestamp, paramOne);
 							break;
 			case "START":	cmdObj = new Command_Start(timestamp);
 							break;
@@ -127,9 +127,10 @@ public class ChronoTimer {
 							break;
 			case "DNF":		cmdObj = new Command_DNF(timestamp);
 							break;
-			case "PRINT":	cmdObj = new Command_Print(timestamp);
+			case "PRINT":	if ( paramOne <= 0 ) cmdObj = new Command_Print(timestamp);
+							if ( paramOne > 0) cmdObj = new Command_Print(timestamp, paramOne);
 							break;
-			case "DISC":	cmdObj = new Command_Disc(timestamp, paramOne);
+			case "DISC":	if ( paramOne > 0) cmdObj = new Command_Disc(timestamp, paramOne);
 							break;
 			case "CANCEL":	cmdObj = new Command_Cancel(timestamp);
 							break;
@@ -150,11 +151,14 @@ public class ChronoTimer {
 							break;
 			case "RESET":	cmdObj = new Command_NULL();
 							break;
-			default:		System.out.println("Invalid Command Entered");
-							return;
+			default:		cmdObj = new Command_NULL();;
+							break;
 				
 		}
-		
+		if ( cmdObj instanceof Command_NULL ) {
+			System.out.println("Invalid Command Entered.");
+			return;
+		}
 		cmdObj.execute();
 		ChronoTimer.eventLog.add(event);
 		System.out.println(event);
