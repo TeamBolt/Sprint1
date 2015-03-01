@@ -36,6 +36,11 @@ public class SystemTimer {
 	}
 	
 	public static long convertStringToLong(String time) {
+		// Add the decimal point if it's not there so the parser is happy.
+		if ( false == time.contains(".") ) {
+			time = time + ".0";
+		}
+		
 		Date date;
 		long timestamp = 0;
 		try {
@@ -43,7 +48,7 @@ public class SystemTimer {
 			cal.setTime(date);
 			timestamp = cal.getTimeInMillis();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.out.println("Invalid time entered.");
 		}
 		
 		return timestamp;

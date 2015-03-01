@@ -1,9 +1,11 @@
 
 public class Command_Num implements Command {
-	int bib;
+	private int bib;
+	private long timestamp;
 	
-	Command_Num(int b){
+	Command_Num(long t, int b){
 		bib = b;
+		timestamp = t;
 	}
 
 	@Override
