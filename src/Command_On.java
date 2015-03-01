@@ -9,7 +9,8 @@ public class Command_On implements Command {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		// Starts the SystemTimer
+		SystemTimer.start();
 	}
 	
 	
