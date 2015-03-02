@@ -1,19 +1,8 @@
 
 public class Sensor {
-	String type = "GATE";
+	String type;
 	
-	
-	public Sensor(){
-		
-		//BK - Set Default type to gate so no Null Pointers.
-		type = "GATE";
-		
+	public Sensor(String t){
+		type = t;
 	}
-	
-	/*public void setType(String s){
-		type = s;
-		
-	}*/
-
-	
 }

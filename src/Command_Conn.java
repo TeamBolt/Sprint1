@@ -12,22 +12,16 @@ public class Command_Conn implements Command {
 	
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		// Get channel from ArrayList.
+		Channel channel = ChronoTimer.channels.get(channelNum-1);
 		
-		//BK - Get channel from ArrayList
-		Channel c = ChronoTimer.channels.get(channelNum-1);
-		
-		//BK - Check if it is connected.  
-		if(c.connected){
+		// Check if it is connected.  
+		if(channel.sensor != null){
 			System.out.println("Channel is already connected");
+		} else {
+			// If it is not connected, set the sensor to the specified type.
+			Sensor s = new Sensor("Gate");
+			channel.sensor = s;
 		}
-		
-		//BK - If it is not connected, set the sensor to the specified type.
-		else {
-			ChronoTimer.channels.get(channelNum-1).sensor.type=sensor;
-		}
-		
-		
 	}
-
 }
