@@ -155,13 +155,13 @@ public class ChronoTimer {
 							break;
 				
 		}
+		
 		if ( cmdObj instanceof Command_NULL ) {
 			System.out.println("Invalid Command Entered.");
 			return;
 		}
+		
 		cmdObj.execute();
 		ChronoTimer.eventLog.add(event);
-		System.out.println(event);
-		
 	}
 }

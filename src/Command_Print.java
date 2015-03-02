@@ -14,8 +14,11 @@ public class Command_Print implements Command {
 	
 	@Override
 	public void execute() {
-		// if run == 0 or run == current.runNum print the current RunGroup.
-		// Otherwise print the run at archive index run - 1.
+		if ( run == 0 ) {
+			ChronoTimer.current.print();
+		} else {
+			ChronoTimer.archive.get(run-1).print();
+		}
 	}
 
 }

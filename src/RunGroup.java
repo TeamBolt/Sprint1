@@ -6,4 +6,8 @@ public interface RunGroup {
 	public void cancel();
 	
 	public void dnf();
+	
+	public void print();
+	
+	public void add(int bib);
 }

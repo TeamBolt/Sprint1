@@ -7,9 +7,7 @@ public class Command_Start implements Command {
 	}
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
-		
+		ChronoTimer.current.trigger(1, timestamp);
 	}
 
 }

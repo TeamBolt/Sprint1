@@ -12,7 +12,7 @@ public class RunGroupInd implements RunGroup{
 	public int finishChannel;
 	public LinkedBlockingQueue<Run> startQueue;
 	public LinkedBlockingQueue<Run> finishQueue;
-	public HashSet<Run> completedRuns;
+	public LinkedBlockingQueue<Run> completedRuns;
 	
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
@@ -28,7 +28,7 @@ public class RunGroupInd implements RunGroup{
 		// Instantiations.
 		startQueue = new LinkedBlockingQueue<Run>();
 		finishQueue = new LinkedBlockingQueue<Run>();
-		completedRuns = new HashSet<Run>();
+		completedRuns = new LinkedBlockingQueue<Run>();
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class RunGroupInd implements RunGroup{
 	@Override
 	public void trigger(int c, long timestamp) {
 		// If the channel is disabled, do nothing.
-		Channel channel = ChronoTimer.channels.get(c);
+		Channel channel = ChronoTimer.channels.get( c - 1 );
 		if ( channel.enabled == false ) return;
 		
 		if ( c == startChannel && !startQueue.isEmpty() ) {
@@ -120,9 +120,13 @@ public class RunGroupInd implements RunGroup{
 				Run run = iterator.next();
 				run.print();
 			}
-		}
-		
-				
+		}		
+	}
+	
+	public void add(int bib) {
+		Run run = new Run(runNum, bib);
+		run.state = "waiting";
+		startQueue.add(run);
 	}
 
 }

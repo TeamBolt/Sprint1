@@ -10,7 +10,7 @@ public class Command_Num implements Command {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		ChronoTimer.current.add(bib);
 	}
 
 }

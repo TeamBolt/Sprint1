@@ -7,7 +7,8 @@ private long timestamp;
 	}
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		ChronoTimer.isOn = false;
+		SystemTimer.stop();
 	}
 
 }

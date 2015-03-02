@@ -11,7 +11,7 @@ public class Command_Toggle implements Command {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		ChronoTimer.channels.get(channel-1).toggle();
 	}
 
 }

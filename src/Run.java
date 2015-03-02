@@ -19,15 +19,19 @@ public class Run {
 	/**
 	 * @return elapsed time, or 0 if the run isn't finished.
 	 */
-	public long getElapsed() {
-		if ( state.equals("finished") ) return finishTime - startTime;
-		return 0;
+	public String getElapsed() {
+		if ( state.equals("finished") ) {
+			Double elap =  (double) (finishTime - startTime) / 1000;
+			String out = String.format("%.2f", elap);
+			return out;
+		}
+		return "";
 	}
 	
 	public void print() {
-		String output = runNum + "      " + bibNum + "      ";
+		String output = runNum + "        " + bibNum + "      ";
 		if ( state == "finished" ) output += getElapsed();
-		if ( state == "dns" ) output += "DNF";
+		if ( state == "dnf" ) output += "DNF";
 		if ( state == "waiting" ) output += "WAITING";
 		if ( state == "inProgress" ) output += "RUNNING";
 		
