@@ -98,7 +98,7 @@ public class RunGroupInd implements RunGroup{
 	}
 	
 	public void print() {
-		System.out.println("RUN      BIB      TIME");
+		Printer.print("RUN      BIB      TIME");
 		
 		if ( !completedRuns.isEmpty() ) {
 			Iterator<Run> iterator = completedRuns.iterator();

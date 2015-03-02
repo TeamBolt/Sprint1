@@ -25,11 +25,13 @@ public class Run {
 	}
 	
 	public void print() {
-		System.out.print( runNum + "      " + bibNum + "      " );
-		if ( state == "finished" ) System.out.print( getElapsed() );
-		if ( state == "dns" ) System.out.print("DNF");
-		if ( state == "waiting" ) System.out.print("WAITING");
-		if ( state == "inProgress" ) System.out.print("RUNNING");
+		String output = runNum + "      " + bibNum + "      ";
+		if ( state == "finished" ) output += getElapsed();
+		if ( state == "dns" ) output += "DNF";
+		if ( state == "waiting" ) output += "WAITING";
+		if ( state == "inProgress" ) output += "RUNNING";
+		
+		Printer.print(output);
 	}
 	
 
