@@ -1,4 +1,11 @@
-
+/**
+ * Printer class represents both the printer and the console.
+ * Prints to the console always, and to the printer when it isOn.
+ * 
+ * Team Bolt ( Chris Harmon, Kevari Francis, Blake Watzke, Ben Kingsbury )
+ * 
+ * @author Chris Harmon
+ */
 public class Printer {
 
 	public static boolean isOn = false;

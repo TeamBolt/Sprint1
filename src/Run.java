@@ -1,4 +1,16 @@
-
+/**
+ * Run class represents on Run for a competitor (with bib number) in a RunGroup.
+ * 
+ * The Run can be in 4 possible states: 
+ * 		"waiting" 
+ * 		"inProgress"
+ * 		"finished"
+ * 		"dnf"
+ * 
+ * Team Bolt ( Chris Harmon, Kevari Francis, Blake Watzke, Ben Kingsbury )
+ * 
+ * @authors Chris Harmon
+ */
 public class Run {
 	long startTime;
 	long finishTime;
@@ -17,7 +29,7 @@ public class Run {
 	}
 	
 	/**
-	 * @return elapsed time, or 0 if the run isn't finished.
+	 * @return elapsed time formatted for display, or nothing.
 	 */
 	public String getElapsed() {
 		if ( state.equals("finished") ) {
@@ -28,6 +40,9 @@ public class Run {
 		return "";
 	}
 	
+	/**
+	 * Prints the Run to the Printer.
+	 */
 	public void print() {
 		String output = runNum + "        " + bibNum + "      ";
 		if ( state == "finished" ) output += getElapsed();

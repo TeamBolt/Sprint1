@@ -8,7 +8,17 @@ import java.util.HashSet;
 
 
 
-
+/**
+ * Main class for ChronoTimer project. Reads in commands from either a test 
+ * file or from stdin (java console), and creates and executes those commands.
+ * To read in a test file set a program parameter to "test.txt".
+ * 
+ * The ON command needs to be run before any other commands (excepting exit) can run.
+ * 
+ * Team Bolt ( Chris Harmon, Kevari Francis, Blake Watzke, Ben Kingsbury )
+ * 
+ * @author Chris Harmon
+ */
 public class ChronoTimer {
 	
 	public static boolean isOn = false;
@@ -16,13 +26,14 @@ public class ChronoTimer {
 	public static RunGroup current;
 	public static ArrayList<RunGroup> archive = new ArrayList<RunGroup>();
 	public static ArrayList<Channel> channels = new ArrayList<Channel>();
-	public static HashSet<String> eventLog = new HashSet<String>();
+	public static ArrayList<String> eventLog = new ArrayList<String>();
 
 	/**
-	 * @param args
+	 * @param args will have the name of the test file if one was provided.
 	 * 
-	 * To run the class with the test file, use "run configurations" and set a 
-	 * program arguments test.txt.
+	 * This will read from the test file, or if none was provided will loop
+	 * and wait for input from stdIn (java console) and pass commands on
+	 * to readCommand() for validation and execution.
 	 */
 	public static void main(String[] args) {
 		if ( args.length > 0 ) {
@@ -48,8 +59,8 @@ public class ChronoTimer {
 	}
 	
 	/**
-	 * Reads in commands from a file.
-	 * @param filename
+	 * Reads in commands from a file and gives them to readCommand.
+	 * @param filename to read from.
 	 */
 	public static void readTestFile(String filename) {
 		try( BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -73,6 +84,9 @@ public class ChronoTimer {
 
 	/**
 	 * Creates and executes the given comment at the given timestamp.
+	 * Only the EXIT and ON commands are recognized when the system is off.
+	 * If an invalid command or paramter was inputed a message will be
+	 * printed and the command will NOT be added to the eventLog.
 	 * @param timestamp
 	 * @param command
 	 */
@@ -89,6 +103,8 @@ public class ChronoTimer {
 		Command cmdObj = new Command_NULL();
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
 		
+		// Gets ints out of the parameters if they are there to get, will be -1 if
+		// no parameter or paramter was not parse-able into an int.
 		int paramOne = -1;
 		int paramTwo = -1;
 		if ( args.length > 1 && args[1] != null ) {
@@ -107,7 +123,7 @@ public class ChronoTimer {
 			}
 		}
 		
-		// Create the appropriate command object.
+		// Create the appropriate command object if the correct paramters exist.
 		switch (name.toUpperCase()){
 			case "TIME": 	if ( args.length > 1 ) cmdObj = new Command_TIME(timestamp, args[1]);
 							break;
@@ -156,11 +172,13 @@ public class ChronoTimer {
 				
 		}
 		
+		// If for some reason we couldn't make a valid command, let them know.
 		if ( cmdObj instanceof Command_NULL ) {
 			System.out.println("Invalid Command Entered.");
 			return;
 		}
 		
+		// Execute and add to the eventLog.
 		cmdObj.execute();
 		ChronoTimer.eventLog.add(event);
 	}

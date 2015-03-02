@@ -4,7 +4,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 
-
+/**
+ * The class represents and individual run group. It knows how to add, start, 
+ * finish, cancel, and dnf runs, as well as how to print itself.
+ * 
+ * Team Bolt ( Chris Harmon, Kevari Francis, Blake Watzke, Ben Kingsbury )
+ * 
+ * @author Chris Harmon
+ */
 public class RunGroupInd implements RunGroup{
 
 	public int runNum;
@@ -100,6 +107,7 @@ public class RunGroupInd implements RunGroup{
 	public void print() {
 		Printer.print("RUN      BIB      TIME");
 		
+		// Print completed runs.
 		if ( !completedRuns.isEmpty() ) {
 			Iterator<Run> iterator = completedRuns.iterator();
 			while ( iterator.hasNext() ) {
@@ -107,6 +115,8 @@ public class RunGroupInd implements RunGroup{
 				run.print();
 			}
 		}
+		
+		// Print inProgress runs.
 		if ( !finishQueue.isEmpty() ) {
 			Iterator<Run> iterator = finishQueue.iterator();
 			while ( iterator.hasNext() ) {
@@ -114,6 +124,8 @@ public class RunGroupInd implements RunGroup{
 				run.print();
 			}
 		}
+		
+		// Print waiting runs.
 		if ( !startQueue.isEmpty() ) {
 			Iterator<Run> iterator = startQueue.iterator();
 			while ( iterator.hasNext() ) {
@@ -123,6 +135,11 @@ public class RunGroupInd implements RunGroup{
 		}		
 	}
 	
+	/**
+	 * Adds a new run with the given bib number to the startQueue.
+	 * 
+	 * @param int bib	bib number for this run.
+	 */
 	public void add(int bib) {
 		Run run = new Run(runNum, bib);
 		run.state = "waiting";
