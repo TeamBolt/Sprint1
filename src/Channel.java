@@ -2,9 +2,12 @@
 public class Channel {
 	Sensor sensor;
 	Boolean enabled;
+	Boolean connected;  //BK - Added Connected flag to see if that channel has been used or not.
 	
 	public Channel(){
 		enabled = false;
+		connected = false;  //BK - Set connected field to false initially
+		sensor = new Sensor();
 	}
 	
 	public void toggle(){
@@ -13,6 +16,7 @@ public class Channel {
 	
 	public void connectSensor(Sensor s){
 		sensor = s;
+		connected=true;		//BK - Set this channel to true
 	}
 	
 	/**
