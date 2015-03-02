@@ -20,7 +20,7 @@ public class Command_Conn implements Command {
 			System.out.println("Channel is already connected");
 		} else {
 			// If it is not connected, set the sensor to the specified type.
-			Sensor s = new Sensor("Gate");
+			Sensor s = new Sensor(sensor);
 			channel.sensor = s;
 		}
 	}
