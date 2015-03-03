@@ -7,7 +7,10 @@ public class Command_Fin implements Command {
 	}
 	@Override
 	public void execute() {
-		ChronoTimer.current.trigger(2, timestamp);
+		if ( ChronoTimer.current != null ) {
+			ChronoTimer.current.trigger( 2, timestamp );
+		} else {
+			Printer.print("No Current Run, please enter the NEWRUN command");
+		}
 	}
-
 }

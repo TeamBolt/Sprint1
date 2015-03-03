@@ -11,7 +11,11 @@ public class Command_Trig {
 	}
 	
 	public void execute() {
-		ChronoTimer.current.trigger(channelNum, timestamp);
+		if ( ChronoTimer.current != null ) {
+			ChronoTimer.current.trigger( channelNum, timestamp );
+		} else {
+			Printer.print("No Current Run, please enter the NEWRUN command");
+		}
 	}
 
 }

@@ -10,8 +10,9 @@ public class Command_Disc implements Command {
 	
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-
+		// Get channel from ArrayList.
+		Channel channel = ChronoTimer.channels.get(channelNum-1);
+		channel.sensor = null;
 	}
 
 }

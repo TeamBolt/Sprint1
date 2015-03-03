@@ -9,13 +9,14 @@
 public class Channel {
 	public Sensor sensor;
 	public Boolean enabled;
-	// A channel might also need to know it's channel num (for trigger()).
+	public int channelNum;
 	
 	/**
 	 * Constructor sets up the default value (disabled).
 	 */
-	public Channel(){
+	public Channel(int num){
 		enabled = false;
+		channelNum = num;
 	}
 	
 	/**

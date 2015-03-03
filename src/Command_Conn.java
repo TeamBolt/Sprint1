@@ -17,7 +17,7 @@ public class Command_Conn implements Command {
 		
 		// Check if it is connected.  
 		if(channel.sensor != null){
-			System.out.println("Channel is already connected");
+			Printer.print("Channel is already connected");
 		} else {
 			// If it is not connected, set the sensor to the specified type.
 			Sensor s = new Sensor(sensor);

@@ -37,21 +37,21 @@ public class ChronoTimer {
 	 */
 	public static void main(String[] args) {
 		if ( args.length > 0 ) {
-			java.net.URL url = Keypad.class.getClassLoader().getResource(args[0]);
+			java.net.URL url = ChronoTimer.class.getClassLoader().getResource(args[0]);
 			ChronoTimer.readTestFile(url.getPath());
 		} else {
-			
-			boolean exit = false;
+			// Begin looping to read commands from console.
 			try {
 				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 				String input;
 				 
-				while( (input = br.readLine() ) != null ) {
+				while( ( input = br.readLine() ) != null ) {
 					long timestamp = SystemTimer.getTime(); //save the timestamp first.
-					ChronoTimer.readCommand(timestamp, input);
+					ChronoTimer.readCommand( timestamp, input );
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				Printer.print("Error reading from console.");
 			}
 		}
 		
@@ -63,8 +63,8 @@ public class ChronoTimer {
 	 * @param filename to read from.
 	 */
 	public static void readTestFile(String filename) {
-		try( BufferedReader br = new BufferedReader(new FileReader(filename))) {
-			for (String line; (line = br.readLine()) != null; ) {
+		try( BufferedReader br = new BufferedReader(new FileReader(filename)) ) {
+			for ( String line; ( line = br.readLine() ) != null; ) {
 				
 				// First get the timestamp out and set the time
 				String[] args = line.split("	");
@@ -76,9 +76,11 @@ public class ChronoTimer {
 				ChronoTimer.readCommand(timestamp, args[1]);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Printer.print("Error opening file.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Printer.print("Error reading from file.");
 		}
 	}
 
@@ -111,7 +113,7 @@ public class ChronoTimer {
 			try {
 				paramOne = Integer.parseInt(args[1]); 
 			} catch (NumberFormatException e) {
-				
+				// Do nothing, we want this to fail silently.
 			}
 			
 		}
@@ -119,11 +121,11 @@ public class ChronoTimer {
 			try {
 				paramTwo = Integer.parseInt(args[2]); 
 			} catch (NumberFormatException e) {
-				
+				// Do nothing, we want this to fail silently.
 			}
 		}
 		
-		// Create the appropriate command object if the correct paramters exist.
+		// Create the appropriate command object if the correct parameters exist.
 		switch (name.toUpperCase()){
 			case "TIME": 	if ( args.length > 1 ) cmdObj = new Command_TIME(timestamp, args[1]);
 							break;
@@ -174,7 +176,7 @@ public class ChronoTimer {
 		
 		// If for some reason we couldn't make a valid command, let them know.
 		if ( cmdObj instanceof Command_NULL ) {
-			System.out.println("Invalid Command Entered.");
+			Printer.print("Invalid Command Entered.");
 			return;
 		}
 		

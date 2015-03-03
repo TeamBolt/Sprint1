@@ -10,7 +10,11 @@ public class Command_Num implements Command {
 
 	@Override
 	public void execute() {
-		ChronoTimer.current.add(bib);
+		if ( ChronoTimer.current != null ) {
+			ChronoTimer.current.add(bib);
+		} else {
+			Printer.print("No Current Run, please enter the NEWRUN command");
+		}
 	}
 
 }

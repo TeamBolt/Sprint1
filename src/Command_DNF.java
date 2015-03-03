@@ -7,7 +7,11 @@ public class Command_DNF implements Command {
 	}
 	@Override
 	public void execute() {
-		ChronoTimer.current.dnf();
+		if ( ChronoTimer.current != null ) {
+			ChronoTimer.current.dnf();
+		} else {
+			Printer.print("No Current Run, please enter the NEWRUN command");
+		}
 	}
 
 }

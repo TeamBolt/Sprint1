@@ -18,14 +18,10 @@ public class Command_On implements Command {
 		ChronoTimer.isOn = true;
 				
 		// Add all 8 Channels to the Array List.
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
-		ChronoTimer.channels.add(new Channel());
+		// To increase to 12, change the 9 to a 13.
+		for ( int i = 1; i < 9; ++i ) {
+			ChronoTimer.channels.add(new Channel(i));
+		}
 		
 		// Create the default RunGroup
 		ChronoTimer.eventType = "IND";

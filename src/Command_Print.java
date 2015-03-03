@@ -15,9 +15,13 @@ public class Command_Print implements Command {
 	@Override
 	public void execute() {
 		if ( run == 0 ) {
-			ChronoTimer.current.print();
+			if ( ChronoTimer.current != null ) {
+				ChronoTimer.current.print();
+			} else {
+				Printer.print("No Current Run, please enter the NEWRUN command");
+			}
 		} else {
-			ChronoTimer.archive.get(run-1).print();
+			ChronoTimer.archive.get( run-1 ).print();
 		}
 	}
 
