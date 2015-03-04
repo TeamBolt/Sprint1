@@ -5,30 +5,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import javax.swing.Timer;
 
 public class SystemTimer {
 	
-	private static Timer timer;
-	//private boolean isOn = true; //???not sure if we need this???
 	private static Calendar cal = Calendar.getInstance();
 	private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
-	private static long currentTime = cal.getTimeInMillis();
+	private static long offset = 0;
 
 	public static void start(){
-		timer = new Timer(1, new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				++currentTime;	
-			}
-		});		
-		timer.start();
-	//	isOn = true;
+		
 	}
-	
 	public static void stop(){
-		timer.stop();
-	//	isOn = false;
+
 	}
 
 	public static void setTime(String time) {
@@ -60,17 +48,17 @@ public class SystemTimer {
 	}
 
 	public static void setTime(long time){
-		currentTime = time;
+		offset = time - System.currentTimeMillis();
 	}
 
 	public static long getTime() {
-		return currentTime;
+		return offset + System.currentTimeMillis();
 	}
 
 	public static String getTime(boolean time){
 		//String t = dateFormat.format(currentTime);
 
-		return convertLongToString(currentTime);//t;//t.substring(0,t.length()-1);
+		return convertLongToString(getTime());
 	}
 
 }
