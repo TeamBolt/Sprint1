@@ -8,6 +8,9 @@ public class Command_Disc implements Command {
 		timestamp = t;
 	}	
 	
+	/**
+	 * Disconnects a sensor from a channel (does nothing if no sensor was connected).
+	 */
 	@Override
 	public void execute() {
 		// Get channel from ArrayList.

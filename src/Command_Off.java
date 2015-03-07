@@ -7,10 +7,13 @@ private long timestamp;
 	public Command_Off(long t) {
 		timestamp = t;
 	}
+	
+	/**
+	 * Shuts the system off and clears out the data.
+	 */
 	@Override
 	public void execute() {
 		ChronoTimer.isOn = false;
-		SystemTimer.stop();
 		
 		// Clear out the archive, channels, and eventLog.
 		ChronoTimer.archive = new ArrayList<RunGroup>();

@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 
@@ -155,9 +154,9 @@ public class ChronoTimer {
 			// The rest of these we don't necessarily need yet.
 			case "EVENT":	cmdObj = new Command_NULL();
 							break;
-			case "NEWRUN":	cmdObj = new Command_NULL();
+			case "NEWRUN":	cmdObj = new Command_Newrun(timestamp);
 							break;
-			case "ENDRUN":	cmdObj = new Command_NULL();
+			case "ENDRUN":	cmdObj = new Command_Endrun(timestamp);
 							break;
 			case "EXPORT":	cmdObj = new Command_NULL();
 							break;

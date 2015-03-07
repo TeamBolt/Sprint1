@@ -7,7 +7,11 @@ public class Command_Num implements Command {
 		bib = b;
 		timestamp = t;
 	}
-
+	
+	/**
+	 * Attempts to add a run with bibnum 'bib' to the current rungroup.
+	 * Prints error if no current rungroup.
+	 */
 	@Override
 	public void execute() {
 		if ( ChronoTimer.current != null ) {

@@ -8,7 +8,9 @@ public class Command_Toggle implements Command {
 		timestamp = t;
 	}
 
-
+	/**
+	 * Toggles the specified channel (shouldn't be able to fail).
+	 */
 	@Override
 	public void execute() {
 		ChronoTimer.channels.get(channel-1).toggle();

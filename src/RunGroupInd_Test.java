@@ -153,8 +153,8 @@ public class RunGroupInd_Test {
 	}
 	
 	/**
-	 * Tests that cancel correcly moved the run back to the start of the startQueue
-	 * (I am unsure if it should move the next run to finish, or the last run started)
+	 * Tests that cancel correcly moved the most recent run to start (end of the finishQueue)
+	 * back to the start of the startQueue (like it never event happened).
 	 */
 	@Test
 	public void testCancel() {
@@ -197,12 +197,13 @@ public class RunGroupInd_Test {
 		rg.add(3);
 		rg.trigger(1, 0);
 		rg.trigger(1, 0);
+		
 		rg.cancel();
 		rg.cancel();
-	
-		//::NOTE:: Cancel shuffles inputs, should it do that?
-		assertEquals("Run 2 was not first.", 2, rg.startQueue.poll().bibNum);
-		assertEquals("Run 1 was not second.", 1, rg.startQueue.poll().bibNum);
+
+		// Make sure that startQueue order was maintained.
+		assertEquals("Run 1 was not first.", 1, rg.startQueue.poll().bibNum);
+		assertEquals("Run 2 was not second.", 2, rg.startQueue.poll().bibNum);
 		assertEquals("Run 3 was not last.", 3, rg.startQueue.poll().bibNum);
 	}
 	
@@ -283,5 +284,29 @@ public class RunGroupInd_Test {
 		assertEquals("RG did not print correct dnf run", 		"1        2      DNF", Printer.log.get(2));
 		assertEquals("RG did not print correct running run", 	"1        3      RUNNING", Printer.log.get(3));
 		assertEquals("RG did not print correct waiting run", 	"1        4      WAITING", Printer.log.get(4));
+	}
+	
+	@Test
+	public void testEnd() {
+		rg = new RunGroupInd();
+		ChronoTimer.channels = new ArrayList<Channel>();
+		ChronoTimer.channels.add(new Channel(1));
+		ChronoTimer.channels.get(0).toggle();
+		
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(1, 0);
+		Printer.log.clear();
+	
+		// Make sure that runs both waiting and running are dnf'd.
+		rg.end();
+		assertEquals("Run was not placed in completedRuns.", 2, rg.completedRuns.size());
+		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().state);
+		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().state);
+		
+		// And make sure a message was printed.
+		assertEquals("No message was printed to the printer.", 2, Printer.log.size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.log.get(0));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.log.get(1));
 	}
 }

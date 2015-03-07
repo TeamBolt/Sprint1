@@ -7,14 +7,17 @@ public class Command_On implements Command {
 		timestamp = t;
 	}
 
+	/**
+	 * Turns the system on, sets up default values, instantiates channels, but only if
+	 * the system was not already on.
+	 */
 	@Override
 	public void execute() {
 		
 		// Check first if it is already on.  If it is, then we don't want to do anything extra.
 		if ( ChronoTimer.isOn ) return;
 		
-		// Starts the SystemTimer
-		SystemTimer.start();
+		// Starts the system.
 		ChronoTimer.isOn = true;
 				
 		// Add all 8 Channels to the Array List.

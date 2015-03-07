@@ -10,6 +10,9 @@ public class Command_Trig {
 		channelNum = c;
 	}
 	
+	/**
+	 * Attempts to trigger the specified channel, or prints error if no rungroup exists.
+	 */
 	public void execute() {
 		if ( ChronoTimer.current != null ) {
 			ChronoTimer.current.trigger( channelNum, timestamp );

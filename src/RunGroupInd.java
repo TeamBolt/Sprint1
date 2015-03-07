@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -77,7 +76,28 @@ public class RunGroupInd implements RunGroup{
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishQueue.isEmpty() ) return;
 		
-		Run current = finishQueue.poll();
+		Run current = null;
+		
+		if ( finishQueue.size() == 1 ) {
+			current = finishQueue.poll();
+		} else {
+			// Get the last person out of the finish queue.
+			LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
+			while ( !finishQueue.isEmpty() ) {
+				current = finishQueue.poll();
+				
+				// Only save the run back into the queue if it's not the last one.
+				if ( !finishQueue.isEmpty() ) {
+					tempQueue.add(current);
+				}
+			}
+			
+			// Replace the finishQueue with the new one.
+			finishQueue = tempQueue;
+			
+			// current is now the run which was at the end of the finishQueue.
+		}
+		
 		current.state = "waiting";
 		
 		if ( !startQueue.isEmpty() ) {
@@ -149,6 +169,25 @@ public class RunGroupInd implements RunGroup{
 		Run run = new Run(runNum, bib);
 		run.state = "waiting";
 		startQueue.add(run);
+	}
+	
+	/**
+	 * End all current runs with state dnf.
+	 */
+	public void end() {
+		while ( !startQueue.isEmpty() ) {
+			Run r = startQueue.poll();
+			r.state = "dnf";
+			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
+			completedRuns.add(r);
+		}
+		
+		while ( !finishQueue.isEmpty() ) {
+			Run r = finishQueue.poll();
+			r.state = "dnf";
+			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
+			completedRuns.add(r);
+		}
 	}
 
 }

@@ -1,5 +1,3 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,17 +10,19 @@ public class SystemTimer {
 	private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.S");
 	private static long offset = 0;
 
-	public static void start(){
-		
-	}
-	public static void stop(){
-
-	}
-
+	/**
+	 * Converts string time into timestamp and sets offset.
+	 * @param String time
+	 */
 	public static void setTime(String time) {
 		setTime( convertStringToLong(time) );
 	}
 	
+	/**
+	 * Converts String time into timstamp and returns it.
+	 * @param String time
+	 * @return long timestamp
+	 */
 	public static long convertStringToLong(String time) {
 		// Add the decimal point if it's not there so the parser is happy.
 		if ( false == time.contains(".") ) {
@@ -42,22 +42,38 @@ public class SystemTimer {
 		return timestamp;
 	}
 	
-	public static String convertLongToString(long time) {
-		return dateFormat.format(time);
+	/**
+	 * Converts timestamp into String time.
+	 * @param long timestamp
+	 * @return String time
+	 */
+	public static String convertLongToString(long timestamp) {
+		return dateFormat.format(timestamp);
 		
 	}
-
-	public static void setTime(long time){
-		offset = time - System.currentTimeMillis();
+	
+	/**
+	 * Sets offset.
+	 * @param long timestamp
+	 */
+	public static void setTime(long timestamp){
+		offset = timestamp - System.currentTimeMillis();
 	}
 
+	/**
+	 * Get the timestamp.
+	 * @return long timestamp
+	 */
 	public static long getTime() {
 		return offset + System.currentTimeMillis();
 	}
 
-	public static String getTime(boolean time){
-		//String t = dateFormat.format(currentTime);
-
+	/**
+	 * Get the string time
+	 * @param boolean getString (to override)
+	 * @return String time
+	 */
+	public static String getTime(boolean getString){
 		return convertLongToString(getTime());
 	}
 

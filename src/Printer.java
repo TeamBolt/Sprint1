@@ -13,6 +13,10 @@ public class Printer {
 	public static boolean isOn = false;
 	public static ArrayList<String> log = new ArrayList<String>();
 	
+	/**
+	 * Print output to the console (and later the printer when enabled)
+	 * @param output
+	 */
 	public static void print(String output) {
 		log.add(output);
 		System.out.println(output);

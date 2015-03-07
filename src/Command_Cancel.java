@@ -6,6 +6,9 @@ public class Command_Cancel implements Command {
 		timestamp = t;
 	}
 	
+	/**
+	 * Attempt to cancel the current run, or prints error if no current rungroup.
+	 */
 	@Override
 	public void execute() {
 		if ( ChronoTimer.current != null ) {

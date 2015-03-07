@@ -5,6 +5,10 @@ public class Command_Fin implements Command {
 	public Command_Fin(long t) {
 		timestamp = t;
 	}
+	
+	/**
+	 * Attempts to trigger channel 2, prints error if no current rungroup.
+	 */
 	@Override
 	public void execute() {
 		if ( ChronoTimer.current != null ) {

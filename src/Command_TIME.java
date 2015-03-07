@@ -9,6 +9,9 @@ public class Command_TIME implements Command{
 		timeStamp = ts;
 	}
 	
+	/**
+	 * Sets the current time in the system timer (sets offset).
+	 */
 	@Override
 	public void execute() {
 		// Set the system timer to 'time'

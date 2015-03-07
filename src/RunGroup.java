@@ -21,4 +21,6 @@ public interface RunGroup {
 	public void print();
 	
 	public void add(int bib);
+	
+	public void end();
 }

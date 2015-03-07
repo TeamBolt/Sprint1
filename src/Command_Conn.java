@@ -10,6 +10,9 @@ public class Command_Conn implements Command {
 		timestamp = t;
 	}
 	
+	/**
+	 * Attempts to connect a sensor to a channel, prints error if unable.
+	 */
 	@Override
 	public void execute() {
 		// Get channel from ArrayList.
