@@ -279,9 +279,9 @@ public class RunGroupInd_Test {
 		rg.print();
 		assertEquals("Printer did not print correct number of lines", 5, Printer.log.size());
 		assertEquals("RG did not print correct header", 		"RUN      BIB      TIME", Printer.log.get(0));
-		assertEquals("RG did not print correct finished run", 	"1        1        0.04", Printer.log.get(1));
-		assertEquals("RG did not print correct dnf run", 		"1        2        DNF", Printer.log.get(2));
-		assertEquals("RG did not print correct running run", 	"1        3        RUNNING", Printer.log.get(3));
-		assertEquals("RG did not print correct waiting run", 	"1        4        WAITING", Printer.log.get(4));
+		assertEquals("RG did not print correct finished run", 	"1        1      0.04", Printer.log.get(1));
+		assertEquals("RG did not print correct dnf run", 		"1        2      DNF", Printer.log.get(2));
+		assertEquals("RG did not print correct running run", 	"1        3      RUNNING", Printer.log.get(3));
+		assertEquals("RG did not print correct waiting run", 	"1        4      WAITING", Printer.log.get(4));
 	}
 }

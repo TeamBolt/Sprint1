@@ -44,7 +44,7 @@ public class Run {
 	 * Prints the Run to the Printer.
 	 */
 	public void print() {
-		String output = runNum + "        " + bibNum + "        ";
+		String output = runNum + "        " + bibNum + "      ";
 		if ( state == "finished" ) output += getElapsed();
 		if ( state == "dnf" ) output += "DNF";
 		if ( state == "waiting" ) output += "WAITING";
