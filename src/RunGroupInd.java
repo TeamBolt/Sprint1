@@ -57,12 +57,14 @@ public class RunGroupInd implements RunGroup{
 			current.startTime = timestamp;
 			current.state = "inProgress";
 			finishQueue.add(current);
+			Printer.print("Bib #" + current.bibNum + " Start:  " + SystemTimer.convertLongToString(timestamp));
 		} else if ( c == finishChannel && !finishQueue.isEmpty()) {
 			// Finish channel triggered, the run is completed.
 			Run current = finishQueue.poll();
 			current.finishTime = timestamp;
 			current.state = "finished";
 			completedRuns.add(current);
+			Printer.print("Bib #" + current.bibNum + " Finish: " + SystemTimer.convertLongToString(timestamp));
 		}
 	}
 
@@ -88,6 +90,8 @@ public class RunGroupInd implements RunGroup{
 			// Otherwise we just move the run back into the startQueue.
 			startQueue.add(current);
 		}
+		
+		Printer.print("Bib #" + current.bibNum + " Canceled");
 	}
 
 	/**
@@ -102,6 +106,7 @@ public class RunGroupInd implements RunGroup{
 		Run current = finishQueue.poll();
 		current.state = "dnf";
 		completedRuns.add(current);
+		Printer.print("Bib #" + current.bibNum + " Did Not Finish");
 	}
 	
 	public void print() {
