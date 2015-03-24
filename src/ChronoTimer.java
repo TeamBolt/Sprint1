@@ -20,6 +20,7 @@ import java.util.ArrayList;
  */
 public class ChronoTimer {
 	
+	public static Window window;
 	public static boolean isOn = false;
 	public static String eventType;
 	public static RunGroup current;
@@ -39,19 +40,20 @@ public class ChronoTimer {
 			java.net.URL url = ChronoTimer.class.getClassLoader().getResource(args[0]);
 			ChronoTimer.readTestFile(url.getPath());
 		} else {
+			window = new Window();
 			// Begin looping to read commands from console.
-			try {
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				String input;
-				 
-				while( ( input = br.readLine() ) != null ) {
-					long timestamp = SystemTimer.getTime(); //save the timestamp first.
-					ChronoTimer.readCommand( timestamp, input );
-				}
-			} catch (IOException e) {
-				//e.printStackTrace();
-				Printer.print("Error reading from console.");
-			}
+//			try {
+//				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//				String input;
+//				 
+//				while( ( input = br.readLine() ) != null ) {
+//					long timestamp = SystemTimer.getTime(); //save the timestamp first.
+//					ChronoTimer.readCommand( timestamp, input );
+//				}
+//			} catch (IOException e) {
+//				//e.printStackTrace();
+//				Printer.print("Error reading from console.");
+//			}
 		}
 		
 
