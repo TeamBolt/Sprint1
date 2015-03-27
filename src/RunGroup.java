@@ -25,4 +25,7 @@ public interface RunGroup {
 	public void add(int bib);
 	
 	public void end();
+	
+	public int getRun();
+	
 }

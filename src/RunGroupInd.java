@@ -196,4 +196,10 @@ public class RunGroupInd implements RunGroup{
 		}
 	}
 
+	@Override
+	public int getRun() {
+		return runNum;
+		
+	}
+
 }
