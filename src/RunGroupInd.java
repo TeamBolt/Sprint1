@@ -128,16 +128,20 @@ public class RunGroupInd implements RunGroup{
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.bibNum + " Did Not Finish");
 	}
-	
+
 	public void print() {
-		Printer.print("RUN      BIB      TIME");
+		Printer.print(doPrint());
+	}
+	
+	public String doPrint() {
+		String out = "RUN      BIB      TIME\n";
 		
 		// Print completed runs.
 		if ( !completedRuns.isEmpty() ) {
 			Iterator<Run> iterator = completedRuns.iterator();
 			while ( iterator.hasNext() ) {
 				Run run = iterator.next();
-				run.print();
+				out += run.print() + "\n";
 			}
 		}
 		
@@ -146,7 +150,7 @@ public class RunGroupInd implements RunGroup{
 			Iterator<Run> iterator = finishQueue.iterator();
 			while ( iterator.hasNext() ) {
 				Run run = iterator.next();
-				run.print();
+				out += run.print() + "\n";
 			}
 		}
 		
@@ -155,9 +159,11 @@ public class RunGroupInd implements RunGroup{
 			Iterator<Run> iterator = startQueue.iterator();
 			while ( iterator.hasNext() ) {
 				Run run = iterator.next();
-				run.print();
+				out += run.print() + "\n";
 			}
-		}		
+		}	
+		
+		return out;
 	}
 	
 	/**

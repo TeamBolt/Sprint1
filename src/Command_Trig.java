@@ -1,5 +1,5 @@
 
-public class Command_Trig {
+public class Command_Trig implements Command{
 	
 	private long timestamp;
 	private int channelNum;

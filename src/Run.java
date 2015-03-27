@@ -32,25 +32,28 @@ public class Run {
 	 * @return elapsed time formatted for display, or nothing.
 	 */
 	public String getElapsed() {
+		long fin;
 		if ( state.equals("finished") ) {
-			Double elap =  (double) (finishTime - startTime) / 1000;
-			String out = String.format("%.2f", elap);
-			return out;
+			fin = finishTime;
+		} else {
+			fin = SystemTimer.getTime();
 		}
-		return "";
+		Double elap =  (double) (fin - startTime) / 1000;
+		String out = String.format("%.2f", elap);
+		return out;
 	}
 	
 	/**
 	 * Prints the Run to the Printer.
 	 */
-	public void print() {
+	public String print() {
 		String output = runNum + "        " + bibNum + "      ";
 		if ( state == "finished" ) output += getElapsed();
 		if ( state == "dnf" ) output += "DNF";
 		if ( state == "waiting" ) output += "WAITING";
-		if ( state == "inProgress" ) output += "RUNNING";
+		if ( state == "inProgress" ) output += "RUNNING (" + getElapsed() + ")";
 		
-		Printer.print(output);
+		return output;
 	}
 	
 

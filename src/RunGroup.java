@@ -20,6 +20,8 @@ public interface RunGroup {
 	
 	public void print();
 	
+	public String doPrint();
+	
 	public void add(int bib);
 	
 	public void end();

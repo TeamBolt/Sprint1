@@ -20,10 +20,10 @@ public class Printer {
 	public static void print(String output) {
 		log.add(output);
 		System.out.println(output);
-		ChronoTimer.window.updateConsole(output);
+		
 		
 		if ( isOn == true ) {
-			// Also print to the printer, which we don't need to do yet.
+			ChronoTimer.window.updatePrinter(output);
 		}
 	}
 }
