@@ -33,7 +33,7 @@ public class Window extends JFrame {
 		setSize(620,300);
 		setLayout(new GridLayout(2,3));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(1000,500);
+		setSize(1250,500);
 		setResizable(false);
 		createContents();
 		timer.start();
@@ -131,6 +131,8 @@ public class Window extends JFrame {
 		// Top Right
 		printer = new TextArea("",7,30);
 		printer.setEditable(false);
+		printer.setBackground(Color.BLACK);
+		printer.setForeground(Color.GREEN);
 		printOnButton = new JButton("Turn Printer On");
 		printOnButton.addActionListener(new PrintOnButtonListener());
 		topRight.add(printOnButton);
@@ -142,6 +144,8 @@ public class Window extends JFrame {
 		// Bottom Center
 		display = new TextArea("",7,30);
 		display.setEditable(false);
+		display.setBackground(Color.BLACK);
+		display.setForeground(Color.GREEN);
 		textField = new TextField("",30);
 		textField.addActionListener(new TextListener());
 		JPanel bc1 = new JPanel(new FlowLayout());
@@ -174,9 +178,6 @@ public class Window extends JFrame {
 				return;
 			}
 			long ts = SystemTimer.getTime();
-			display.setText("test");
-			display.setText("");
-			
 			
 			ChronoTimer.readCommand(ts, text);
 			
@@ -264,6 +265,9 @@ public class Window extends JFrame {
 				check.setSelected(false);
 			}
 		}
+		
+		display.setText("Duno Why This Works.");
+		display.setText("");
 		
 		//revalidate();
 		//repaint();
