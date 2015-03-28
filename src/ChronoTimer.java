@@ -170,7 +170,7 @@ public class ChronoTimer {
 							break;
 			case "RCL":		cmdObj = new Command_NULL();
 							break;
-			case "RESET":	cmdObj = new Command_NULL();
+			case "RESET":	cmdObj = new Command_Reset(timestamp);
 							break;
 			default:		cmdObj = new Command_NULL();;
 							break;
