@@ -156,7 +156,7 @@ public class ChronoTimer {
 			case "CANCEL":	cmdObj = new Command_Cancel(timestamp);
 							break;
 			// The rest of these we don't necessarily need yet.
-			case "EVENT":	cmdObj = new Command_NULL();
+			case "EVENT":	cmdObj = new Command_Event(args[1]);
 							break;
 			case "NEWRUN":	cmdObj = new Command_Newrun(timestamp);
 							break;

@@ -134,7 +134,7 @@ public class RunGroupInd implements RunGroup{
 	}
 	
 	public String doPrint() {
-		String out = "RUN      BIB      TIME\n";
+		String out = "RUN      BIB      TIME	    " + ChronoTimer.eventType + "\n";
 		
 		// Print completed runs.
 		if ( !completedRuns.isEmpty() ) {
