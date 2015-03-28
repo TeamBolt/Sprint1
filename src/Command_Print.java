@@ -18,7 +18,8 @@ public class Command_Print implements Command {
 	 */
 	@Override
 	public void execute() {
-		if ( run == 0 ) {
+
+		if ( run == 0 || ( ChronoTimer.current != null && run == ChronoTimer.current.getRun() ) ) {
 			if ( ChronoTimer.current != null ) {
 				ChronoTimer.current.print();
 			} else {
