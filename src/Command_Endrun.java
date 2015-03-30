@@ -20,3 +20,7 @@ private long timestamp;
 		}
 	}
 }
+
+
+
+/////Current always seems to be not null.  Test if there is a current run - if so, then can't cancel....

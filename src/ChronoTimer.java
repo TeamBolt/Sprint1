@@ -174,8 +174,8 @@ public class ChronoTimer {
 							break;
 			default:		cmdObj = new Command_NULL();;
 							break;
-				
 		}
+		
 		
 		// If for some reason we couldn't make a valid command, let them know.
 		if ( cmdObj instanceof Command_NULL ) {

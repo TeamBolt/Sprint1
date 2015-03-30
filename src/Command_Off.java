@@ -21,3 +21,6 @@ private long timestamp;
 		ChronoTimer.eventLog = new ArrayList<String>();
 	}
 }
+
+
+//// Should turn everything off and set all fields to 0 or null.  Should clear out current as well.

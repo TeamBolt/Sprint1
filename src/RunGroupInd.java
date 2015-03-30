@@ -201,5 +201,16 @@ public class RunGroupInd implements RunGroup{
 		return runNum;
 		
 	}
+	
+	//Added by BK - 3/28/15 for testing purposes.
+	
+	public int getStartSize(){
+		
+		return startQueue.size();
+	}
 
+	public int getFinishSize(){
+		
+		return finishQueue.size();
+	}
 }

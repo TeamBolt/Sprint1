@@ -28,4 +28,8 @@ public interface RunGroup {
 	
 	public int getRun();
 	
+	public int getStartSize();
+	
+	public int getFinishSize();
+	
 }
