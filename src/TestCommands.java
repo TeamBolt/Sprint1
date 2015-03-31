@@ -37,6 +37,7 @@ public class TestCommands {
 	
 	@Test
 	public void testOff(){
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		
 		//Turn On.  Add channels.  Enable Channels.  Turn Off.  Test Channels - if disabled.
@@ -117,14 +118,12 @@ public class TestCommands {
 	public void testCancel(){
 		
 		//Test cancel before start
-		
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		
 		ChronoTimer.readCommand(timestamp, "ON");
 		ChronoTimer.readCommand(timestamp+100, "CANCEL");
 		//assertSame("No Current Run, please enter the NEWRUN command", Printer.log.get(Printer.log.size()-1));
-		
-		
 		
 		//Test Cancel in actual Race
 		
@@ -156,10 +155,7 @@ public class TestCommands {
 	
 	@Test
 	public void testConn(){
-		
-		//Turn On.
-		//Connect a Channel.
-		//Test connecting same channel - shouldn't allow me to.  
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		ChronoTimer.readCommand(timestamp, "ON");
 		ChronoTimer.readCommand(timestamp+10, "CONN EYE 1");
@@ -181,7 +177,7 @@ public class TestCommands {
 	
 	@Test
 	public void testDisc(){
-		
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		ChronoTimer.readCommand(timestamp, "ON");
 		ChronoTimer.readCommand(timestamp+10, "CONN EYE 1");
@@ -203,6 +199,7 @@ public class TestCommands {
 	
 	@Test
 	public void testDNF(){
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		ChronoTimer.readCommand(timestamp , "ON");
 		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
@@ -225,7 +222,7 @@ public class TestCommands {
 	
 	@Test
 	public void testFin(){
-		
+		Printer.log.clear();
 		long timestamp = SystemTimer.getTime();
 		ChronoTimer.readCommand(timestamp , "ON");
 		Printer.log.clear();
@@ -275,6 +272,8 @@ public class TestCommands {
 	
 		//call the add num command without starting a newrun. Shouldn't let me do it.
 		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
+		
 		ChronoTimer.readCommand(timestamp, "ON");
 		ChronoTimer.readCommand(timestamp, "ENDRUN");
 
@@ -300,16 +299,28 @@ public class TestCommands {
 	@Test
 	public void testPrint(){
 		
+		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
+		
+		ChronoTimer.readCommand(timestamp, "ON");
+		
 		//Test runnum==0 and current==null
-		//Test runnum==2 and archive size = 1
+		ChronoTimer.current=null;
+		ChronoTimer.readCommand(timestamp+=100, "PRINT");
+		assertEquals("No Current Run, please enter the NEWRUN command", Printer.log.get(Printer.log.size()-1));		
+		
+		//Test Adding runner then Printing
+		ChronoTimer.readCommand(timestamp, "NEWRUN");
+		ChronoTimer.readCommand(timestamp+=100, "NUM 481");
+		assertNotNull(ChronoTimer.current);
+		ChronoTimer.readCommand(timestamp+=100, "PRINT");
+		assertEquals("RUN      BIB      TIME	    IND", Printer.log.get(Printer.log.size()-2));
+		assertEquals("1        481      WAITING", Printer.log.get(Printer.log.size()-1));
+		
 		//Test runnum==2 and archive size = 2
 		
 		
-		//turn on, enable channels, etc.
-		//enable printer.  Complete race.  Should add text to the printer.
 		
-		//turn on, enable channels, etc.
-		//disable printer.  Complete race.  Shouldn't add text to printer.
 		
 	}
 	
@@ -318,6 +329,7 @@ public class TestCommands {
 	@Test
 	public void testStart(){
 		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
 		
 		ChronoTimer.readCommand(timestamp, "ON");
 		assertFalse(ChronoTimer.channels.get(0).enabled);
@@ -366,6 +378,8 @@ public class TestCommands {
 	@Test
 	public void testToggle(){
 		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
+		
 		ChronoTimer.readCommand(timestamp, "ON");
 		
 		assertFalse(ChronoTimer.channels.get(0).enabled);
@@ -395,7 +409,98 @@ public class TestCommands {
 
 	
 	@Test
-	public void testTrig(){
+	public void testTrigStart(){
 		
+		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
+		
+		ChronoTimer.readCommand(timestamp, "ON");
+		assertFalse(ChronoTimer.channels.get(0).enabled);
+		assertFalse(ChronoTimer.channels.get(7).enabled);
+		
+		//RETEST START COMMANDS
+		
+		//Testing when current is null
+		ChronoTimer.readCommand(timestamp, "ENDRUN");
+		ChronoTimer.readCommand(timestamp += 1000, "TRIG 1");
+		assertNull("Current should be null", ChronoTimer.current);
+		assertSame("No Current Run, please enter the NEWRUN command", Printer.log.get(Printer.log.size()-1));
+
+		
+		// ::NOTE::You should test the toggle command, and then use that.
+		ChronoTimer.channels.get(0).toggle();
+		ChronoTimer.channels.get(1).toggle();
+		
+		assertTrue("Channel 1 should be enabled now", ChronoTimer.channels.get(0).enabled);
+		assertTrue("Channel 2 should be enabled now", ChronoTimer.channels.get(1).enabled);
+		
+		ChronoTimer.readCommand(timestamp+=100, "TRIG 1");
+		assertNull(ChronoTimer.current);
+		
+		//Testing when current isn't null
+		ChronoTimer.readCommand(timestamp+=100, "NEWRUN");
+		ChronoTimer.readCommand(timestamp+=100, "NUM 877");
+		ChronoTimer.readCommand(timestamp, "TRIG 1");
+		assertEquals("Bib #877 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp+=205, "FIN");
+		assertEquals("Bib #877 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp+=100, "ENDRUN");
+		
+		//Testing start command twice - with one runner
+		ChronoTimer.readCommand(timestamp+=100, "NEWRUN");
+		ChronoTimer.readCommand(timestamp+=100, "NUM 555");
+		ChronoTimer.readCommand(timestamp, "TRIG 1");
+		assertEquals("Bib #555 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp, "TRIG 1");
+		ChronoTimer.readCommand(timestamp+=1000, "FIN");
+		assertEquals("Bib #555 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
+		
+	}
+	
+	@Test
+	public void testTrigFin(){
+		//RETEST FINISH COMMANDS
+		
+		long timestamp = SystemTimer.getTime();
+		Printer.log.clear();
+		ChronoTimer.readCommand(timestamp , "ON");
+		Printer.log.clear();
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		ChronoTimer.readCommand(timestamp+=100, "NUM 777");
+
+		//Test FIN before starting race - Trig 2
+		ChronoTimer.readCommand(timestamp, "TRIG 2");
+		assertEquals(ChronoTimer.current.getFinishSize(), 0);
+		assertTrue(Printer.log.isEmpty());
+		assertEquals(1,ChronoTimer.current.getStartSize());
+		
+		//Test conditions - if c <> 2
+		ChronoTimer.current.trigger(3, timestamp+=5678);
+		assertTrue(Printer.log.isEmpty());
+		ChronoTimer.readCommand(timestamp+=5477, "START");
+		ChronoTimer.current.trigger(3, timestamp+6666);
+		assertEquals("Bib #777 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
+		assertEquals(1, ChronoTimer.current.getFinishSize());
+		ChronoTimer.readCommand(timestamp+=55, "TRIG 2");
+		
+		//Test conditions - empty finishqueue
+		ChronoTimer.readCommand(timestamp, "NUM 444");
+		ChronoTimer.readCommand(timestamp+=65648, "START");
+		ChronoTimer.readCommand(timestamp+=555, "DNF");
+		assertEquals(0, ChronoTimer.current.getFinishSize());
+		ChronoTimer.current.trigger(2, timestamp);
+		assertEquals("Bib #444 Did Not Finish", Printer.log.get(Printer.log.size()-1));
+		
+		//Test normally
+		ChronoTimer.readCommand(timestamp, "NUM 777");
+		ChronoTimer.readCommand(timestamp+=100, "START");
+		ChronoTimer.readCommand(timestamp+=2500, "TRIG 2");
+		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));		
+		
+		ChronoTimer.readCommand(timestamp+=1000, "START");
+		timestamp+=1000;
+		ChronoTimer.current.trigger(2, timestamp);
+		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));	
 	}
 }
