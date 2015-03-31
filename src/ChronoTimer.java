@@ -156,13 +156,13 @@ public class ChronoTimer {
 			case "CANCEL":	cmdObj = new Command_Cancel(timestamp);
 							break;
 			// The rest of these we don't necessarily need yet.
-			case "EVENT":	cmdObj = new Command_Event(args[1]);
+			case "EVENT":	if ( args.length > 1 ) cmdObj = new Command_Event(args[1]);
 							break;
 			case "NEWRUN":	cmdObj = new Command_Newrun(timestamp);
 							break;
 			case "ENDRUN":	cmdObj = new Command_Endrun(timestamp);
 							break;
-			case "EXPORT":	cmdObj = new Command_NULL();
+			case "EXPORT":	cmdObj = new Command_Export(paramOne);
 							break;
 			case "CLR":		cmdObj = new Command_NULL();
 							break;
@@ -170,7 +170,7 @@ public class ChronoTimer {
 							break;
 			case "RCL":		cmdObj = new Command_NULL();
 							break;
-			case "RESET":	cmdObj = new Command_NULL();
+			case "RESET":	cmdObj = new Command_Reset(timestamp);
 							break;
 			default:		cmdObj = new Command_NULL();;
 							break;

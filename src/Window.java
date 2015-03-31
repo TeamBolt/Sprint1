@@ -24,7 +24,9 @@ public class Window extends JFrame {
 				public void actionPerformed(ActionEvent e) 
 					{
 						if ( ChronoTimer.isOn == true ) {
-							display.setText(ChronoTimer.current.doPrint());
+							if ( ChronoTimer.current != null ) {
+								display.setText(ChronoTimer.current.doPrint());
+							}
 						}
 					}					
 				});
