@@ -54,8 +54,8 @@ public class Command_Export implements Command {
 			String toXml = "";
 
 			// Export completed runs.
-			if ( !( (RunGroupInd)group).completedRuns.isEmpty() ) {
-				Iterator<Run> iterator = ( (RunGroupInd) group).completedRuns.iterator();
+			if ( !group.getCompletedRuns().isEmpty() ) {
+				Iterator<Run> iterator = group.getCompletedRuns().iterator();
 				while ( iterator.hasNext() ) {
 					Run run = iterator.next();
 
@@ -78,8 +78,8 @@ public class Command_Export implements Command {
 			}
 
 			// Export inProgress runs.
-			if ( !( (RunGroupInd) group).finishQueue.isEmpty() ) {
-				Iterator<Run> iterator = ( (RunGroupInd) group).finishQueue.iterator();
+			if ( !group.getFinishQueue().isEmpty() ) {
+				Iterator<Run> iterator = group.getFinishQueue().iterator();
 				while ( iterator.hasNext() ) {
 					Run run = iterator.next();
 
@@ -94,8 +94,8 @@ public class Command_Export implements Command {
 			}
 
 			// Export waiting runs.
-			if ( !( (RunGroupInd) group).startQueue.isEmpty() ) {
-				Iterator<Run> iterator = ( (RunGroupInd) group).startQueue.iterator();
+			if ( !group.getStartQueue().isEmpty() ) {
+				Iterator<Run> iterator = group.getStartQueue().iterator();
 				while ( iterator.hasNext() ) {
 					Run run = iterator.next();
 
