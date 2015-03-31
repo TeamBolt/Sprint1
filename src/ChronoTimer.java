@@ -162,7 +162,7 @@ public class ChronoTimer {
 							break;
 			case "ENDRUN":	cmdObj = new Command_Endrun(timestamp);
 							break;
-			case "EXPORT":	cmdObj = new Command_NULL();
+			case "EXPORT":	cmdObj = new Command_Export(paramOne);
 							break;
 			case "CLR":		cmdObj = new Command_NULL();
 							break;
