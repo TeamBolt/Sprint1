@@ -314,9 +314,7 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=100, "NUM 481");
 		assertNotNull(ChronoTimer.current);
 		ChronoTimer.readCommand(timestamp+=100, "PRINT");
-		assertEquals("RUN      BIB      TIME	    IND", Printer.log.get(Printer.log.size()-2));
-		assertEquals("1        481      WAITING", Printer.log.get(Printer.log.size()-1));
-		
+		assertEquals("RUN      BIB      TIME	    Individual" + "\n" + "1        481      WAITING" + "\n", Printer.log.get(Printer.log.size()-1));
 		//Test runnum==2 and archive size = 2
 		
 		

@@ -4,14 +4,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
- * The class represents and individual run group. It knows how to add, start, 
+ * The class represents and Group run group. It knows how to add, start, 
  * finish, cancel, and dnf runs, as well as how to print itself.
  * 
  * Team Bolt ( Chris Harmon, Kevari Francis, Blake Watzke, Ben Kingsbury )
  * 
  * @author Chris Harmon
  */
-public class RunGroupInd implements RunGroup{
+public class RunGroupGrp implements RunGroup{
 
 	public int runNum;
 	public int startChannel;
@@ -23,7 +23,7 @@ public class RunGroupInd implements RunGroup{
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
 	 */
-	public RunGroupInd() {
+	public RunGroupGrp() {
 		// This is 1 if there are no RunGroups in the archive, and increments thereafter.
 		runNum = ChronoTimer.archive.size() + 1;
 		
@@ -38,8 +38,8 @@ public class RunGroupInd implements RunGroup{
 	}
 	
 	/**
-	 * Starts and Finishes runs if the channel supplied is one we are interested in
-	 * and there is at least one run in the appropriate start or finish queue.
+	 * Starts all runs if start channel is triggered and there are races waiting to start.
+	 * Finishes one run at a time as the finish channel is triggeres (and it is enabled, and there are races waiting to finish)
 	 * 
 	 * @param int channel		The channel which was triggered.
 	 * @param long timestamp	The time at which the trigger occured.
@@ -51,12 +51,14 @@ public class RunGroupInd implements RunGroup{
 		if ( channel.enabled == false ) return;
 		
 		if ( c == startChannel && !startQueue.isEmpty() ) {
-			// Start channel was triggered, the run is off!
-			Run current = startQueue.poll();
-			current.startTime = timestamp;
-			current.state = "inProgress";
-			finishQueue.add(current);
-			Printer.print("Bib #" + current.bibNum + " Start:  " + SystemTimer.convertLongToString(timestamp));
+			// Start channel was triggered, all runs are off!
+			for ( Run current : startQueue ) {
+				current.startTime = timestamp;
+				current.state = "inProgress";
+				finishQueue.add(current);
+				Printer.print("Bib #" + current.bibNum + " Start:  " + SystemTimer.convertLongToString(timestamp));
+			}
+			startQueue.clear(); //All races have started.
 		} else if ( c == finishChannel && !finishQueue.isEmpty()) {
 			// Finish channel triggered, the run is completed.
 			Run current = finishQueue.poll();
@@ -68,50 +70,26 @@ public class RunGroupInd implements RunGroup{
 	}
 
 	/**
-	 * Cancels the run which would be next to finish (if there is one) and moves
-	 * it back to the front of the startQueue.
+	 * Cancels all running races and replaces them in the start queue.
 	 */
 	@Override
 	public void cancel() {
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishQueue.isEmpty() ) return;
-		
-		Run current = null;
-		
-		if ( finishQueue.size() == 1 ) {
-			current = finishQueue.poll();
-		} else {
-			// Get the last person out of the finish queue.
-			LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-			while ( !finishQueue.isEmpty() ) {
-				current = finishQueue.poll();
-				
-				// Only save the run back into the queue if it's not the last one.
-				if ( !finishQueue.isEmpty() ) {
-					tempQueue.add(current);
-				}
-			}
-			
-			// Replace the finishQueue with the new one.
-			finishQueue = tempQueue;
-			
-			// current is now the run which was at the end of the finishQueue.
+		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
+		for ( Run current : finishQueue ) {
+			current.state = "waiting";
+			tempQueue.add(current);
+			Printer.print("Bib #" + current.bibNum + " Canceled");
 		}
-		
-		current.state = "waiting";
+		finishQueue.clear();
 		
 		if ( !startQueue.isEmpty() ) {
 			// If there were people waiting to start, we need to budge in line.
-			LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-			tempQueue.add(current);
 			tempQueue.addAll(startQueue);
-			startQueue = tempQueue;
-		} else {
-			// Otherwise we just move the run back into the startQueue.
-			startQueue.add(current);
 		}
 		
-		Printer.print("Bib #" + current.bibNum + " Canceled");
+		startQueue = tempQueue; //Replaces startQueue with newly constructed version.
 	}
 
 	/**
@@ -134,7 +112,7 @@ public class RunGroupInd implements RunGroup{
 	}
 	
 	public String doPrint() {
-		String out = "RUN      BIB      TIME	    Individual"+"\n";
+		String out = "RUN      BIB      TIME	    Group\n";
 		
 		// Print completed runs.
 		if ( !completedRuns.isEmpty() ) {
@@ -196,6 +174,7 @@ public class RunGroupInd implements RunGroup{
 		}
 	}
 
+
 	/**
 	 * Get Run Number.
 	 */
@@ -219,4 +198,5 @@ public class RunGroupInd implements RunGroup{
 		
 		return finishQueue.size();
 	}
+
 }

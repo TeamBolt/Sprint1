@@ -185,6 +185,6 @@ public class ChronoTimer {
 		
 		// Execute and add to the eventLog.
 		cmdObj.execute();
-		ChronoTimer.eventLog.add(event);
+		if ( isOn ) ChronoTimer.eventLog.add(event);
 	}
 }

@@ -19,6 +19,7 @@ private long timestamp;
 		ChronoTimer.archive = new ArrayList<RunGroup>();
 		ChronoTimer.channels = new ArrayList<Channel>();
 		ChronoTimer.eventLog = new ArrayList<String>();
+		ChronoTimer.current = null;
 	}
 }
 
