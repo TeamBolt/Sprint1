@@ -1,3 +1,5 @@
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Interface for RunGroup, we will later have the following implementations:
  * 		RunGroupInd
@@ -31,5 +33,13 @@ public interface RunGroup {
 	public int getStartSize();
 	
 	public int getFinishSize();
+	
+	public LinkedBlockingQueue<Run> getStartQueue();
+	
+	public LinkedBlockingQueue<Run> getFinishQueue();
+	
+	public LinkedBlockingQueue<Run> getCompletedRuns();
+	
+	public boolean isEmpty();
 	
 }

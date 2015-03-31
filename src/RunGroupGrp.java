@@ -198,5 +198,34 @@ public class RunGroupGrp implements RunGroup{
 		
 		return finishQueue.size();
 	}
+	
+	/**
+	 * Get if the RunGroup is empty.
+	 */
+	public boolean isEmpty(){
+		
+		return (startQueue.isEmpty() && finishQueue.isEmpty() && completedRuns.isEmpty());
+	}
+	
+	/**
+	 * Return Runs waiting to start.
+	 */
+	public LinkedBlockingQueue<Run> getStartQueue() {
+		return startQueue;
+	}
+	
+	/**
+	 * Return Runs waiting to finish.
+	 */
+	public LinkedBlockingQueue<Run> getFinishQueue() {
+		return finishQueue;
+	}
+	
+	/**
+	 * Return Runs which have finished.
+	 */
+	public LinkedBlockingQueue<Run> getCompletedRuns() {
+		return completedRuns;
+	}
 
 }
