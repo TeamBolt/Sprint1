@@ -77,7 +77,7 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 0, ChronoTimer.eventLog.size());
 		
 		// Clear the eventLog between each case.
-		ChronoTimer.eventLog.clear();
+		//ChronoTimer.eventLog.clear();
 		
 		// Test that command is in eventLog.
 		ChronoTimer.readCommand(0, "ON");
@@ -135,10 +135,36 @@ public class ChronoTimer_Test {
 	{
 		ChronoTimer.readCommand(0, "ON");
 		
-		ChronoTimer.readCommand(0, "EVENT");
+		ChronoTimer.readCommand(0, "EVENT"); //"EVENT" alone should not be valid
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "ON", ChronoTimer.eventLog.get(0));
+
+	}
+	@Test 
+	public void testReadCommandNUM()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		
+		ChronoTimer.readCommand(0, "NUM");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 
+		ChronoTimer.readCommand(0, "NUM A");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		
+		ChronoTimer.readCommand(0, "NUM 1A4");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+		
+		ChronoTimer.readCommand(0, "NUM 12A");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+
+		ChronoTimer.readCommand(0, "NUM B33");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+
+        ChronoTimer.readCommand(0, "NUM 123");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 2, ChronoTimer.eventLog.size());
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "NUM 123", ChronoTimer.eventLog.get(1));
+
+
 	}
 
 	
