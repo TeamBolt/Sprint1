@@ -16,7 +16,7 @@ private long timestamp;
 			if ( ChronoTimer.eventType.equals("IND") ) {
 				ChronoTimer.current = new RunGroupInd();
 			} else if ( ChronoTimer.eventType.equals("PARIND") ) {
-				Printer.print("Event type Parallel Individual not yet supported");
+				ChronoTimer.current = new RunGroupParInd();
 			} else if ( ChronoTimer.eventType.equals("GRP") ) {
 				ChronoTimer.current = new RunGroupGrp();
 			} else {

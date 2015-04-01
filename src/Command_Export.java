@@ -29,27 +29,29 @@ public class Command_Export implements Command {
 			Printer.print("No Run #" + runNum + " found.");
 			return;
 		}
+		
+		RunGroup group = null;
+		
+		// checks if the run to be exported is the current run or an archived run
+		if(ChronoTimer.current != null && ChronoTimer.current.getRun() == runNum){
+			group =  ChronoTimer.current;
+		} else if (runNum <=  ChronoTimer.archive.size() && runNum > 0 ) {
+			group = ChronoTimer.archive.get(runNum-1);
+		}
 
 		String fileName = "RUN #" + runNum;
 		File outFile = new File(fileName);
 
-		String  item = "<item event=" + ChronoTimer.eventType + ">\n";
+		String  item = "<item event=" + group.getEventType() + ">\n";
 		String runs = "\t<run>";
 		String bib = "\t<bib>";
 		String start = "\t<start>";
 		String finish = "\t<finish>";
 		String elapsed = "\t<elapsed>";
-		RunGroup group = null;
+		
 
 		try {
 			BufferedWriter fw = new BufferedWriter(new FileWriter(outFile));
-
-			// checks if the run to be exported is the current run or an archived run
-			if(ChronoTimer.current != null && ChronoTimer.current.getRun() == runNum){
-				group =  ChronoTimer.current;
-			} else if (runNum <=  ChronoTimer.archive.size() && runNum > 0 ) {
-				group = ChronoTimer.archive.get(runNum-1);
-			}
 
 			String toXml = "";
 
@@ -72,7 +74,7 @@ public class Command_Export implements Command {
 						toXml += elapsed + run.getElapsed() +"</elapsed>\n";
 					}
 
-					toXml += "</item event=" + ChronoTimer.eventType + ">\n\n";
+					toXml += "</item event=" + group.getEventType() + ">\n\n";
 				}
 
 			}
@@ -89,7 +91,7 @@ public class Command_Export implements Command {
 					toXml += start + SystemTimer.convertLongToString(run.startTime) + "</start>\n";
 					toXml += finish + "RUNNING</finish>\n";
 					toXml += elapsed + "RUNNING (" + run.getElapsed() + ")</elapsed>\n";
-					toXml += "</item event=" + ChronoTimer.eventType + ">\n\n";
+					toXml += "</item event=" + group.getEventType() + ">\n\n";
 				}
 			}
 
@@ -105,7 +107,7 @@ public class Command_Export implements Command {
 					toXml += start + "WAITING</start>\n";
 					toXml += finish + "WAITING</finish>\n";
 					toXml += elapsed + "WAITING</elapsed>\n";
-					toXml += "</item event=" + ChronoTimer.eventType + ">\n\n";
+					toXml += "</item event=" + group.getEventType() + ">\n\n";
 				}
 			}	
 

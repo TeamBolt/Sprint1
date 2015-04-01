@@ -42,4 +42,6 @@ public interface RunGroup {
 	
 	public boolean isEmpty();
 	
+	public String getEventType();
+	
 }

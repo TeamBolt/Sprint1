@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -11,30 +10,22 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 
  * @author Chris Harmon
  */
-public class RunGroupInd implements RunGroup{
+public class RunGroupInd extends RunGroupShared implements RunGroup{
 
-	public int runNum;
 	public int startChannel;
 	public int finishChannel;
-	public LinkedBlockingQueue<Run> startQueue;
-	public LinkedBlockingQueue<Run> finishQueue;
-	public LinkedBlockingQueue<Run> completedRuns;
 	
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
 	 */
 	public RunGroupInd() {
-		// This is 1 if there are no RunGroups in the archive, and increments thereafter.
-		runNum = ChronoTimer.archive.size() + 1;
+		super();
 		
 		// Defaults.
 		startChannel = 1;
 		finishChannel = 2;
 		
-		// Instantiations.
-		startQueue = new LinkedBlockingQueue<Run>();
-		finishQueue = new LinkedBlockingQueue<Run>();
-		completedRuns = new LinkedBlockingQueue<Run>();
+		eventType = "IND";
 	}
 	
 	/**
@@ -127,125 +118,5 @@ public class RunGroupInd implements RunGroup{
 		current.state = "dnf";
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.bibNum + " Did Not Finish");
-	}
-
-	public void print() {
-		Printer.print(doPrint());
-	}
-	
-	public String doPrint() {
-		String out = "RUN      BIB      TIME	    Individual"+"\n";
-		
-		// Print completed runs.
-		if ( !completedRuns.isEmpty() ) {
-			Iterator<Run> iterator = completedRuns.iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-				out += run.print() + "\n";
-			}
-		}
-		
-		// Print inProgress runs.
-		if ( !finishQueue.isEmpty() ) {
-			Iterator<Run> iterator = finishQueue.iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-				out += run.print() + "\n";
-			}
-		}
-		
-		// Print waiting runs.
-		if ( !startQueue.isEmpty() ) {
-			Iterator<Run> iterator = startQueue.iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-				out += run.print() + "\n";
-			}
-		}	
-		
-		return out;
-	}
-	
-	/**
-	 * Adds a new run with the given bib number to the startQueue.
-	 * 
-	 * @param int bib	bib number for this run.
-	 */
-	public void add(int bib) {
-		Run run = new Run(runNum, bib);
-		run.state = "waiting";
-		startQueue.add(run);
-	}
-	
-	/**
-	 * End all current runs with state dnf.
-	 */
-	public void end() {
-		while ( !startQueue.isEmpty() ) {
-			Run r = startQueue.poll();
-			r.state = "dnf";
-			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
-			completedRuns.add(r);
-		}
-		
-		while ( !finishQueue.isEmpty() ) {
-			Run r = finishQueue.poll();
-			r.state = "dnf";
-			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
-			completedRuns.add(r);
-		}
-	}
-
-	/**
-	 * Get Run Number.
-	 */
-	public int getRun() {
-		return runNum;
-		
-	}
-	
-	/**
-	 * Get size of startQueue.
-	 */
-	public int getStartSize(){
-		
-		return startQueue.size();
-	}
-	
-	/**
-	 * Get size of finishQueue.
-	 */
-	public int getFinishSize(){
-		
-		return finishQueue.size();
-	}
-	
-	/**
-	 * Get if the RunGroup is empty.
-	 */
-	public boolean isEmpty(){
-		
-		return (startQueue.isEmpty() && finishQueue.isEmpty() && completedRuns.isEmpty());
-	}
-	
-	/**
-	 * Return Runs waiting to start.
-	 */
-	public LinkedBlockingQueue<Run> getStartQueue() {
-		return startQueue;
-	}
-	
-	/**
-	 * Return Runs waiting to finish.
-	 */
-	public LinkedBlockingQueue<Run> getFinishQueue() {
-		return finishQueue;
-	}
-	
-	/**
-	 * Return Runs which have finished.
-	 */
-	public LinkedBlockingQueue<Run> getCompletedRuns() {
-		return completedRuns;
 	}
 }

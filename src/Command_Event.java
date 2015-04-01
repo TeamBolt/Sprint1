@@ -8,6 +8,11 @@ public class Command_Event implements Command {
 	
 	@Override
 	public void execute() {
+		if ( ChronoTimer.current != null && !ChronoTimer.current.isEmpty() ) {
+			Printer.print("End the current run with ENDRUN to create an event of the new type.");
+			return;
+		}
+		
 		switch(event){
 		case "IND":
 		case "PARIND":
@@ -20,20 +25,15 @@ public class Command_Event implements Command {
 			break;
 		}
 		
-		if ( ChronoTimer.current == null || ChronoTimer.current.isEmpty() ) {
-			if ( ChronoTimer.eventType.equals("IND") ) {
-				ChronoTimer.current = new RunGroupInd();
-			} else if ( ChronoTimer.eventType.equals("PARIND") ) {
-				Printer.print("Event type Parallel Individual not yet supported");
-			} else if ( ChronoTimer.eventType.equals("GRP") ) {
-				ChronoTimer.current = new RunGroupGrp();
-			} else {
-				Printer.print("Event type Parallel Group not yet supported");
-			}
+		if ( ChronoTimer.eventType.equals("IND") ) {
+			ChronoTimer.current = new RunGroupInd();
+		} else if ( ChronoTimer.eventType.equals("PARIND") ) {
+			ChronoTimer.current = new RunGroupParInd();
+		} else if ( ChronoTimer.eventType.equals("GRP") ) {
+			ChronoTimer.current = new RunGroupGrp();
 		} else {
-			Printer.print("End the current run with ENDRUN to create an event of the new type.");
+			Printer.print("Event type Parallel Group not yet supported");
 		}
-		
 	}
 
 }

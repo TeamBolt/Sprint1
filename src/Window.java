@@ -33,7 +33,7 @@ public class Window extends JFrame {
 		
 		setTitle("ChronoTimer");
 		setSize(620,300);
-		setLayout(new GridLayout(2,3));
+		setLayout(new GridLayout(1,3));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(1250,500);
 		setResizable(false);
@@ -43,31 +43,16 @@ public class Window extends JFrame {
 	}
 	
 	public void createContents() {
-		JPanel topLeft = new JPanel(new GridLayout(3,1));
-		JPanel topCenter = new JPanel(new BorderLayout());
-		JPanel topRight = new JPanel(new FlowLayout());
-		JPanel botLeft = new JPanel(new GridLayout(3,1));
-		//JPanel botCenter = new JPanel(new GridLayout(3,1));
-		JPanel botCenter = new JPanel(new FlowLayout());
-		JPanel botRight = new JPanel(new GridLayout(3,1));
-		
-		// Top Left
-		JPanel tl1 = new JPanel(new FlowLayout());
-		JPanel tl2 = new JPanel(new FlowLayout());
-		JPanel tl3 = new JPanel(new FlowLayout());
-		onButton = new JButton("Turn On");
-		onButton.addActionListener(new OnButtonListener());
-		tl1.add(onButton);
-		tl2.add(new JLabel(""));
-		tl3.add(new JLabel(""));
-		topLeft.add(tl1);
-		topLeft.add(tl2);
-		topLeft.add(tl3);
+		JPanel left = new JPanel(new BorderLayout());
+		JPanel right = new JPanel(new FlowLayout());
+		JPanel center = new JPanel(new FlowLayout());
 
 		
-		// Top Center
+		
+		// Left
+
 		JPanel title = new JPanel(new FlowLayout());
-		JPanel channels = new JPanel( new GridLayout(4,4));
+		JPanel channels = new JPanel( new GridLayout(8,2));
 		JButton chanButt1	= new JButton("Trig 1");
 		JButton chanButt2	= new JButton("Trig 2");
 		JButton chanButt3	= new JButton("Trig 3");
@@ -112,41 +97,38 @@ public class Window extends JFrame {
 
 		channels.add(chanButt1);
 		channels.add(chanButt2);
-		channels.add(chanButt3);
-		channels.add(chanButt4);
 		channels.add(chanCheck1);
 		channels.add(chanCheck2);
+		channels.add(chanButt3);
+		channels.add(chanButt4);
 		channels.add(chanCheck3);
 		channels.add(chanCheck4);
 		channels.add(chanButt5);
 		channels.add(chanButt6);
-		channels.add(chanButt7);
-		channels.add(chanButt8);
 		channels.add(chanCheck5);
 		channels.add(chanCheck6);
+		channels.add(chanButt7);
+		channels.add(chanButt8);
 		channels.add(chanCheck7);
 		channels.add(chanCheck8);
 		title.add(new JLabel("Channels"));
-		topCenter.add(title, BorderLayout.NORTH);
-		topCenter.add(channels, BorderLayout.CENTER);
+		left.add(channels, BorderLayout.CENTER);
 	
-		// Top Right
-		printer = new TextArea("",7,30);
+		// Right
+		printer = new TextArea("",25,38);
 		printer.setEditable(false);
-		printer.setBackground(Color.BLACK);
+		printer.setBackground(Color.LIGHT_GRAY);
 		printer.setForeground(Color.GREEN);
 		printOnButton = new JButton("Turn Printer On");
 		printOnButton.addActionListener(new PrintOnButtonListener());
-		topRight.add(printOnButton);
-		topRight.add(printer);
+		right.add(printOnButton);
+		right.add(printer);
 		
-		// Bottom Left
-		botLeft.add(new JLabel("Function/Swap go here"));
 		
-		// Bottom Center
-		display = new TextArea("",7,30);
+		// Center
+		display = new TextArea("",23,38);
 		display.setEditable(false);
-		display.setBackground(Color.BLACK);
+		display.setBackground(Color.LIGHT_GRAY);
 		display.setForeground(Color.GREEN);
 		textField = new TextField("",30);
 		textField.addActionListener(new TextListener());
@@ -154,19 +136,19 @@ public class Window extends JFrame {
 		JPanel bc2 = new JPanel(new FlowLayout());
 		bc1.add(display);
 		bc2.add(textField);
-		botCenter.add(bc1);
-		botCenter.add(bc2);
+		onButton = new JButton("Turn On");
+		onButton.addActionListener(new OnButtonListener());
+		center.add(onButton);
+		center.add(bc1);
+		center.add(bc2);
 
 		
-		// Bottom Right
-		botRight.add(new JLabel("Numpad goes here?"));
+		add(left);
+		add(center);
+		add(right);
 		
-		add(topLeft);
-		add(topCenter);
-		add(topRight);
-		add(botLeft);
-		add(botCenter);
-		add(botRight);
+		refresh();
+
 	}
 	
 	private class TextListener implements ActionListener
@@ -251,9 +233,17 @@ public class Window extends JFrame {
 	
 	private void refresh() {
 		if ( ChronoTimer.isOn == true ) {
+			display.setBackground(Color.BLACK);
 			onButton.setText("Turn Off");
 		} else {
+			display.setBackground(Color.LIGHT_GRAY);
 			onButton.setText("Turn On");
+		}
+		
+		if ( Printer.isOn == true ) {
+			printer.setBackground(Color.BLACK);
+		} else {
+			printer.setBackground(Color.LIGHT_GRAY);
 		}
 		
 		textField.setText("Duno Why This Works.");
