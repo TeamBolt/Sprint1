@@ -161,17 +161,12 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+10, "CONN EYE 1");
 		assertEquals("EYE", ChronoTimer.channels.get(0).sensor.type);
 		ChronoTimer.readCommand(timestamp, "CONN GATE 1");
-		assertEquals("Channel is already connected", Printer.log.get(Printer.log.size()-1));
+		
 		ChronoTimer.readCommand(timestamp, "CONN GATE 2");
 		assertEquals("GATE", ChronoTimer.channels.get(1).sensor.type);
+		ChronoTimer.readCommand(timestamp, "CONN GATE 10");
+		assertEquals("Invalid Command Entered.", Printer.log.get(Printer.log.size()-1));
 		
-		
-		try{
-			ChronoTimer.readCommand(timestamp, "CONN GATE 10");
-			fail("Should have thrown an error");
-		} catch(Exception e){
-			assertTrue("wrong type of exception: " + e, e instanceof IndexOutOfBoundsException);			
-		}
 		
 	}
 	
@@ -254,10 +249,10 @@ public class TestCommands {
 		assertEquals("Bib #444 Did Not Finish", Printer.log.get(Printer.log.size()-1));
 		
 		//Test normally
-		ChronoTimer.readCommand(timestamp, "NUM 777");
+		ChronoTimer.readCommand(timestamp, "NUM 999");
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		ChronoTimer.readCommand(timestamp+=2500, "FIN");
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
+		assertEquals("Bib #999 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
 	}
 	
 
@@ -486,9 +481,9 @@ public class TestCommands {
 		assertEquals("Bib #444 Did Not Finish", Printer.log.get(Printer.log.size()-1));
 		
 		//Test normally
-		ChronoTimer.readCommand(timestamp, "NUM 777");
+		ChronoTimer.readCommand(timestamp, "NUM 999");
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		ChronoTimer.readCommand(timestamp+=2500, "TRIG 2");
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
+		assertEquals("Bib #999 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
 	}
 }

@@ -48,6 +48,25 @@ public class RunGroupShared {
 	 * @param int bib	bib number for this run.
 	 */
 	public void add(int bib) {
+		for ( Run r : startQueue ) {
+			if ( r.bibNum == bib ) {
+				Printer.print("Error: Bib number already in use");
+				return;
+			}
+		}
+		for ( Run r : finishQueue ) {
+			if ( r.bibNum == bib ) {
+				Printer.print("Error: Bib number already in use");
+				return;
+			}
+		}
+		for ( Run r : completedRuns ) {
+			if ( r.bibNum == bib ) {
+				Printer.print("Error: Bib number already in use");
+				return;
+			}
+		}
+		
 		Run run = new Run(runNum, bib);
 		run.state = "waiting";
 		startQueue.add(run);
@@ -104,16 +123,14 @@ public class RunGroupShared {
 	 */
 	public void end() {
 		// End runs waiting to start.
-		while ( !startQueue.isEmpty() ) {
-			Run r = startQueue.poll();
+		for ( Run r : startQueue ) {
 			r.state = "dnf";
 			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
 			completedRuns.add(r);
 		}
 		
 		// End runs waiting to finish.
-		while ( !finishQueue.isEmpty() ) {
-			Run r = finishQueue.poll();
+		for ( Run r : finishQueue ) {
 			r.state = "dnf";
 			Printer.print("Bib #" + r.bibNum + " Did Not Finish");
 			completedRuns.add(r);

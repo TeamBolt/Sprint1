@@ -134,11 +134,11 @@ public class ChronoTimer {
 							break;
 			case "OFF":		cmdObj = new Command_Off(timestamp);
 							break;
-			case "CONN":	if ( paramTwo > 0 ) cmdObj = new Command_Conn(timestamp, args[1], paramTwo);
+			case "CONN":	if ( paramTwo > 0 && paramTwo < 9 ) cmdObj = new Command_Conn(timestamp, args[1], paramTwo);
 							break;
-			case "TOGGLE":	if ( paramOne > 0 ) cmdObj = new Command_Toggle(timestamp, paramOne);
+			case "TOGGLE":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Toggle(timestamp, paramOne);
 							break;
-			case "TRIG":	if ( paramOne > 0 ) cmdObj = new Command_Trig(timestamp, paramOne);
+			case "TRIG":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Trig(timestamp, paramOne);
 							break;
 			case "NUM":		if ( paramOne > 0 ) cmdObj = new Command_Num(timestamp, paramOne);
 							break;
