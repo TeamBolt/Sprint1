@@ -257,12 +257,7 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "NUM 777");
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		ChronoTimer.readCommand(timestamp+=2500, "FIN");
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));		
-		
-		ChronoTimer.readCommand(timestamp+=1000, "START");
-		timestamp+=1000;
-		ChronoTimer.current.trigger(2, timestamp);
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));	
+		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
 	}
 	
 
@@ -494,11 +489,6 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "NUM 777");
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		ChronoTimer.readCommand(timestamp+=2500, "TRIG 2");
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));		
-		
-		ChronoTimer.readCommand(timestamp+=1000, "START");
-		timestamp+=1000;
-		ChronoTimer.current.trigger(2, timestamp);
-		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));	
+		assertEquals("Bib #777 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
 	}
 }
