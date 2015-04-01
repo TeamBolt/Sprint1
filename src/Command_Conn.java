@@ -23,7 +23,7 @@ public class Command_Conn implements Command {
 			Printer.print("Channel is already connected");
 		} else {
 			// If it is not connected, set the sensor to the specified type.
-			Sensor s = new Sensor(sensor);
+			Sensor s = new Sensor(sensor, channelNum);
 			channel.sensor = s;
 		}
 	}

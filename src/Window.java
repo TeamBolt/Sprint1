@@ -32,7 +32,6 @@ public class Window extends JFrame {
 				});
 		
 		setTitle("ChronoTimer");
-		setSize(620,300);
 		setLayout(new GridLayout(1,3));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(1250,500);
