@@ -12,13 +12,9 @@ public class Command_Reset implements Command {
 
 	@Override
 	public void execute() {
+	
+	
 		
-		if(!ChronoTimer.isOn) //make sure Chronotimer is not off
-		{
-			return;
-		}
-		else
-		{
 			//ChronoTimer.readCommand(timestamp, "OFF");
 			//ChronoTimer.readCommand(timestamp, "ON");
 			//use implementation of on/off command
@@ -26,11 +22,10 @@ public class Command_Reset implements Command {
 			ChronoTimer.isOn = false;
 			
 			// Clear out the archive, channels, and eventLog.
-			ChronoTimer.archive = new ArrayList<RunGroup>();
-			ChronoTimer.channels = new ArrayList<Channel>();
-			ChronoTimer.eventLog = new ArrayList<String>();
-			
-			ChronoTimer.isOn = true;
+			ChronoTimer.archive.clear();
+			ChronoTimer.channels.clear();
+			//ChronoTimer.eventLog = new ArrayList<String>();
+		
 			
 			// Add all 8 Channels to the Array List.
 			// To increase to 12, change the 9 to a 13.
@@ -41,7 +36,10 @@ public class Command_Reset implements Command {
 			// Create the default RunGroup
 			ChronoTimer.eventType = "IND";
 			ChronoTimer.current = new RunGroupInd();
-		}
+			ChronoTimer.isOn=true;
+			
+			System.out.println("got to bottom of command reset exectue");
+		
 		
 	}
 	

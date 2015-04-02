@@ -124,7 +124,7 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		ChronoTimer.readCommand(0, "TOGGLE A"); //invalid parameter
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
-	    ChronoTimer.readCommand(0, "TOGGLE 14"); //channel number out of range
+	   // ChronoTimer.readCommand(0, "TOGGLE 14"); //channel number out of range
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
        
 		//make sure all channels can be toggled
@@ -216,7 +216,21 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 3, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "NUM 1234", ChronoTimer.eventLog.get(2));	
 	}
+	@Test 
+	public void testReadCommandRESET()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "RESET 1");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+		ChronoTimer.readCommand(0, "RESET A");
+		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+		ChronoTimer.readCommand(0, "RESET");
+		assertEquals("eventLog size does not match the size it should be.", 2, ChronoTimer.eventLog.size());
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "RESET", ChronoTimer.eventLog.get(1));	
+
 	
+
+	}
 
 	
 }
