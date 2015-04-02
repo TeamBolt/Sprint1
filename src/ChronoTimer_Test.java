@@ -228,7 +228,9 @@ public class ChronoTimer_Test {
 		assertEquals("eventLog size does not match the size it should be.", 2, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "RESET", ChronoTimer.eventLog.get(1));	
 
-	
+		
+
+
 
 	}
 
