@@ -463,8 +463,8 @@ public class RunGroupParInd_Test {
 	}
 	
 	/**
-	 * Tests that cancel correcly moved the most recent run to start (end of the finishQueue)
-	 * back to the start of the startQueue (like it never event happened).
+	 * Tests that cancel correctly moves whatever runs are running (1 or 2) back to
+	 * the startQueue with the correct state and with startQueue order maintained.
 	 */
 	@Test
 	public void testCancel() {
@@ -473,6 +473,21 @@ public class RunGroupParInd_Test {
 		ChronoTimer.getChannels().clear();
 		ChronoTimer.getChannels().add(new Channel(1));
 		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
+		ChronoTimer.getChannels().add(new Channel(3));
+		ChronoTimer.getChannels().get(2).toggle();
+		ChronoTimer.getChannels().add(new Channel(4));
+		ChronoTimer.getChannels().get(3).toggle();
+		
+		
+		
+		////// Test cancel 1.
+		
+		
+		//// Test cancel Run1 with nothing waiting
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
 		rg.add(1);
 		
 		// Cancel should do nothing when there is no one waiting to finish.
@@ -492,29 +507,140 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "waiting", rg.startQueue.poll().getState());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
+		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
-		// Make sure the run is placed at the beginning of the startqueue.
+		
+		//// Test cancel Run1 with Run2 waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
 		rg.add(1);
 		rg.add(2);
-		rg.trigger(1,0);
+		rg.trigger(1, 0);
 		rg.cancel();
-		assertEquals("Run 1 was not placed at beginning of startqueue.", 1, rg.startQueue.poll().getBibNum());
-		assertEquals("Run 2 not budged back.", 2, rg.startQueue.poll().getBibNum());
+		assertEquals("Run was not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		Run run1 = rg.startQueue.poll(); // Get first in line.
+		Run run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Run was not given correct state.", "waiting", run1.getState());
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Run was not given correct state.", "waiting", run2.getState());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
+
 		
-		// Now with 3 runs.
+		//// Test cancel Run2 with Run1 waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(3, 0);
+		rg.cancel();
+		assertEquals("Run was not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Run was not given correct state.", "waiting", run1.getState());
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Run was not given correct state.", "waiting", run2.getState());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(1));
+		
+		
+		
+		////// Test cancel two.
+		
+	
+		//// Test cancel two runs (in order) with no runs waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(1, 0);
+		rg.trigger(3, 0);
+		rg.cancel();
+		assertEquals("Runs were not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 4, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
+		
+		
+		//// Test cancel two runs (switched) with no runs waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(3, 0);
+		rg.trigger(1, 0);
+		rg.cancel();
+		assertEquals("Runs were not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 4, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
+		
+		
+		//// Test cancel two runs (in order) with a run waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
 		rg.add(1);
 		rg.add(2);
 		rg.add(3);
 		rg.trigger(1, 0);
-		rg.trigger(1, 0);
+		rg.trigger(3, 0);
+		rg.cancel();
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		Run run3 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("Wrong run is third in line to start.", 3, run3.getBibNum());
+		assertEquals("No message was printed to the printer.", 4, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
 		
+		
+		//// Test cancel two runs (in order) with a run waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.add(3);
+		rg.trigger(3, 0);
+		rg.trigger(1, 0);
 		rg.cancel();
-		rg.cancel();
-
-		// Make sure that startQueue order was maintained.
-		assertEquals("Run 1 was not first.", 1, rg.startQueue.poll().getBibNum());
-		assertEquals("Run 2 was not second.", 2, rg.startQueue.poll().getBibNum());
-		assertEquals("Run 3 was not last.", 3, rg.startQueue.poll().getBibNum());
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		run3 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("Wrong run is third in line to start.", 3, run3.getBibNum());
+		assertEquals("No message was printed to the printer.", 4, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
 	}
 	
 	/**
@@ -526,6 +652,12 @@ public class RunGroupParInd_Test {
 		ChronoTimer.getChannels().clear();
 		ChronoTimer.getChannels().add(new Channel(1));
 		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
+		ChronoTimer.getChannels().add(new Channel(3));
+		ChronoTimer.getChannels().get(2).toggle();
+		ChronoTimer.getChannels().add(new Channel(4));
+		ChronoTimer.getChannels().get(3).toggle();
 		Printer.getLog().clear();
 		rg.add(1);
 		
@@ -549,7 +681,7 @@ public class RunGroupParInd_Test {
 		rg.add(1);
 		rg.add(2);
 		rg.trigger(1, 0);
-		rg.trigger(1, 0);
+		rg.trigger(3, 0);
 		rg.dnf();
 		rg.dnf();
 		assertEquals("Run was not placed in completedRuns.", 2, rg.completedRuns.size());

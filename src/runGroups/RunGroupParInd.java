@@ -180,11 +180,12 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 			LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
 			
 			if ( first != null ) {
+				// If there is a first waiting to finish put it on first.
 				tempQueue.add(first);
 				if ( second != null ) tempQueue.add(second);
 			} else {
-				first = startQueue.poll();
-				tempQueue.add(first);
+				// Otherwise grab the first off the startQueue.
+				tempQueue.add(startQueue.poll());
 				tempQueue.add(second);
 			}
 
