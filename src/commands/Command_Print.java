@@ -23,15 +23,15 @@ public class Command_Print implements Command {
 	@Override
 	public void execute() {
 
-		if ( run == 0 || ( ChronoTimer.current != null && run == ChronoTimer.current.getRun() ) ) {
-			if ( ChronoTimer.current != null ) {
-				ChronoTimer.current.print();
+		if ( run == 0 || ( ChronoTimer.getCurrent() != null && run == ChronoTimer.getCurrent().getRun() ) ) {
+			if ( ChronoTimer.getCurrent() != null ) {
+				ChronoTimer.getCurrent().print();
 			} else {
 				Printer.print("No Current Run, please enter the NEWRUN command");
 			}
 		} else {
-			if ( ChronoTimer.archive.size() >= run ) {
-				ChronoTimer.archive.get( run-1 ).print();
+			if ( ChronoTimer.getArchive().size() >= run ) {
+				ChronoTimer.getArchive().get( run-1 ).print();
 			} else {
 				Printer.print("No Run #" + run + " found.");
 			}

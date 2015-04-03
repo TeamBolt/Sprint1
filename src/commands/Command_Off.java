@@ -1,12 +1,6 @@
 package commands;
 
-import java.util.ArrayList;
-
-import chronoTimerItems.Channel;
 import chronoTimerItems.ChronoTimer;
-
-import runGroups.RunGroup;
-
 
 public class Command_Off implements Command {
 private long timestamp;
@@ -20,13 +14,13 @@ private long timestamp;
 	 */
 	@Override
 	public void execute() {
-		ChronoTimer.isOn = false;
+		ChronoTimer.setOn(false);
 		
 		// Clear out the archive, channels, and eventLog.
-		ChronoTimer.archive = new ArrayList<RunGroup>();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.eventLog = new ArrayList<String>();
-		ChronoTimer.current = null;
+		ChronoTimer.getArchive().clear();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getEventLog().clear();
+		ChronoTimer.setCurrent(null);
 	}
 }
 

@@ -18,8 +18,8 @@ public class Command_Num implements Command {
 	 */
 	@Override
 	public void execute() {
-		if ( ChronoTimer.current != null ) {
-			ChronoTimer.current.add(bib);
+		if ( ChronoTimer.getCurrent() != null ) {
+			ChronoTimer.getCurrent().add(bib);
 		} else {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}

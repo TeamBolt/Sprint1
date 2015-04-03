@@ -34,11 +34,11 @@ public class RunGroupInd_Test {
 	@Test
 	public void testTrigger() {
 		rg = new RunGroupInd();
-		Printer.log.clear();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.channels.add(new Channel(1));
-		ChronoTimer.channels.add(new Channel(2));
-		ChronoTimer.channels.add(new Channel(3));
+		Printer.getLog().clear();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().add(new Channel(3));
 		
 		// Add a run to the startqueue
 		rg.add(1);
@@ -56,8 +56,8 @@ public class RunGroupInd_Test {
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
 		
 		// Enable channels.
-		ChronoTimer.channels.get(0).toggle();
-		ChronoTimer.channels.get(1).toggle();
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().get(1).toggle();
 		
 		// Trigger the finish channel (but no one to finish)
 		rg.trigger(2, 0);
@@ -73,18 +73,18 @@ public class RunGroupInd_Test {
 		assertEquals("Run was not given correct startTime.", 42, rg.finishQueue.peek().getStartTime());
 		assertEquals("Run was given a finishTime (wrongly).", 0, rg.finishQueue.peek().getFinishTime());
 		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
-		assertEquals("No message was printed to the printer.", 1, Printer.log.size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Start:  18:00:00.42", Printer.log.get(0));
+		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Start:  18:00:00.42", Printer.getLog().get(0));
 		
 		// Trigger the finish channel while disabled (should do nothing).
-		ChronoTimer.channels.get(1).toggle();
+		ChronoTimer.getChannels().get(1).toggle();
 		rg.trigger(2, 0);
 		assertEquals("Run was placed in start queue (wrongly).", 0, rg.startQueue.size());
 		assertEquals("Run was moved from finish queue (wrongly).", 1, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
 		
 		// Enable the finish channel.
-		ChronoTimer.channels.get(1).toggle();
+		ChronoTimer.getChannels().get(1).toggle();
 		
 		// Trigger the finish channel (now the run should be completed).
 		rg.trigger(2, 9001);
@@ -94,8 +94,8 @@ public class RunGroupInd_Test {
 		assertEquals("Runs startTime was changed (wrongly).", 42, rg.completedRuns.peek().getStartTime());
 		assertEquals("Run was not given a finishTime.", 9001, rg.completedRuns.peek().getFinishTime());
 		assertEquals("Run was not given correct state.", "finished", rg.completedRuns.peek().getState());
-		assertEquals("No message was printed to the printer.", 2, Printer.log.size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Finish: 18:00:09.1", Printer.log.get(1));
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Finish: 18:00:09.1", Printer.getLog().get(1));
 		
 		// Now start two runs.
 		rg.completedRuns.clear();
@@ -133,10 +133,10 @@ public class RunGroupInd_Test {
 	@Test
 	public void testCancel() {
 		rg = new RunGroupInd();
-		Printer.log.clear();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.channels.add(new Channel(1));
-		ChronoTimer.channels.get(0).toggle();
+		Printer.getLog().clear();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
 		rg.add(1);
 		
 		// Cancel should do nothing when there is no one waiting to finish.
@@ -154,8 +154,8 @@ public class RunGroupInd_Test {
 		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
 		assertEquals("Run was not given correct state.", "waiting", rg.startQueue.poll().getState());
-		assertEquals("No message was printed to the printer.", 2, Printer.log.size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.log.get(1));
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
 		
 		// Make sure the run is placed at the beginning of the startqueue.
 		rg.add(1);
@@ -187,10 +187,10 @@ public class RunGroupInd_Test {
 	@Test
 	public void testDNF() {
 		rg = new RunGroupInd();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.channels.add(new Channel(1));
-		ChronoTimer.channels.get(0).toggle();
-		Printer.log.clear();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		Printer.getLog().clear();
 		rg.add(1);
 		
 		// dnf should do nothing when there is no one waiting to finish.
@@ -206,8 +206,8 @@ public class RunGroupInd_Test {
 		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
 		assertEquals("Run was not placed in completedRuns.", 1, rg.completedRuns.size());
 		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().getState());
-		assertEquals("No message was printed to the printer.", 2, Printer.log.size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.log.get(1));
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
 		
 		// Test two runs.
 		rg.add(1);

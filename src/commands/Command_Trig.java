@@ -18,8 +18,8 @@ public class Command_Trig implements Command{
 	 * Attempts to trigger the specified channel, or prints error if no rungroup exists.
 	 */
 	public void execute() {
-		if ( ChronoTimer.current != null ) {
-			ChronoTimer.current.trigger( channelNum, timestamp );
+		if ( ChronoTimer.getCurrent() != null ) {
+			ChronoTimer.getCurrent().trigger( channelNum, timestamp );
 		} else {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}

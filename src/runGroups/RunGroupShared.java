@@ -39,7 +39,7 @@ public class RunGroupShared {
 	 */
 	public RunGroupShared() {
 		// This is 1 if there are no RunGroups in the archive, and increments thereafter.
-		runNum = ChronoTimer.archive.size() + 1;
+		runNum = ChronoTimer.getArchive().size() + 1;
 		
 		// Instantiations.
 		startQueue = new LinkedBlockingQueue<Run>();

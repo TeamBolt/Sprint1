@@ -15,8 +15,8 @@ public class Command_Cancel implements Command {
 	 */
 	@Override
 	public void execute() {
-		if ( ChronoTimer.current != null ) {
-			ChronoTimer.current.cancel();
+		if ( ChronoTimer.getCurrent() != null ) {
+			ChronoTimer.getCurrent().cancel();
 		} else {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}

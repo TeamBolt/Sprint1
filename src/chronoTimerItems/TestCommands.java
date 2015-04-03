@@ -162,11 +162,11 @@ public class TestCommands {
 		long timestamp = SystemTimer.getTime();
 		ChronoTimer.readCommand(timestamp, "ON");
 		ChronoTimer.readCommand(timestamp+10, "CONN EYE 1");
-		assertEquals("EYE", ChronoTimer.channels.get(0).sensor.type);
+		assertEquals("EYE", ChronoTimer.channels.get(0).getSensor().type);
 		ChronoTimer.readCommand(timestamp, "CONN GATE 1");
 		
 		ChronoTimer.readCommand(timestamp, "CONN GATE 2");
-		assertEquals("GATE", ChronoTimer.channels.get(1).sensor.type);
+		assertEquals("GATE", ChronoTimer.channels.get(1).getSensor().type);
 		ChronoTimer.readCommand(timestamp, "CONN GATE 10");
 		assertEquals("Invalid Command Entered.", Printer.log.get(Printer.log.size()-1));
 		
@@ -184,13 +184,13 @@ public class TestCommands {
 		ChronoTimer.channels.get(1).toggle();
 				
 		ChronoTimer.readCommand(timestamp+100, "DISC 1");
-		assertNull(ChronoTimer.channels.get(0).sensor);
-		assertNotNull(ChronoTimer.channels.get(1).sensor);
+		assertNull(ChronoTimer.channels.get(0).getSensor());
+		assertNotNull(ChronoTimer.channels.get(1).getSensor());
 		
 		ChronoTimer.readCommand(timestamp+100, "CONN GATE 1");
 		ChronoTimer.readCommand(timestamp, "DISC 2");
-		assertNotNull(ChronoTimer.channels.get(0).sensor);
-		assertNull(ChronoTimer.channels.get(1).sensor);
+		assertNotNull(ChronoTimer.channels.get(0).getSensor());
+		assertNull(ChronoTimer.channels.get(1).getSensor());
 		
 	}
 	
@@ -323,8 +323,8 @@ public class TestCommands {
 		Printer.log.clear();
 		
 		ChronoTimer.readCommand(timestamp, "ON");
-		assertFalse(ChronoTimer.channels.get(0).enabled);
-		assertFalse(ChronoTimer.channels.get(7).enabled);
+		assertFalse(ChronoTimer.channels.get(0).isEnabled());
+		assertFalse(ChronoTimer.channels.get(7).isEnabled());
 		
 		//Testing when current is null
 		ChronoTimer.readCommand(timestamp, "ENDRUN");
@@ -337,8 +337,8 @@ public class TestCommands {
 		ChronoTimer.channels.get(0).toggle();
 		ChronoTimer.channels.get(1).toggle();
 		
-		assertTrue("Channel 1 should be enabled now", ChronoTimer.channels.get(0).enabled);
-		assertTrue("Channel 2 should be enabled now", ChronoTimer.channels.get(1).enabled);
+		assertTrue("Channel 1 should be enabled now", ChronoTimer.channels.get(0).isEnabled());
+		assertTrue("Channel 2 should be enabled now", ChronoTimer.channels.get(1).isEnabled());
 		
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		assertNull(ChronoTimer.current);
@@ -373,27 +373,27 @@ public class TestCommands {
 		
 		ChronoTimer.readCommand(timestamp, "ON");
 		
-		assertFalse(ChronoTimer.channels.get(0).enabled);
-		assertFalse(ChronoTimer.channels.get(7).enabled);
+		assertFalse(ChronoTimer.channels.get(0).isEnabled());
+		assertFalse(ChronoTimer.channels.get(7).isEnabled());
 		
 		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
 		ChronoTimer.readCommand(timestamp, "TOGGLE 8");
 		
-		assertTrue(ChronoTimer.channels.get(0).enabled);
-		assertTrue(ChronoTimer.channels.get(7).enabled);
-		assertFalse(ChronoTimer.channels.get(2).enabled);
-		assertFalse(ChronoTimer.channels.get(5).enabled);
+		assertTrue(ChronoTimer.channels.get(0).isEnabled());
+		assertTrue(ChronoTimer.channels.get(7).isEnabled());
+		assertFalse(ChronoTimer.channels.get(2).isEnabled());
+		assertFalse(ChronoTimer.channels.get(5).isEnabled());
 		
 		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
 		ChronoTimer.readCommand(timestamp, "TOGGLE 6");
 		
-		assertFalse(ChronoTimer.channels.get(0).enabled);
-		assertTrue(ChronoTimer.channels.get(5).enabled);
+		assertFalse(ChronoTimer.channels.get(0).isEnabled());
+		assertTrue(ChronoTimer.channels.get(5).isEnabled());
 		
 		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
 		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
 		
-		assertFalse(ChronoTimer.channels.get(1).enabled);
+		assertFalse(ChronoTimer.channels.get(1).isEnabled());
 		
 	}
 	
@@ -406,8 +406,8 @@ public class TestCommands {
 		Printer.log.clear();
 		
 		ChronoTimer.readCommand(timestamp, "ON");
-		assertFalse(ChronoTimer.channels.get(0).enabled);
-		assertFalse(ChronoTimer.channels.get(7).enabled);
+		assertFalse(ChronoTimer.channels.get(0).isEnabled());
+		assertFalse(ChronoTimer.channels.get(7).isEnabled());
 		
 		//RETEST START COMMANDS
 		
@@ -422,8 +422,8 @@ public class TestCommands {
 		ChronoTimer.channels.get(0).toggle();
 		ChronoTimer.channels.get(1).toggle();
 		
-		assertTrue("Channel 1 should be enabled now", ChronoTimer.channels.get(0).enabled);
-		assertTrue("Channel 2 should be enabled now", ChronoTimer.channels.get(1).enabled);
+		assertTrue("Channel 1 should be enabled now", ChronoTimer.channels.get(0).isEnabled());
+		assertTrue("Channel 2 should be enabled now", ChronoTimer.channels.get(1).isEnabled());
 		
 		ChronoTimer.readCommand(timestamp+=100, "TRIG 1");
 		assertNull(ChronoTimer.current);

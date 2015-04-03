@@ -46,13 +46,13 @@ import runGroups.RunGroup;
 @SuppressWarnings("unused")
 public class ChronoTimer {
 	
-	public static Window window;
-	public static boolean isOn = false;
-	public static String eventType;
-	public static RunGroup current;
-	public static ArrayList<RunGroup> archive = new ArrayList<RunGroup>();
-	public static ArrayList<Channel> channels = new ArrayList<Channel>();
-	public static ArrayList<String> eventLog = new ArrayList<String>();
+	protected static Window window;
+	protected static boolean isOn = false;
+	protected static String eventType;
+	protected static RunGroup current;
+	protected static ArrayList<RunGroup> archive = new ArrayList<RunGroup>();
+	protected static ArrayList<Channel> channels = new ArrayList<Channel>();
+	protected static ArrayList<String> eventLog = new ArrayList<String>();
 
 	/**
 	 * @param args will have the name of the test file if one was provided.
@@ -213,4 +213,45 @@ public class ChronoTimer {
 		cmdObj.execute();
 		if ( isOn ) ChronoTimer.eventLog.add(event);
 	}
+	
+	public static boolean isOn() {
+		return isOn;
+	}
+	
+	public static void setOn( boolean o ) {
+		isOn = o;
+	}
+
+	public static Window getWindow() {
+		return window;
+	}
+
+	public static String getEventType() {
+		return new String(eventType);
+	}
+
+	public static void setEventType(String eventType) {
+		ChronoTimer.eventType = new String(eventType);
+	}
+
+	public static RunGroup getCurrent() {
+		return current;
+	}
+
+	public static void setCurrent(RunGroup current) {
+		ChronoTimer.current = current;
+	}
+
+	public static ArrayList<RunGroup> getArchive() {
+		return archive;
+	}
+
+	public static ArrayList<Channel> getChannels() {
+		return channels;
+	}
+
+	public static ArrayList<String> getEventLog() {
+		return eventLog;
+	}
+
 }

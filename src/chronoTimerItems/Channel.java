@@ -9,9 +9,9 @@ package chronoTimerItems;
  * @author Kevari Francis
  */
 public class Channel {
-	public Sensor sensor;
-	public Boolean enabled;
-	public int channelNum;
+	private Sensor sensor;
+	private Boolean enabled;
+	private int channelNum;
 	
 	/**
 	 * Constructor sets up the default value (disabled).
@@ -28,11 +28,19 @@ public class Channel {
 		enabled = !enabled;
 	}
 	
-	/**
-	 * Get a signal from a sensor and trigger an event on the timing System.
-	 */
-	public void trigger(){
-		if(!enabled) return;
-		// Maybe call ChronoTimer.readCommand with a TRIG ?
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	public int getChannelNum() {
+		return channelNum;
+	}
+	
+	public Sensor getSensor() {
+		return sensor;
+	}
+	
+	public void setSensor( Sensor s ) {
+		sensor = s;
 	}
 }

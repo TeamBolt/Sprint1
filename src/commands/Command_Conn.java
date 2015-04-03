@@ -22,15 +22,15 @@ public class Command_Conn implements Command {
 	@Override
 	public void execute() {
 		// Get channel from ArrayList.
-		Channel channel = ChronoTimer.channels.get(channelNum-1);
+		Channel channel = ChronoTimer.getChannels().get(channelNum-1);
 		
 		// Check if it is connected.  
-		if(channel.sensor != null){
+		if(channel.getSensor() != null){
 			Printer.print("Channel is already connected");
 		} else {
 			// If it is not connected, set the sensor to the specified type.
 			Sensor s = new Sensor(sensor, channelNum);
-			channel.sensor = s;
+			channel.setSensor(s);
 		}
 	}
 }

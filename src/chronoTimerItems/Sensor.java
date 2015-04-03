@@ -14,8 +14,8 @@ import javax.swing.JFrame;
  */
 @SuppressWarnings("serial")
 public class Sensor extends JFrame {
-	String type;
-	int channelNum;
+	protected String type;
+	protected int channelNum;
 	
 	public Sensor(String t, int c ){
 		type = t;

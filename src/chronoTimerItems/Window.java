@@ -252,8 +252,8 @@ public class Window extends JFrame {
 		textField.setText("");
 		
 		for ( Channel c : ChronoTimer.channels ) {
-			JCheckBox check = channelChecks.get(c.channelNum - 1);
-			if ( c.enabled == true ) {
+			JCheckBox check = channelChecks.get(c.getChannelNum() - 1);
+			if ( c.isEnabled() == true ) {
 				check.setSelected(true);
 			} else {
 				check.setSelected(false);

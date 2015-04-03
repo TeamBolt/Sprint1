@@ -15,10 +15,10 @@ private long timestamp;
 	 */
 	@Override
 	public void execute() {
-		if ( ChronoTimer.current != null ) {
-			ChronoTimer.current.end();
-			ChronoTimer.archive.add(ChronoTimer.current);
-			ChronoTimer.current = null;
+		if ( ChronoTimer.getCurrent() != null ) {
+			ChronoTimer.getCurrent().end();
+			ChronoTimer.getArchive().add(ChronoTimer.getCurrent());
+			ChronoTimer.setCurrent(null);
 		} else {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}

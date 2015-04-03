@@ -25,25 +25,23 @@ public class Command_Reset implements Command {
 			//ChronoTimer.readCommand(timestamp, "OFF");
 			//ChronoTimer.readCommand(timestamp, "ON");
 			//use implementation of on/off command
-			
-			ChronoTimer.isOn = false;
-			
+
 			// Clear out the archive, channels, and eventLog.
-			ChronoTimer.archive.clear();
-			ChronoTimer.channels.clear();
-			//ChronoTimer.eventLog = new ArrayList<String>();
+			ChronoTimer.getArchive().clear();
+			ChronoTimer.getChannels().clear();
+			//ChronoTimer.getEventLog().clear();
 		
 			
 			// Add all 8 Channels to the Array List.
 			// To increase to 12, change the 9 to a 13.
 			for ( int i = 1; i < 9; ++i ) {
-				ChronoTimer.channels.add(new Channel(i));
+				ChronoTimer.getChannels().add(new Channel(i));
 			}
 			
 			// Create the default RunGroup
-			ChronoTimer.eventType = "IND";
-			ChronoTimer.current = new RunGroupInd();
-			ChronoTimer.isOn=true;
+			ChronoTimer.setEventType("IND");
+			ChronoTimer.setCurrent(new RunGroupInd());
+			ChronoTimer.setOn(true); //Since commands don't work unless the system is already on, this should do nothing.
 			
 			System.out.println("got to bottom of command reset exectue");
 		

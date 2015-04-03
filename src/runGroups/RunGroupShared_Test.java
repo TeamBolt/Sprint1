@@ -41,7 +41,7 @@ public class RunGroupShared_Test {
 		assertEquals("RunGroup was not given correct default finish channel", 2, rg.finishChannel);
 		
 		// Add a rungroup to the archive and make sure that the next run group's runNum is incremented.
-		ChronoTimer.archive.add(rg);
+		ChronoTimer.getArchive().add(rg);
 		
 		rg = new RunGroupInd();
 		assertEquals("RunGroup was not given correct run num", 2, rg.runNum);
@@ -52,7 +52,7 @@ public class RunGroupShared_Test {
 	 */
 	@Test
 	public void testAdd() {
-		ChronoTimer.archive.clear();
+		ChronoTimer.getArchive().clear();
 		rg = new RunGroupInd();
 		
 		// Make sure adding a run works.
@@ -79,13 +79,13 @@ public class RunGroupShared_Test {
 	 */
 	@Test
 	public void testPrint() {
-		ChronoTimer.archive.clear();
+		ChronoTimer.getArchive().clear();
 		rg = new RunGroupInd();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.channels.add(new Channel(1));
-		ChronoTimer.channels.add(new Channel(2));
-		ChronoTimer.channels.get(0).toggle();
-		ChronoTimer.channels.get(1).toggle();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().get(1).toggle();
 		
 		// Set up a rungroup that will test all print locations.
 		rg.add(1);
@@ -101,22 +101,22 @@ public class RunGroupShared_Test {
 		
 		rg.add(4);			// And finally one in startQueue with state "waiting"
 		
-		Printer.log.clear();
+		Printer.getLog().clear();
 		rg.print();
-		assertEquals("Printer did not print correct number of lines", 1, Printer.log.size());
+		assertEquals("Printer did not print correct number of lines", 1, Printer.getLog().size());
 	}
 	
 	@Test
 	public void testEnd() {
 		rg = new RunGroupInd();
-		ChronoTimer.channels = new ArrayList<Channel>();
-		ChronoTimer.channels.add(new Channel(1));
-		ChronoTimer.channels.get(0).toggle();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
 		
 		rg.add(1);
 		rg.add(2);
 		rg.trigger(1, 0);
-		Printer.log.clear();
+		Printer.getLog().clear();
 	
 		// Make sure that runs both waiting and running are dnf'd.
 		rg.end();
@@ -125,8 +125,8 @@ public class RunGroupShared_Test {
 		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().getState());
 		
 		// And make sure a message was printed.
-		assertEquals("No message was printed to the printer.", 2, Printer.log.size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.log.get(0));
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.log.get(1));
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.getLog().get(0));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
 	}
 }

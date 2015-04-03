@@ -19,13 +19,13 @@ private long timestamp;
 	 */
 	@Override
 	public void execute() {
-		if ( ChronoTimer.current == null ) {
-			if ( ChronoTimer.eventType.equals("IND") ) {
-				ChronoTimer.current = new RunGroupInd();
-			} else if ( ChronoTimer.eventType.equals("PARIND") ) {
-				ChronoTimer.current = new RunGroupParInd();
-			} else if ( ChronoTimer.eventType.equals("GRP") ) {
-				ChronoTimer.current = new RunGroupGrp();
+		if ( ChronoTimer.getCurrent() == null ) {
+			if ( ChronoTimer.getEventType().equals("IND") ) {
+				ChronoTimer.setCurrent( new RunGroupInd() );
+			} else if ( ChronoTimer.getEventType().equals("PARIND") ) {
+				ChronoTimer.setCurrent( new RunGroupParInd() );
+			} else if ( ChronoTimer.getEventType().equals("GRP") ) {
+				ChronoTimer.setCurrent( new RunGroupGrp() );
 			} else {
 				Printer.print("Event type Parallel Group not yet supported");
 			}

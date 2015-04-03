@@ -42,8 +42,8 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 	 */
 	public void trigger(int c, long timestamp) {
 		// If the channel is disabled, do nothing.
-		Channel channel = ChronoTimer.channels.get( c - 1 );
-		if ( channel.enabled == false ) return;
+		Channel channel = ChronoTimer.getChannels().get( c - 1 );
+		if ( channel.isEnabled() == false ) return;
 		
 		if ( c == startChannel && !startQueue.isEmpty() ) {
 			// Start channel was triggered, all runs are off!

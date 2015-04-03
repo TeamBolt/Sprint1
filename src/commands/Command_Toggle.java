@@ -16,7 +16,7 @@ public class Command_Toggle implements Command {
 	 */
 	@Override
 	public void execute() {
-		ChronoTimer.channels.get(channel-1).toggle();
+		ChronoTimer.getChannels().get(channel-1).toggle();
 	}
 
 }

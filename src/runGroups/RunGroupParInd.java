@@ -55,8 +55,8 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 	 */
 	public void trigger(int c, long timestamp) {
 		// If the channel is disabled, do nothing.
-		Channel channel = ChronoTimer.channels.get( c - 1 );
-		if ( channel.enabled == false ) return;
+		Channel channel = ChronoTimer.getChannels().get( c - 1 );
+		if ( channel.isEnabled() == false ) return;
 		
 		// If a race is in progress only accept finish triggers.
 		if ( raceInProgress == true && ( c == startChannelOne || c == startChannelTwo ) ) {

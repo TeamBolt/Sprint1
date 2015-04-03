@@ -18,8 +18,9 @@ public class Command_Disc implements Command {
 	@Override
 	public void execute() {
 		// Get channel from ArrayList.
-		Channel channel = ChronoTimer.channels.get(channelNum-1);
-		channel.sensor = null;
+		Channel channel = ChronoTimer.getChannels().get(channelNum-1);
+		channel.getSensor().dispose();
+		channel.setSensor(null);
 	}
 
 }

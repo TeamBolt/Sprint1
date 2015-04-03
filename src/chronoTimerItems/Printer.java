@@ -12,8 +12,8 @@ import java.util.ArrayList;
  */
 public class Printer {
 
-	public static boolean isOn = false;
-	public static ArrayList<String> log = new ArrayList<String>();
+	protected static boolean isOn = false;
+	protected static ArrayList<String> log = new ArrayList<String>();
 	
 	/**
 	 * Print output to the console (and later the printer when enabled)
@@ -28,4 +28,17 @@ public class Printer {
 			ChronoTimer.window.updatePrinter(output);
 		}
 	}
+	
+	public static ArrayList<String> getLog() {
+		return log;
+	}
+	
+	public static boolean isOn() {
+		return isOn;
+	}
+	
+	public static void setOn( boolean o ) {
+		isOn = o;
+	}
 }
+

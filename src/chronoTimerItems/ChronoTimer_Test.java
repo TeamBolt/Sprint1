@@ -30,7 +30,7 @@ public class ChronoTimer_Test {
 		assertEquals(1, ChronoTimer.current.getRun());
 		for(int i=0; i < ChronoTimer.channels.size(); i++) //test all channels are disabled on startup
 		{
-			assertEquals(false, ChronoTimer.channels.get(i).enabled);
+			assertEquals(false, ChronoTimer.channels.get(i).isEnabled());
 		}
 		ChronoTimer.eventLog.clear();	
 	}
@@ -134,43 +134,43 @@ public class ChronoTimer_Test {
 		ChronoTimer.readCommand(0, "TOGGLE 1"); //valid parameter
 		assertEquals("No command found in eventLog.", 2, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 1", ChronoTimer.eventLog.get(1));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(0).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(0).isEnabled());
 		
 		ChronoTimer.readCommand(0, "TOGGLE 2");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 3, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 2", ChronoTimer.eventLog.get(2));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(1).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(1).isEnabled());
 
 
 		ChronoTimer.readCommand(0, "TOGGLE 3");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 4, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 3", ChronoTimer.eventLog.get(3));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(2).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(2).isEnabled());
 
 		ChronoTimer.readCommand(0, "TOGGLE 4");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 5, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 4", ChronoTimer.eventLog.get(4));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(3).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(3).isEnabled());
 
 		ChronoTimer.readCommand(0, "TOGGLE 5");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 6, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 5", ChronoTimer.eventLog.get(5));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(4).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(4).isEnabled());
 
 		ChronoTimer.readCommand(0, "TOGGLE 6");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 7, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 6", ChronoTimer.eventLog.get(6));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(5).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(5).isEnabled());
 
 		ChronoTimer.readCommand(0, "TOGGLE 7");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 8, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 7", ChronoTimer.eventLog.get(7));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(6).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(6).isEnabled());
 
 		ChronoTimer.readCommand(0, "TOGGLE 8");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 9, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 8", ChronoTimer.eventLog.get(8));
-		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(7).enabled);
+		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(7).isEnabled());
 
 /*	
 		ChronoTimer.readCommand(0, "TOGGLE 9");
@@ -224,7 +224,9 @@ public class ChronoTimer_Test {
 	{
 		ChronoTimer.readCommand(0, "ON");
 		ChronoTimer.readCommand(0, "RESET 1");
+		System.out.println(ChronoTimer.eventLog.get(ChronoTimer.eventLog.size() - 1));
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
+		
 		ChronoTimer.readCommand(0, "RESET A");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		ChronoTimer.readCommand(0, "RESET");

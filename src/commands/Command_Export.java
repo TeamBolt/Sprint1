@@ -8,8 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.omg.CORBA.Current;
-
 import chronoTimerItems.ChronoTimer;
 import chronoTimerItems.Printer;
 import chronoTimerItems.SystemTimer;
@@ -33,8 +31,8 @@ public class Command_Export implements Command {
 
 	public void exportToXML(){
 		// Takes care of the case that there is no run that corresponds to the given run number
-		if( (ChronoTimer.current == null || ChronoTimer.current.getRun() != runNum) &&
-				( runNum > ChronoTimer.archive.size() || runNum <= 0)) {
+		if( (ChronoTimer.getCurrent() == null || ChronoTimer.getCurrent().getRun() != runNum) &&
+				( runNum > ChronoTimer.getArchive().size() || runNum <= 0)) {
 			Printer.print("No Run #" + runNum + " found.");
 			return;
 		}
@@ -42,10 +40,10 @@ public class Command_Export implements Command {
 		RunGroup group = null;
 		
 		// checks if the run to be exported is the current run or an archived run
-		if(ChronoTimer.current != null && ChronoTimer.current.getRun() == runNum){
-			group =  ChronoTimer.current;
-		} else if (runNum <=  ChronoTimer.archive.size() && runNum > 0 ) {
-			group = ChronoTimer.archive.get(runNum-1);
+		if(ChronoTimer.getCurrent() != null && ChronoTimer.getCurrent().getRun() == runNum){
+			group =  ChronoTimer.getCurrent();
+		} else if (runNum <=  ChronoTimer.getArchive().size() && runNum > 0 ) {
+			group = ChronoTimer.getArchive().get(runNum-1);
 		}
 
 		String fileName = "RUN #" + runNum;
