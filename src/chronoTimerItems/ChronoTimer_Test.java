@@ -8,7 +8,11 @@ import org.junit.Test;
 
 import runGroups.RunGroup;
 
-
+/**
+ * Test file for ChronoTimer.readCommand().
+ * 
+ * @author Blake Watzke
+ */
 public class ChronoTimer_Test {
 	
 	@Before
@@ -98,6 +102,7 @@ public class ChronoTimer_Test {
 		*/
 		
 	}
+	
 	@Test
 	public void testReadCommandOn()
 	{
@@ -108,6 +113,7 @@ public class ChronoTimer_Test {
 	   // ChronoTimer.eventLog.clear();	
 		
 	}
+	
 	@Test
 	public void testReadCommandOnOff()
 	{
@@ -118,6 +124,7 @@ public class ChronoTimer_Test {
 	  //  assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "OFF", ChronoTimer.eventLog.get(0));
 	    assertEquals("Found command in eventLog when shouldnt have.", 0, ChronoTimer.eventLog.size());
 	}
+	
 	@Test
 	public void testReadCommandTOGGLE()
 	{
@@ -190,6 +197,7 @@ public class ChronoTimer_Test {
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 12", ChronoTimer.eventLog.get(12));
 		*/
 	}
+	
 	@Test
 	public void testReadCommandEVENT()
 	{
@@ -198,6 +206,7 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "ON", ChronoTimer.eventLog.get(0));
 	}
+	
 	@Test 
 	public void testReadCommandNUM()
 	{
@@ -219,6 +228,7 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 3, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "NUM 1234", ChronoTimer.eventLog.get(2));	
 	}
+	
 	@Test 
 	public void testReadCommandRESET()
 	{
@@ -230,13 +240,8 @@ public class ChronoTimer_Test {
 		ChronoTimer.readCommand(0, "RESET A");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		ChronoTimer.readCommand(0, "RESET");
-		assertEquals("eventLog size does not match the size it should be.", 2, ChronoTimer.eventLog.size());
-		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "RESET", ChronoTimer.eventLog.get(1));	
-
-		
-
-
-
+		assertEquals("eventLog size does not match the size it should be.", 1, ChronoTimer.eventLog.size());
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "RESET", ChronoTimer.eventLog.get(0));	
 	}
 
 	

@@ -10,7 +10,12 @@ import org.junit.Test;
 
 import runGroups.RunGroup;
 
-
+/**
+ * This is the test file for the system as a whole. Whenever possible we should use readCommand to
+ * make changes to the system, and only do so with commands which have already been tested.
+ * 
+ * @author Ben Kingsbury
+ */
 public class TestCommands {
 
 	// This
@@ -300,7 +305,7 @@ public class TestCommands {
 		//Test runnum==0 and current==null
 		ChronoTimer.current=null;
 		ChronoTimer.readCommand(timestamp+=100, "PRINT");
-		assertEquals("No Current Run, please enter the NEWRUN command", Printer.log.get(Printer.log.size()-1));		
+		assertEquals("No Run to print.", Printer.log.get(Printer.log.size()-1));		
 		
 		//Test Adding runner then Printing
 		ChronoTimer.readCommand(timestamp, "NEWRUN");

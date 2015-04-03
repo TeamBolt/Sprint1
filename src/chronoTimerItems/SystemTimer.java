@@ -5,6 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This class represents the real world time (plus or minus some offset) and
+ * also hold all methods for converting time between strings and milliseconds.
+ * 
+ * @author Kevari Francis
+ */
 public class SystemTimer {
 	
 	private static Calendar cal = Calendar.getInstance();

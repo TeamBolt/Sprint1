@@ -7,7 +7,11 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-
+/**
+ * This is the UI for the ChronoTimer.
+ * 
+ * @author Chris Harmon
+ */
 @SuppressWarnings("serial")
 public class Window extends JFrame {
 	
@@ -192,8 +196,6 @@ public class Window extends JFrame {
 			String name = e.getActionCommand();
 			name = name.substring(name.length()-1);
 			
-			System.out.println(name);
-
 			if ( ChronoTimer.isOn == true ) {
 				ChronoTimer.readCommand(SystemTimer.getTime(), "TRIG " + name );
 			}
