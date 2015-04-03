@@ -46,7 +46,7 @@ public class Run {
 	}
 	
 	public String getState() {
-		return new String(state);
+		return state;
 	}
 	
 	public void setState( String s ) {

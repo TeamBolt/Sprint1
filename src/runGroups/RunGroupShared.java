@@ -182,6 +182,6 @@ public class RunGroupShared {
 	 * Return the a copy of type of event this is.
 	 */
 	public String getEventType() {
-		return new String(eventType);
+		return eventType;
 	}
 }

@@ -227,7 +227,7 @@ public class ChronoTimer {
 	}
 
 	public static String getEventType() {
-		return new String(eventType);
+		return eventType;
 	}
 
 	public static void setEventType(String eventType) {

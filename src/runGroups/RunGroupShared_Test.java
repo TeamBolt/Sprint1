@@ -15,14 +15,9 @@ import chronoTimerItems.Printer;
  * functions it inherits from RunGroupShared.
  * 
  *  TODO
- * getRun
- * getStartSize
- * getFinishSize
- * isEmpty
  * getStartQueue
  * getFinishQueue
  * getCompletedRuns
- * getEventType
  * 
  * @author Chris Harmon
  */
@@ -136,32 +131,53 @@ public class RunGroupShared_Test {
 	public void test() {
 		
 	}
-//	 * getRun
-//	 * isEmpty
-//	 * getStartQueue
-//	 * getFinishQueue
-//	 * getCompletedRuns
-//	 * getEventType
 	
 	/**
 	 * Tests that getRun properly return the run number.
 	 */
 	@Test
 	public void testGetRun() {
-		
+		rg = new RunGroupInd();
+		rg.runNum = 42;
+		assertEquals("getRun did not return the correct run number", 42, rg.getRun());
 	}
-
 	
 	/**
-	 * Tests that  properly return the .
+	 * Tests that isEmpty properly return true if it has no runs in any of it's queues
+	 * and false otherwise.
 	 */
 	@Test
 	public void testIsEmpty() {
+		// RunGroup is empty.
+		rg = new RunGroupInd();
+		assertEquals("getRun did not correctly return if it is empty.", true, rg.isEmpty());
 		
+		// Run is startQueue.
+		rg.add(1);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// Enable channels.
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
+		
+		// Run in finishQueue.
+		rg.trigger(1, 0);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// Run in CompletedRuns.
+		rg.trigger(2, 0);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// And empty again.
+		rg.completedRuns.clear();
+		assertEquals("getRun did not correctly return if it is empty.", true, rg.isEmpty());
 	}
 	
 	/**
-	 * Tests that  properly return the .
+	 * Tests that getStartQueue properly return a COPY of the startQueue.
 	 */
 	@Test
 	public void testGetStartQueue() {
@@ -169,7 +185,7 @@ public class RunGroupShared_Test {
 	}
 	
 	/**
-	 * Tests that  properly return the .
+	 * Tests that getFinishQueue properly return a COPY of the finishQueue.
 	 */
 	@Test
 	public void testGetFinishQueue() {
@@ -177,7 +193,7 @@ public class RunGroupShared_Test {
 	}
 	
 	/**
-	 * Tests that  properly return the .
+	 * Tests that getCompletedRuns properly return a COPY of the completedRuns.
 	 */
 	@Test
 	public void testGetCompletedRuns() {
@@ -185,11 +201,16 @@ public class RunGroupShared_Test {
 	}
 	
 	/**
-	 * Tests that  properly return the .
+	 * Tests that getEventType properly returns a COPY of the event type..
 	 */
 	@Test
 	public void testGetEventType() {
+		rg = new RunGroupInd();
 		
+		assertEquals("getEventType did not correctly report the event type", "IND", rg.getEventType());
+		
+		rg.eventType = "GRP";
+		assertEquals("getEventType did not correctly report the event type", "GRP", rg.getEventType());
 	}
 	
 	
