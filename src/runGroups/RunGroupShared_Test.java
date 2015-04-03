@@ -1,8 +1,7 @@
 package runGroups;
+
 import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-
+import java.util.concurrent.LinkedBlockingQueue;
 import org.junit.Test;
 
 import chronoTimerItems.Channel;
@@ -13,11 +12,6 @@ import chronoTimerItems.Printer;
  * Test file for the shared functions in RunGroupShared. To easier test these functions, we are actually 
  * using the simplest type of RunGroup, RunGroupInd to test some functions, but we are only testing the 
  * functions it inherits from RunGroupShared.
- * 
- *  TODO
- * getStartQueue
- * getFinishQueue
- * getCompletedRuns
  * 
  * @author Chris Harmon
  */
@@ -69,7 +63,8 @@ public class RunGroupShared_Test {
 	
 	/**
 	 * Tests that print (and Run.print()) correctly prints all runs from completedRuns, 
-	 * then the finishQueue, then the startQueue.
+	 * then the finishQueue, then the startQueue. (Since this function only calls doPrint,
+	 * we are also testing doPrint).
 	 */
 	@Test
 	public void testPrint() {
@@ -100,6 +95,9 @@ public class RunGroupShared_Test {
 		assertEquals("Printer did not print correct number of lines", 1, Printer.getLog().size());
 	}
 	
+	/**
+	 * Tests that end() properly finishes all runs in both the startQueue and finishQueue with state dnf.
+	 */
 	@Test
 	public void testEnd() {
 		rg = new RunGroupInd();
@@ -122,14 +120,6 @@ public class RunGroupShared_Test {
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.getLog().get(0));
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
-	}
-	
-	/**
-	 * Tests .
-	 */
-	@Test
-	public void test() {
-		
 	}
 	
 	/**
@@ -181,7 +171,24 @@ public class RunGroupShared_Test {
 	 */
 	@Test
 	public void testGetStartQueue() {
+		rg = new RunGroupInd();
 		
+		// Test empty.
+		LinkedBlockingQueue<Run> queue = rg.getStartQueue();
+		assertEquals("getStartQueue did not correctly an empty queue.", true, queue.isEmpty());
+		
+		// Test Copy (modify external).
+		queue.add(new Run(1,1));
+		assertEquals("getStartQueue did not correctly return a copy, as the internal queue has changed.", true, rg.getStartQueue().isEmpty());
+		
+		// Test Copy (modify internal).
+		queue.clear();
+		rg.add(2);
+		assertEquals("getStartQueue did not correctly return a populated queue.", false, rg.getStartQueue().isEmpty());
+		assertEquals("getStartQueue did not correctly return a copy, as the returned queue has changed.", true, queue.isEmpty());
+		
+		// Test contents.
+		assertEquals("getStartQueue did not return a queue with the correct Run in it.", 2, rg.getStartQueue().peek().getBibNum());
 	}
 	
 	/**
@@ -189,7 +196,31 @@ public class RunGroupShared_Test {
 	 */
 	@Test
 	public void testGetFinishQueue() {
+		// Enable channels.
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
 		
+		rg = new RunGroupInd();
+		
+		// Test empty.
+		LinkedBlockingQueue<Run> queue = rg.getFinishQueue();
+		assertEquals("getFinishQueue did not correctly an empty queue.", true, queue.isEmpty());
+		
+		// Test Copy (modify external).
+		queue.add(new Run(1,1));
+		assertEquals("getFinishQueue did not correctly return a copy, as the internal queue has changed.", true, rg.getFinishQueue().isEmpty());
+		
+		// Test Copy (modify internal).
+		queue.clear();
+		rg.add(2);
+		rg.trigger(1, 0);
+		assertEquals("getFinishQueue did not correctly return a populated queue.", false, rg.getFinishQueue().isEmpty());
+		assertEquals("getFinishQueue did not correctly return a copy, as the returned queue has changed.", true, queue.isEmpty());
+		
+		// Test contents.
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 2, rg.getFinishQueue().peek().getBibNum());
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 0, rg.getFinishQueue().peek().getStartTime());
 	}
 	
 	/**
@@ -197,7 +228,35 @@ public class RunGroupShared_Test {
 	 */
 	@Test
 	public void testGetCompletedRuns() {
+		// Enable channels.
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
 		
+		rg = new RunGroupInd();
+		
+		// Test empty.
+		LinkedBlockingQueue<Run> queue = rg.getCompletedRuns();
+		assertEquals("getFinishQueue did not correctly an empty queue.", true, queue.isEmpty());
+		
+		// Test Copy (modify external).
+		queue.add(new Run(1,1));
+		assertEquals("getFinishQueue did not correctly return a copy, as the internal queue has changed.", true, rg.getCompletedRuns().isEmpty());
+		
+		// Test Copy (modify internal).
+		queue.clear();
+		rg.add(2);
+		rg.trigger(1, 0);
+		rg.trigger(2, 10);
+		assertEquals("getFinishQueue did not correctly return a populated queue.", false, rg.getCompletedRuns().isEmpty());
+		assertEquals("getFinishQueue did not correctly return a copy, as the returned queue has changed.", true, queue.isEmpty());
+		
+		// Test contents.
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 2, rg.getCompletedRuns().peek().getBibNum());
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 0, rg.getCompletedRuns().peek().getStartTime());
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 10, rg.getCompletedRuns().peek().getFinishTime());
 	}
 	
 	/**
@@ -212,6 +271,4 @@ public class RunGroupShared_Test {
 		rg.eventType = "GRP";
 		assertEquals("getEventType did not correctly report the event type", "GRP", rg.getEventType());
 	}
-	
-	
 }

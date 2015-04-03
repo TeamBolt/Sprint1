@@ -1,7 +1,6 @@
 package runGroups;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import chronoTimerItems.Channel;
@@ -13,26 +12,26 @@ import chronoTimerItems.Printer;
  * 
  * @author Chris Harmon
  */
-public class RunGroupInd_Test {
-	RunGroupInd rg;
+public class RunGroupGrp_Test {
+	RunGroupGrp rg;
 	
 	/**
 	 * Tests that the constructor correctly sets up runNum and channels to watch.
 	 */
 	@Test
 	public void testConstructor() {
-		RunGroupInd rg = new RunGroupInd();
+		RunGroupGrp rg = new RunGroupGrp();
 		assertEquals("RunGroup was not given correct start channel", 1, rg.startChannel );
 		assertEquals("RunGroup was not given correct finish channel", 2, rg.finishChannel );
-		assertEquals("RunGroup was not given correct eventType", "IND", rg.eventType );
+		assertEquals("RunGroup was not given correct eventType", "GRP", rg.eventType );
 	}
 	
 	/**
-	 * Tests that trigger works correctly under all circumstances.
+	 * Tests that trigger works correctly for all circumstances.
 	 */
 	@Test
 	public void testTrigger() {
-		rg = new RunGroupInd();
+		rg = new RunGroupGrp();
 		Printer.getLog().clear();
 		ChronoTimer.getChannels().clear();
 		ChronoTimer.getChannels().add(new Channel(1));
@@ -107,11 +106,8 @@ public class RunGroupInd_Test {
 		// Make sure the first to start is also the first to finish
 		rg.trigger(1, 42);
 		assertEquals("Incorrect run is first to finish", 1, rg.finishQueue.peek().getBibNum());
-		assertEquals("Both runs we started (only one should have).", 1, rg.finishQueue.size());
-		
-		rg.trigger(1, 43);
-		assertEquals("Incorrect run is first to finish", 1, rg.finishQueue.peek().getBibNum());
-		assertEquals("The second run wasn't started.", 2, rg.finishQueue.size());
+		assertEquals("Only one run was started (both should have)", 2, rg.finishQueue.size());
+
 		
 		// Make sure second run is in line to finish.
 		rg.trigger(2, 9001);
@@ -138,7 +134,7 @@ public class RunGroupInd_Test {
 	 */
 	@Test
 	public void testCancel() {
-		rg = new RunGroupInd();
+		rg = new RunGroupGrp();
 		Printer.getLog().clear();
 		ChronoTimer.getChannels().clear();
 		ChronoTimer.getChannels().add(new Channel(1));
@@ -163,25 +159,18 @@ public class RunGroupInd_Test {
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
 		
-		// Make sure the run is placed at the beginning of the startqueue.
-		rg.add(1);
-		rg.add(2);
-		rg.trigger(1,0);
-		rg.cancel();
-		assertEquals("Run 1 was not placed at beginning of startqueue.", 1, rg.startQueue.poll().getBibNum());
-		assertEquals("Run 2 not budged back.", 2, rg.startQueue.poll().getBibNum());
-		
 		// Now with 3 runs.
 		rg.add(1);
 		rg.add(2);
 		rg.add(3);
 		rg.trigger(1, 0);
-		rg.trigger(1, 0);
 		
 		rg.cancel();
-		rg.cancel();
 
-		// Make sure that startQueue order was maintained.
+		// Make sure that all runs were canceled, and order maintained.
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
 		assertEquals("Run 1 was not first.", 1, rg.startQueue.poll().getBibNum());
 		assertEquals("Run 2 was not second.", 2, rg.startQueue.poll().getBibNum());
 		assertEquals("Run 3 was not last.", 3, rg.startQueue.poll().getBibNum());
@@ -189,10 +178,11 @@ public class RunGroupInd_Test {
 	
 	/**
 	 * Tests that dnf correctly gives the run the "dnf" state and moves it to the completedRuns.
+	 * (DNF works identically between RunGroupInd and RunGroupGrp)
 	 */
 	@Test
 	public void testDNF() {
-		rg = new RunGroupInd();
+		rg = new RunGroupGrp();
 		ChronoTimer.getChannels().clear();
 		ChronoTimer.getChannels().add(new Channel(1));
 		ChronoTimer.getChannels().get(0).toggle();

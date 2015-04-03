@@ -44,6 +44,8 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 		raceInProgress = false;
 
 		eventType = "PARIND";
+		
+		Printer.print("WARNING: This is an untested Event Type, it may or may exibit the expected behavior.");
 	}
 	
 	/**
@@ -170,15 +172,22 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 		}
 		
 		// Set state(s).
-		first.setState("waiting");
+		if ( first != null )first.setState("waiting");
 		if ( second != null ) second.setState("waiting");
 		
 		if ( !startQueue.isEmpty() ) {
 			// If there were people waiting to start, we need to budge in line.
 			LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
 			
-			if ( first != null ) tempQueue.add(first);
-			if ( second != null ) tempQueue.add(second);
+			if ( first != null ) {
+				tempQueue.add(first);
+				if ( second != null ) tempQueue.add(second);
+			} else {
+				first = startQueue.poll();
+				tempQueue.add(first);
+				tempQueue.add(second);
+			}
+
 			tempQueue.addAll(startQueue);
 			startQueue = tempQueue;
 		} else {
