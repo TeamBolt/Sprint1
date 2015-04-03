@@ -17,9 +17,9 @@ public class Command_Reset implements Command {
 		
 			//ChronoTimer.readCommand(timestamp, "OFF");
 			//ChronoTimer.readCommand(timestamp, "ON");
-			//use implementation of on/off command
 			
-			ChronoTimer.isOn = false;
+			
+			//ChronoTimer.isOn = false;
 			
 			// Clear out the archive, channels, and eventLog.
 			ChronoTimer.archive.clear();
