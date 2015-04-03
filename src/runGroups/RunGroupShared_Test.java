@@ -15,7 +15,6 @@ import chronoTimerItems.Printer;
  * functions it inherits from RunGroupShared.
  * 
  *  TODO
- * doPrint
  * getRun
  * getStartSize
  * getFinishSize
@@ -58,8 +57,8 @@ public class RunGroupShared_Test {
 		// Make sure adding a run works.
 		rg.add(1);
 		assertEquals("No run was not added to the startqueue", 1, rg.startQueue.size());
-		assertEquals("Run was given the wrong bibNum", 1, rg.getStartQueue().peek().getBibNum());
-		assertEquals("Run was given the wrong runNum", 1, rg.getStartQueue().peek().getRunNum());
+		assertEquals("Run was given the wrong bibNum", 1, rg.startQueue.peek().getBibNum());
+		assertEquals("Run was given the wrong runNum", 1, rg.startQueue.peek().getRunNum());
 		assertEquals("Run was given the wrong state", "waiting", rg.startQueue.peek().getState());
 		
 		// Make sure adding another run doesn't change who's next in line.
@@ -129,4 +128,69 @@ public class RunGroupShared_Test {
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.getLog().get(0));
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
 	}
+	
+	/**
+	 * Tests .
+	 */
+	@Test
+	public void test() {
+		
+	}
+//	 * getRun
+//	 * isEmpty
+//	 * getStartQueue
+//	 * getFinishQueue
+//	 * getCompletedRuns
+//	 * getEventType
+	
+	/**
+	 * Tests that getRun properly return the run number.
+	 */
+	@Test
+	public void testGetRun() {
+		
+	}
+
+	
+	/**
+	 * Tests that  properly return the .
+	 */
+	@Test
+	public void testIsEmpty() {
+		
+	}
+	
+	/**
+	 * Tests that  properly return the .
+	 */
+	@Test
+	public void testGetStartQueue() {
+		
+	}
+	
+	/**
+	 * Tests that  properly return the .
+	 */
+	@Test
+	public void testGetFinishQueue() {
+		
+	}
+	
+	/**
+	 * Tests that  properly return the .
+	 */
+	@Test
+	public void testGetCompletedRuns() {
+		
+	}
+	
+	/**
+	 * Tests that  properly return the .
+	 */
+	@Test
+	public void testGetEventType() {
+		
+	}
+	
+	
 }

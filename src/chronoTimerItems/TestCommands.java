@@ -137,20 +137,20 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "NEWRUN");
 		ChronoTimer.readCommand(timestamp, "NUM 111");
 		
-		assertEquals(1, ChronoTimer.current.getStartSize());
+		assertEquals(1, ChronoTimer.current.getStartQueue().size());
 		
 		//start racer and check size
 		ChronoTimer.readCommand(timestamp+100, "START");
-		assertEquals(0, ChronoTimer.current.getStartSize());
+		assertEquals(0, ChronoTimer.current.getStartQueue().size());
 		
 		//cancel racer - check if added back to startqueue
 		ChronoTimer.readCommand(timestamp+100, "CANCEL");
-		assertEquals(1, ChronoTimer.current.getStartSize());
+		assertEquals(1, ChronoTimer.current.getStartQueue().size());
 		
 		//start and finish race
 		ChronoTimer.readCommand(timestamp+100, "START");
-		assertEquals(0, ChronoTimer.current.getStartSize());
-		assertEquals(1, ChronoTimer.current.getFinishSize());
+		assertEquals(0, ChronoTimer.current.getStartQueue().size());
+		assertEquals(1, ChronoTimer.current.getFinishQueue().size());
 		ChronoTimer.readCommand(timestamp+1000, "FIN");
 		
 	}
@@ -205,9 +205,9 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=100, "NUM 357");
 		
 		//Test when finish queue is empty
-		assertEquals(ChronoTimer.current.getFinishSize(), 0);
+		assertEquals(ChronoTimer.current.getFinishQueue().size(), 0);
 		assertTrue(Printer.log.isEmpty());
-		assertEquals(1,ChronoTimer.current.getStartSize());
+		assertEquals(1,ChronoTimer.current.getStartQueue().size());
 		
 		//Test normally
 		ChronoTimer.readCommand(timestamp+=1000, "START");
@@ -230,9 +230,9 @@ public class TestCommands {
 
 		//Test FIN before starting race
 		ChronoTimer.readCommand(timestamp, "FIN");
-		assertEquals(ChronoTimer.current.getFinishSize(), 0);
+		assertEquals(ChronoTimer.current.getFinishQueue().size(), 0);
 		assertTrue(Printer.log.isEmpty());
-		assertEquals(1,ChronoTimer.current.getStartSize());
+		assertEquals(1,ChronoTimer.current.getStartQueue().size());
 		
 		//Test conditions - if c <> 2
 		ChronoTimer.current.trigger(3, timestamp+=5678);
@@ -240,14 +240,14 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=5477, "START");
 		ChronoTimer.current.trigger(3, timestamp+6666);
 		assertEquals("Bib #777 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
-		assertEquals(1, ChronoTimer.current.getFinishSize());
+		assertEquals(1, ChronoTimer.current.getFinishQueue().size());
 		ChronoTimer.readCommand(timestamp+=55, "FIN");
 		
 		//Test conditions - empty finishqueue
 		ChronoTimer.readCommand(timestamp, "NUM 444");
 		ChronoTimer.readCommand(timestamp+=65648, "START");
 		ChronoTimer.readCommand(timestamp+=555, "DNF");
-		assertEquals(0, ChronoTimer.current.getFinishSize());
+		assertEquals(0, ChronoTimer.current.getFinishQueue().size());
 		ChronoTimer.current.trigger(2, timestamp);
 		assertEquals("Bib #444 Did Not Finish", Printer.log.get(Printer.log.size()-1));
 		
@@ -279,11 +279,11 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "NEWRUN");
 		ChronoTimer.readCommand(timestamp+100, "NUM 888");
 		assertNotNull(ChronoTimer.current);
-		assertEquals("ChronoTimer should only have 1 racer", 1, ChronoTimer.current.getStartSize());
+		assertEquals("ChronoTimer should only have 1 racer", 1, ChronoTimer.current.getStartQueue().size());
 		
 		ChronoTimer.readCommand(timestamp+100, "NUM 999");
-		assertEquals(2, ChronoTimer.current.getStartSize());
-		assertEquals(0, ChronoTimer.current.getFinishSize());
+		assertEquals(2, ChronoTimer.current.getStartQueue().size());
+		assertEquals(0, ChronoTimer.current.getFinishQueue().size());
 		
 	}
 	
@@ -462,9 +462,9 @@ public class TestCommands {
 
 		//Test FIN before starting race - Trig 2
 		ChronoTimer.readCommand(timestamp, "TRIG 2");
-		assertEquals(ChronoTimer.current.getFinishSize(), 0);
+		assertEquals(ChronoTimer.current.getFinishQueue().size(), 0);
 		assertTrue(Printer.log.isEmpty());
-		assertEquals(1,ChronoTimer.current.getStartSize());
+		assertEquals(1,ChronoTimer.current.getStartQueue().size());
 		
 		//Test conditions - if c <> 2
 		ChronoTimer.current.trigger(3, timestamp+=5678);
@@ -472,14 +472,14 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=5477, "START");
 		ChronoTimer.current.trigger(3, timestamp+6666);
 		assertEquals("Bib #777 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
-		assertEquals(1, ChronoTimer.current.getFinishSize());
+		assertEquals(1, ChronoTimer.current.getFinishQueue().size());
 		ChronoTimer.readCommand(timestamp+=55, "TRIG 2");
 		
 		//Test conditions - empty finishqueue
 		ChronoTimer.readCommand(timestamp, "NUM 444");
 		ChronoTimer.readCommand(timestamp+=65648, "START");
 		ChronoTimer.readCommand(timestamp+=555, "DNF");
-		assertEquals(0, ChronoTimer.current.getFinishSize());
+		assertEquals(0, ChronoTimer.current.getFinishQueue().size());
 		ChronoTimer.current.trigger(2, timestamp);
 		assertEquals("Bib #444 Did Not Finish", Printer.log.get(Printer.log.size()-1));
 		

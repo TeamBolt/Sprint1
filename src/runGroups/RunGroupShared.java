@@ -150,22 +150,6 @@ public class RunGroupShared {
 	}
 	
 	/**
-	 * Get size of startQueue.
-	 */
-	public int getStartSize(){
-		
-		return startQueue.size();
-	}
-	
-	/**
-	 * Get size of finishQueue.
-	 */
-	public int getFinishSize(){
-		
-		return finishQueue.size();
-	}
-	
-	/**
 	 * Get if the RunGroup is empty.
 	 */
 	public boolean isEmpty(){

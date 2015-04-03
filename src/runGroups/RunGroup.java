@@ -32,10 +32,6 @@ public interface RunGroup {
 	
 	public int getRun();
 	
-	public int getStartSize();
-	
-	public int getFinishSize();
-	
 	public LinkedBlockingQueue<Run> getStartQueue();
 	
 	public LinkedBlockingQueue<Run> getFinishQueue();
