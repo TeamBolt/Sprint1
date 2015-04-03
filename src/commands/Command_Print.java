@@ -26,8 +26,10 @@ public class Command_Print implements Command {
 		if ( run == 0 || ( ChronoTimer.getCurrent() != null && run == ChronoTimer.getCurrent().getRun() ) ) {
 			if ( ChronoTimer.getCurrent() != null ) {
 				ChronoTimer.getCurrent().print();
+			} else if ( !ChronoTimer.getArchive().isEmpty() ){
+				ChronoTimer.getArchive().get(ChronoTimer.getArchive().size()-1).print();
 			} else {
-				Printer.print("No Current Run, please enter the NEWRUN command");
+				Printer.print("No Run to print.");
 			}
 		} else {
 			if ( ChronoTimer.getArchive().size() >= run ) {
