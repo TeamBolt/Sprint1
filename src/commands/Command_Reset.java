@@ -42,7 +42,7 @@ public class Command_Reset implements Command {
 			ChronoTimer.setEventType("IND");
 			ChronoTimer.setCurrent(new RunGroupInd());
 			ChronoTimer.setOn(true); //Since commands don't work unless the system is already on, this should do nothing.
-			//
+			
 			//System.out.println("got to bottom of command reset exectue");
 		
 		
