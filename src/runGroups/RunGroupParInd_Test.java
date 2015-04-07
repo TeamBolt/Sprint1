@@ -27,10 +27,12 @@ public class RunGroupParInd_Test {
 		assertEquals("RunGroup was not given correct first finish channel", 2, rg.finishChannelOne );
 		assertEquals("RunGroup was not given correct second start channel", 3, rg.startChannelTwo );
 		assertEquals("RunGroup was not given correct second finish channel", 4, rg.finishChannelTwo );
-		assertEquals("RunGroup was not given correct second finish channel", false, rg.racerOneIsRunning );
-		assertEquals("RunGroup was not given correct second finish channel", false, rg.racerTwoIsRunning );
-		assertEquals("RunGroup was not given correct second finish channel", false, rg.racersSwitched );
-		assertEquals("RunGroup was not given correct second finish channel", false, rg.raceInProgress );
+		assertEquals("RunGroup was not given correct racerOneIsRunning", false, rg.racerOneIsRunning );
+		assertEquals("RunGroup was not given correct racerTwoIsRunning", false, rg.racerTwoIsRunning );
+		assertEquals("RunGroup was not given correct racerOneFinished", false, rg.racerOneFinished );
+		assertEquals("RunGroup was not given correct racerTwoFinished", false, rg.racerTwoFinished );
+		assertEquals("RunGroup was not given correct racersSwitched", false, rg.racersSwitched );
+		assertEquals("RunGroup was not given correct raceInProgress", false, rg.raceInProgress );
 		assertEquals("RunGroup was not given correct eventType", "PARIND", rg.eventType );
 	}
 	
@@ -64,13 +66,7 @@ public class RunGroupParInd_Test {
 		ChronoTimer.getChannels().get(1).toggle();
 		ChronoTimer.getChannels().get(2).toggle();
 		ChronoTimer.getChannels().get(3).toggle();
-		
-		// Trigger the finish channel (but no one to finish)
-		rg.trigger(2, 0);
-		assertEquals("Run was removed from startqueue (wrongly).", 1, rg.startQueue.size());
-		assertEquals("Run was placed in finishqueue (wrongly).", 0, rg.finishQueue.size());
-		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		
+
 		
 		//// Test only one run all alone.
 		// Trigger the second start channel (One Run Only so should do nothing)
@@ -78,51 +74,29 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was wrongly removed from startqueue.", 1, rg.startQueue.size());
 		assertEquals("Run was wrongly placed in finishqueue.", 0, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("A message was wrongly printed to the printer.", 0, Printer.getLog().size());
+		assertEquals("A message was wrongly printed to the printer.", 1, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Cannot start competitor, another competitor is needed.", Printer.getLog().get(0));
 		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoFinished);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
-		// Trigger the first start channel (One Run Only)
+		// Trigger the first start channel (Can't start because not two racers)
 		rg.trigger(1, 42);
-		assertEquals("Run was not removed from startqueue.", 0, rg.startQueue.size());
-		assertEquals("Run was not placed in finishqueue.", 1, rg.finishQueue.size());
+		assertEquals("Run was not removed from startqueue.", 1, rg.startQueue.size());
+		assertEquals("Run was not placed in finishqueue.", 0, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("Run was not given correct startTime.", 42, rg.finishQueue.peek().getStartTime());
-		assertEquals("Run was given a finishTime (wrongly).", 0, rg.finishQueue.peek().getFinishTime());
-		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
-		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Start:  18:00:00.42", Printer.getLog().get(0));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
-		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
-		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
-		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
-		
-		// Trigger the second finish channel (should do nothing)
-		rg.trigger(4, 0);
-		assertEquals("Run was placed in start queue (wrongly).", 0, rg.startQueue.size());
-		assertEquals("Run was moved from finish queue (wrongly).", 1, rg.finishQueue.size());
-		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
-		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
-		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
-		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
-		
-		// Trigger the finish channel (now the run should be completed).
-		rg.trigger(2, 9001);
-		assertEquals("Run was placed in startqueue (wrongly).", 0, rg.startQueue.size());
-		assertEquals("Run was placed in finishqueue (wrongly).", 0, rg.finishQueue.size());
-		assertEquals("Run was not placed in completedruns.", 1, rg.completedRuns.size());
-		assertEquals("Runs startTime was changed (wrongly).", 42, rg.completedRuns.peek().getStartTime());
-		assertEquals("Run was not given a finishTime.", 9001, rg.completedRuns.peek().getFinishTime());
-		assertEquals("Run was not given correct state.", "finished", rg.completedRuns.peek().getState());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Finish: 18:00:09.1", Printer.getLog().get(1));
+		assertEquals("Incorrect message was printed to the printer.", "Cannot start competitor, another competitor is needed.", Printer.getLog().get(1));
 		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoFinished);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		
 		
 		
 		//// Test Run1 with Run2 present.
@@ -141,9 +115,11 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
 		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Start:  18:00:00.42", Printer.getLog().get(0));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoFinished);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 
 		// Trigger the finish channel (now the run should be completed).
@@ -156,11 +132,26 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "finished", rg.completedRuns.peek().getState());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Finish: 18:00:09.1", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneFinished was incorrect.", true, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
+		// Trigger start channel 1 again, should print message.
+		rg.trigger(1, 42);
+		assertEquals("Run was not removed from startqueue.", 1, rg.startQueue.size());
+		assertEquals("Run was not placed in finishqueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 1, rg.completedRuns.size());
+		assertEquals("No message was printed to the printer.", 3, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Cannot start competitor, race in progress", Printer.getLog().get(2));
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneFinished was incorrect.", true, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
+		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
 		//// Test Run2 with Run1 present.
 		rg = new RunGroupParInd();
@@ -178,7 +169,7 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
 		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Start:  18:00:00.42", Printer.getLog().get(0));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", true, rg.racersSwitched);
@@ -193,11 +184,24 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "finished", rg.completedRuns.peek().getState());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Finish: 18:00:09.1", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
+		// Trigger start channel 1 again, should print message.
+		rg.trigger(3, 42);
+		assertEquals("Run was not removed from startqueue.", 1, rg.startQueue.size());
+		assertEquals("Run was not placed in finishqueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 1, rg.completedRuns.size());
+		assertEquals("No message was printed to the printer.", 3, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Cannot start competitor, race in progress", Printer.getLog().get(2));
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", true, rg.racerTwoFinished);
+		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
 		
 		////// Test with two races (in order).
@@ -217,9 +221,11 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
 		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Start:  18:00:00.42", Printer.getLog().get(0));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
 		// Trigger the first start channel again (should do nothing)
@@ -227,10 +233,12 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was placed in start queue (wrongly).", 1, rg.startQueue.size());
 		assertEquals("Run was moved from finish queue (wrongly).", 1, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		// Start the second racer.
 		rg.trigger(3, 99);
@@ -244,6 +252,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 	
 		//// Test Finish Run1 then Run2
@@ -273,6 +283,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", true, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		// Finish Run2
 		rg.trigger(4, 9002);
@@ -290,6 +302,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		
 		//// Test Finish Run2 then Run1
@@ -316,6 +330,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", true, rg.racerTwoFinished);
 		
 		// Finish Run1
 		rg.trigger(2, 9001);
@@ -333,6 +349,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		
 		
@@ -353,20 +371,24 @@ public class RunGroupParInd_Test {
 		assertEquals("Run was not given correct state.", "inProgress", rg.finishQueue.peek().getState());
 		assertEquals("No message was printed to the printer.", 1, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Start:  18:00:00.99", Printer.getLog().get(0));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", true, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		// Trigger the second start channel again (should do nothing)
 		rg.trigger(3, 0);
 		assertEquals("Run was placed in start queue (wrongly).", 1, rg.startQueue.size());
 		assertEquals("Run was moved from finish queue (wrongly).", 1, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", true, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		// Trigger the first start channel
 		rg.trigger(1, 42);
@@ -380,6 +402,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", true, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 			
 		
 		//// Test Finish Run1 then Run2
@@ -400,6 +424,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", true, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", true, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		// Finish Run2
 		rg.trigger(4, 9002);
@@ -417,6 +443,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		
 		//// Test Finish Run2 then Run1
@@ -443,6 +471,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", true, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", true, rg.racerTwoFinished);
 		
 		// Finish Run1
 		rg.trigger(2, 9001);
@@ -460,6 +490,8 @@ public class RunGroupParInd_Test {
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 	}
 	
 	/**
@@ -485,34 +517,6 @@ public class RunGroupParInd_Test {
 		////// Test cancel 1.
 		
 		
-		//// Test cancel Run1 with nothing waiting
-		rg = new RunGroupParInd();
-		Printer.getLog().clear();
-		rg.add(1);
-		
-		// Cancel should do nothing when there is no one waiting to finish.
-		rg.cancel();
-		assertEquals("Run was removed from startqueue (wrongly).", 1, rg.startQueue.size());
-		assertEquals("Run was placed in finishqueue (wrongly).", 0, rg.finishQueue.size());
-		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		
-		// Start a run 
-		rg.trigger(1, 0);
-		
-		// Test that cancel works correctly.
-		rg.cancel();
-		assertEquals("Run was not placed back in startQueue.", 1, rg.startQueue.size());
-		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
-		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-		assertEquals("Run was not given correct state.", "waiting", rg.startQueue.poll().getState());
-		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
-		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
-		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
-		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
-		
-		
 		//// Test cancel Run1 with Run2 waiting.
 		rg = new RunGroupParInd();
 		Printer.getLog().clear();
@@ -531,7 +535,13 @@ public class RunGroupParInd_Test {
 		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(1));
-
+		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
+		
 		
 		//// Test cancel Run2 with Run1 waiting.
 		rg = new RunGroupParInd();
@@ -551,8 +561,52 @@ public class RunGroupParInd_Test {
 		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(1));
+		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
+		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
+		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
+		//// Test cancel completed Run1 with Run2 waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(1, 0);
+		rg.trigger(2, 100);
+		rg.cancel();
+		assertEquals("Run was not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Run was not given correct state.", "waiting", run1.getState());
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Run was not given correct state.", "waiting", run2.getState());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 3, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
 		
+		//// Test cancel completed Run2 with Run1 waiting.
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(3, 0);
+		rg.trigger(4, 100);
+		rg.cancel();
+		assertEquals("Run was not placed back in startQueue.", 2, rg.startQueue.size());
+		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Run was not given correct state.", "waiting", run1.getState());
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Run was not given correct state.", "waiting", run2.getState());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("No message was printed to the printer.", 3, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(2));
 		
 		////// Test cancel two.
 		
@@ -620,7 +674,7 @@ public class RunGroupParInd_Test {
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
 		
 		
-		//// Test cancel two runs (in order) with a run waiting.
+		//// Test cancel two runs (switched) with a run waiting.
 		rg = new RunGroupParInd();
 		Printer.getLog().clear();
 		rg.add(1);
@@ -641,6 +695,52 @@ public class RunGroupParInd_Test {
 		assertEquals("No message was printed to the printer.", 4, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(2));
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(3));
+		
+		//// Test cancel completed Run1 running Run2
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.add(3);
+		rg.trigger(1, 0);
+		rg.trigger(3, 0);
+		rg.trigger(2, 100);
+		rg.cancel();
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		run3 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("Wrong run is third in line to start.", 3, run3.getBibNum());
+		assertEquals("No message was printed to the printer.", 5, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(3));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(4));
+		
+		//// Test cancel completed Run2 running Run1
+		rg = new RunGroupParInd();
+		Printer.getLog().clear();
+		rg.add(1);
+		rg.add(2);
+		rg.add(3);
+		rg.trigger(1, 0);
+		rg.trigger(3, 0);
+		rg.trigger(4, 100);
+		rg.cancel();
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		run1 = rg.startQueue.poll(); // Get first in line.
+		run2 = rg.startQueue.poll(); // Get second in line.
+		run3 = rg.startQueue.poll(); // Get second in line.
+		assertEquals("Wrong run is first in line to start.", 1, run1.getBibNum());
+		assertEquals("Wrong run is second in line to start.", 2, run2.getBibNum());
+		assertEquals("Wrong run is third in line to start.", 3, run3.getBibNum());
+		assertEquals("No message was printed to the printer.", 5, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Canceled", Printer.getLog().get(3));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Canceled", Printer.getLog().get(4));
 	}
 	
 	/**
@@ -663,25 +763,13 @@ public class RunGroupParInd_Test {
 		
 		//// Test one run 
 		rg.add(1);
+		rg.add(2);
 		
 		// dnf should do nothing when there is no one waiting to finish.
 		rg.dnf();
-		assertEquals("Run was removed from startqueue (wrongly).", 1, rg.startQueue.size());
+		assertEquals("Run was removed from startqueue (wrongly).", 2, rg.startQueue.size());
 		assertEquals("Run was placed in finishqueue (wrongly).", 0, rg.finishQueue.size());
 		assertEquals("Run was placed in completedruns (wrongly).", 0, rg.completedRuns.size());
-
-		rg.trigger(1, 0);
-		rg.dnf();
-		assertEquals("Run was placed in startQueue (wrongly).", 0, rg.startQueue.size());
-		assertEquals("Run was not removed from finishQueue.", 0, rg.finishQueue.size());
-		assertEquals("Run was not placed in completedRuns.", 1, rg.completedRuns.size());
-		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().getState());
-		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
-		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
-		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
-		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
-		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 		
 		//// Test two runs, run1 in progress 
 		rg = new RunGroupParInd();
@@ -699,10 +787,12 @@ public class RunGroupParInd_Test {
 		assertEquals("Wrong run was dnf'd.", 1, rg.completedRuns.peek().getBibNum());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", true, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", false, rg.racerTwoFinished);
 		
 		//// Test two runs, run2 in progress 
 		rg = new RunGroupParInd();
@@ -720,10 +810,12 @@ public class RunGroupParInd_Test {
 		assertEquals("Wrong run was dnf'd.", 2, rg.completedRuns.peek().getBibNum());
 		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
 		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.getLog().get(1));
-		assertEquals("raceInProgress was incorrect.", false, rg.raceInProgress);
+		assertEquals("raceInProgress was incorrect.", true, rg.raceInProgress);
 		assertEquals("racerOneIsRunning was incorrect.", false, rg.racerOneIsRunning);
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
+		assertEquals("racerOneFinished was incorrect.", false, rg.racerOneFinished);
+		assertEquals("racerTwoFinished was incorrect.", true, rg.racerTwoFinished);
 		
 		//// Test two runs, both in progress (in order)
 		rg = new RunGroupParInd();
