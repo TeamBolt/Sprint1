@@ -48,8 +48,6 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 		raceInProgress = false;
 
 		eventType = "PARIND";
-		
-		Printer.print("WARNING: This is an untested Event Type, it may or may exibit the expected behavior.");
 	}
 	
 	/**

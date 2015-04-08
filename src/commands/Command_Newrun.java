@@ -4,6 +4,7 @@ import chronoTimerItems.Printer;
 import runGroups.RunGroupGrp;
 import runGroups.RunGroupInd;
 import runGroups.RunGroupParInd;
+import runGroups.RunGroupParGrp;
 
 
 public class Command_Newrun implements Command {
@@ -27,7 +28,7 @@ private long timestamp;
 			} else if ( ChronoTimer.getEventType().equals("GRP") ) {
 				ChronoTimer.setCurrent( new RunGroupGrp() );
 			} else {
-				Printer.print("Event type Parallel Group not yet supported");
+				ChronoTimer.setCurrent( new RunGroupParGrp() );
 			}
 		} else {
 			Printer.print("There is a current run, must call ENDRUN before NEWRUN.");

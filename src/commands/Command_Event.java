@@ -3,6 +3,7 @@ import chronoTimerItems.ChronoTimer;
 import chronoTimerItems.Printer;
 import runGroups.RunGroupGrp;
 import runGroups.RunGroupInd;
+import runGroups.RunGroupParGrp;
 import runGroups.RunGroupParInd;
 
 
@@ -39,7 +40,7 @@ public class Command_Event implements Command {
 		} else if ( ChronoTimer.getEventType().equals("GRP") ) {
 			ChronoTimer.setCurrent( new RunGroupGrp() );
 		} else {
-			Printer.print("Event type Parallel Group not yet supported");
+			ChronoTimer.setCurrent( new RunGroupParGrp() );
 		}
 	}
 

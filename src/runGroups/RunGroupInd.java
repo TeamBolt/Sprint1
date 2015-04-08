@@ -42,7 +42,6 @@ public class RunGroupInd extends RunGroupShared implements RunGroup{
 	 * @param int channel		The channel which was triggered.
 	 * @param long timestamp	The time at which the trigger occured.
 	 */
-	@Override
 	public void trigger(int c, long timestamp) {
 		// If the channel is disabled, do nothing.
 		Channel channel = ChronoTimer.getChannels().get( c - 1 );
@@ -69,7 +68,6 @@ public class RunGroupInd extends RunGroupShared implements RunGroup{
 	 * Cancels the run which would be next to finish (if there is one) and moves
 	 * it back to the front of the startQueue.
 	 */
-	@Override
 	public void cancel() {
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishQueue.isEmpty() ) return;
@@ -116,7 +114,6 @@ public class RunGroupInd extends RunGroupShared implements RunGroup{
 	 * DNFs the run that would be first to finish, gives it state "dnf" but no
 	 * finishTime and moves it into completedRuns.
 	 */
-	@Override
 	public void dnf() {
 		// DNF only makes sense if there is a run waiting to finish.
 		if ( finishQueue.isEmpty() ) return;
