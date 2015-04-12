@@ -122,5 +122,7 @@ public class RunGroupInd extends RunGroupShared implements RunGroup{
 		current.setState("dnf");
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
+		
 	}
+
 }

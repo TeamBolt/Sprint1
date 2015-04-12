@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import commands.Command;
+import commands.Command_CLR;
 import commands.Command_Cancel;
 import commands.Command_Conn;
 import commands.Command_DNF;
@@ -23,11 +24,10 @@ import commands.Command_On;
 import commands.Command_Print;
 import commands.Command_Reset;
 import commands.Command_Start;
+import commands.Command_Swap;
 import commands.Command_TIME;
 import commands.Command_Toggle;
 import commands.Command_Trig;
-
-
 import runGroups.RunGroup;
 
 
@@ -190,9 +190,9 @@ public class ChronoTimer {
 							break;
 			case "EXPORT":	cmdObj = new Command_Export(paramOne);
 							break;
-			case "CLR":		cmdObj = new Command_NULL();
+			case "CLR":		cmdObj = new Command_CLR(timestamp, paramOne);
 							break;
-			case "SWAP":	cmdObj = new Command_NULL();
+			case "SWAP":	cmdObj = new Command_Swap(timestamp);
 							break;
 			case "RCL":		cmdObj = new Command_NULL();
 							break;
@@ -253,5 +253,5 @@ public class ChronoTimer {
 	public static ArrayList<String> getEventLog() {
 		return eventLog;
 	}
-
+	
 }

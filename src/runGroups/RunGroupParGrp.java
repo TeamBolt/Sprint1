@@ -138,7 +138,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		// Print inProgress runs.
 		for ( Run run : finishList ) {
 			if ( run != null ) out += run.print() + "\n";
-		}
+		}		
 		
 		// Print waiting runs.
 		for ( Run run : startQueue ) {
@@ -151,10 +151,16 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 	@Override
 	public LinkedBlockingQueue<Run> getFinishQueue() {
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-		for ( Run r : finishList ) {
+		/*for ( Run r : finishList ) {
 			tempQueue.add(r);
 		}
-		return tempQueue;
+		return tempQueue;*/
+		
+		for(int i=0; i<finishList.length; i++){
+			if(finishList[i]!=null) {
+				tempQueue.add(finishList[i]);
+			}
+		} return tempQueue;
 	}
 	
 	/**
@@ -196,20 +202,25 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		return (startQueue.isEmpty() && finishListIsEmpty() && completedRuns.isEmpty());
 	}
 	
-	//@Override
-	public void swap() {
-		
-	}
-	
-	//@Override
-	public void clear( int bib ) {
-		
-	}
 	
 	private boolean finishListIsEmpty() {
 		for ( Run r : finishList ) {
 			if ( r != null ) return false;
 		}
 		return true;
+	}
+	
+	public void swap(){
+		
+		if(finishList[0]==null && finishList[1]==null){
+			Printer.print("No Run in progress.  A run must be started first.");
+		} else if(finishList[0]==null || finishList[1]==null){
+			Printer.print("Not enough runners to swap.  Please add another runner");
+		} else {
+			Run r = finishList[0];
+			finishList[0] = finishList[1];
+			finishList[1] = r;
+		}
+		
 	}
 }

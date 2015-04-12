@@ -101,4 +101,5 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
 	}
+
 }

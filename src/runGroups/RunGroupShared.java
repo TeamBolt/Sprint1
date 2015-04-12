@@ -33,6 +33,8 @@ public class RunGroupShared {
 	protected LinkedBlockingQueue<Run> startQueue;
 	protected LinkedBlockingQueue<Run> finishQueue;
 	protected LinkedBlockingQueue<Run> completedRuns;
+	protected LinkedBlockingQueue<Run> tempQueue;
+	protected Run secondRunner;
 	
 	/**
 	 * Constructor instantiates data structures, and sets the runNum.
@@ -150,6 +152,35 @@ public class RunGroupShared {
 	}
 	
 	/**
+	 * Swaps first two positions in finish queue
+	 */
+	
+	public void swap(){
+		
+		tempQueue = new LinkedBlockingQueue<Run>();
+		
+		int count = 1;
+		//loop through queue and add to the tempQueue
+		while(!finishQueue.isEmpty()){
+			Run current = finishQueue.poll();
+			if(count==2){
+				secondRunner = current;	//save second runner for swapping.
+			} else {
+				tempQueue.add(current);
+			}
+			++count;
+		}	
+		
+		finishQueue.add(secondRunner);
+		while(!tempQueue.isEmpty()){
+			Run current = tempQueue.poll();
+			finishQueue.add(current);
+		}
+		
+		
+	}
+	
+	/**
 	 * Get if the RunGroup is empty.
 	 */
 	public boolean isEmpty(){
@@ -183,5 +214,22 @@ public class RunGroupShared {
 	 */
 	public String getEventType() {
 		return eventType;
+	}
+
+	/**
+	 * Clears bib number if found in startingQueue.
+	 */
+	
+	public void clr(int bib) {
+		Run current;
+		tempQueue = new LinkedBlockingQueue<Run>();
+
+		while(!startQueue.isEmpty()){
+			current = startQueue.poll();
+			if(current.getBibNum()!=bib){
+				tempQueue.add(current);
+			}
+		}
+		startQueue = tempQueue;
 	}
 }

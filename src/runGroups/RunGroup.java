@@ -41,5 +41,9 @@ public interface RunGroup {
 	public boolean isEmpty();
 	
 	public String getEventType();
-	
+		
+	public void swap();
+
+	public void clr(int bib);
+
 }
