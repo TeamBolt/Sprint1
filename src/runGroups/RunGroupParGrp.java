@@ -220,15 +220,19 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 	 */
 	@Override
 	public boolean isEmpty(){
-		
 		return (startQueue.isEmpty() && finishListIsEmpty() && completedRuns.isEmpty());
 	}
 	
-	
+	/**
+	 * Returns if the finishList contains any non null runs.
+	 */
 	public boolean finishListIsEmpty() {
 		return ( finishListSize() == 0 );
 	}
 	
+	/**
+	 * Returns the number of non null runs in the finishList.
+	 */
 	public int finishListSize() {
 		int count = 0;
 		for ( Run r : finishList ) {
@@ -237,17 +241,41 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		return count;
 	}
 	
-	public void swap(){
-		
-		if(finishList[0]==null && finishList[1]==null){
-			Printer.print("No Run in progress.  A run must be started first.");
-		} else if(finishList[0]==null || finishList[1]==null){
-			Printer.print("Not enough runners to swap.  Please add another runner");
-		} else {
-			Run r = finishList[0];
-			finishList[0] = finishList[1];
-			finishList[1] = r;
+	/**
+	 * End all current runs with state dnf.
+	 */
+	@Override
+	public void end() {
+		// End runs waiting to start.
+		for ( Run r : startQueue ) {
+			r.setState("dnf");
+			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
+			completedRuns.add(r);
 		}
 		
+		// End runs waiting to finish.
+		for ( Run r : finishList ) {
+			r.setState("dnf");
+			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
+			completedRuns.add(r);
+		}
+	}
+	
+	/**
+	 * Swaps the next two racers to finish (if there are enough racers).
+	 */
+	@Override
+	public void swap(){
+		// NOTE this will not work because finishList can have racers at other indices.
+		Printer.print("Swap not yet implemented for this event type.");
+//		if( finishList[0] == null && finishList[1] == null ) {
+//			Printer.print("No Run in progress.  A run must be started first.");
+//		} else if ( finishList[0] == null || finishList[1] == null ) {
+//			Printer.print("Not enough runners to swap.  Please add another runner");
+//		} else {
+//			Run r = finishList[0];
+//			finishList[0] = finishList[1];
+//			finishList[1] = r;
+//		}
 	}
 }

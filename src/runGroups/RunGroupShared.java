@@ -154,16 +154,14 @@ public class RunGroupShared {
 	/**
 	 * Swaps first two positions in finish queue
 	 */
-	
 	public void swap(){
-		
 		tempQueue = new LinkedBlockingQueue<Run>();
 		
 		int count = 1;
 		//loop through queue and add to the tempQueue
-		while(!finishQueue.isEmpty()){
+		while( !finishQueue.isEmpty() ) {
 			Run current = finishQueue.poll();
-			if(count==2){
+			if( count == 2 ){
 				secondRunner = current;	//save second runner for swapping.
 			} else {
 				tempQueue.add(current);
@@ -176,15 +174,12 @@ public class RunGroupShared {
 			Run current = tempQueue.poll();
 			finishQueue.add(current);
 		}
-		
-		
 	}
 	
 	/**
 	 * Get if the RunGroup is empty.
 	 */
 	public boolean isEmpty(){
-		
 		return (startQueue.isEmpty() && finishQueue.isEmpty() && completedRuns.isEmpty());
 	}
 	
@@ -224,9 +219,9 @@ public class RunGroupShared {
 		Run current;
 		tempQueue = new LinkedBlockingQueue<Run>();
 
-		while(!startQueue.isEmpty()){
+		while( !startQueue.isEmpty() ) {
 			current = startQueue.poll();
-			if(current.getBibNum()!=bib){
+			if( current.getBibNum() != bib ) {
 				tempQueue.add(current);
 			}
 		}
