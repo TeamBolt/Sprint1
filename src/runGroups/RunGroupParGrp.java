@@ -1,6 +1,5 @@
 package runGroups;
 
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import chronoTimerItems.Channel;
@@ -19,6 +18,7 @@ import chronoTimerItems.SystemTimer;
 public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 
 	protected Run[] finishList;
+	protected int groupSize;
 
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
@@ -27,6 +27,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		super();
 		
 		finishList = new Run[8];
+		groupSize = 0;
 		
 		eventType = "PARGRP";
 	}
@@ -51,6 +52,8 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 				current.setState("inProgress");
 				finishList[i] = current;
 				Printer.print("Bib #" + current.getBibNum() + " Start:  " + SystemTimer.convertLongToString(timestamp));
+				System.out.println(i);
+				groupSize = i + 1;
 			}
 		} else if ( finishList[c-1] != null ) {
 			// Finish channel triggered, the run is completed.
@@ -59,6 +62,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 			current.setFinishTime(timestamp);
 			current.setState("finished");
 			completedRuns.add(current);
+			if (finishListIsEmpty()) groupSize = 0;
 			Printer.print("Bib #" + current.getBibNum() + " Finish: " + SystemTimer.convertLongToString(timestamp));
 		}
 	}
@@ -70,10 +74,22 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishListIsEmpty() ) return;
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
+		
+		int i = 0;
 		for ( Run current : finishList ) {
+			if ( current == null ) {
+				// Found a hole.
+				if ( i < groupSize ) {
+					// If it is a hole where a run was, go get it out of completedRuns.
+					current = completedRuns.poll();
+				} else {
+					continue;
+				}
+			}
 			current.setState("waiting");
 			tempQueue.add(current);
 			Printer.print("Bib #" + current.getBibNum() + " Canceled");
+			++i;
 		}
 		
 		// Canceled all runs.
@@ -84,6 +100,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 			tempQueue.addAll(startQueue);
 		}
 		
+		groupSize = 0;
 		startQueue = tempQueue; // Replaces startQueue with newly constructed version.
 	}
 
@@ -96,13 +113,18 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		if ( finishListIsEmpty() ) return;
 		
 		Run current = null;
+		int i = 0;
 		for ( Run r : finishList ) {
 			if ( r != null ) {
 				current = r;
+				finishList[i] = null;
 				break;
 			}
+			++i;
 		}
-
+		
+		if (finishListIsEmpty()) groupSize = 0;
+		
 		current.setState("dnf");
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
@@ -203,11 +225,16 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 	}
 	
 	
-	private boolean finishListIsEmpty() {
+	public boolean finishListIsEmpty() {
+		return ( finishListSize() == 0 );
+	}
+	
+	public int finishListSize() {
+		int count = 0;
 		for ( Run r : finishList ) {
-			if ( r != null ) return false;
+			if ( r != null ) ++count;
 		}
-		return true;
+		return count;
 	}
 	
 	public void swap(){

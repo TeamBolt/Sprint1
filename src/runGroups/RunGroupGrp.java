@@ -19,6 +19,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 
 	protected int startChannel;
 	protected int finishChannel;
+	protected int groupSize;
 
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
@@ -29,6 +30,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 		// Defaults.
 		startChannel = 1;
 		finishChannel = 2;
+		groupSize = 0;
 		
 		eventType = "GRP";
 	}
@@ -46,6 +48,10 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 		if ( channel.isEnabled() == false ) return;
 		
 		if ( c == startChannel && !startQueue.isEmpty() ) {
+			if ( groupSize > 0 ) {
+				Printer.print("Cannot start competitor, race in progress.");
+				return;
+			}
 			// Start channel was triggered, all runs are off!
 			for ( Run current : startQueue ) {
 				current.setStartTime(timestamp);
@@ -53,6 +59,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 				finishQueue.add(current);
 				Printer.print("Bib #" + current.getBibNum() + " Start:  " + SystemTimer.convertLongToString(timestamp));
 			}
+			groupSize = startQueue.size();
 			startQueue.clear(); // All races have started.
 		} else if ( c == finishChannel && !finishQueue.isEmpty()) {
 			// Finish channel triggered, the run is completed.
@@ -61,6 +68,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 			current.setState("finished");
 			completedRuns.add(current);
 			Printer.print("Bib #" + current.getBibNum() + " Finish: " + SystemTimer.convertLongToString(timestamp));
+			if ( finishQueue.isEmpty() ) {groupSize = 0;}
 		}
 	}
 
@@ -71,6 +79,14 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishQueue.isEmpty() ) return;
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
+		
+		for ( int i = 0; i < groupSize - finishQueue.size(); i++ ) {
+			Run r = completedRuns.poll();
+			r.setState("waiting");
+			tempQueue.add(r);
+			Printer.print("Bib #" + r.getBibNum() + " Canceled");
+		}
+		
 		for ( Run current : finishQueue ) {
 			current.setState("waiting");
 			tempQueue.add(current);
@@ -84,7 +100,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 			// If there were people waiting to start, we need to budge in line.
 			tempQueue.addAll(startQueue);
 		}
-		
+		groupSize = 0;
 		startQueue = tempQueue; // Replaces startQueue with newly constructed version.
 	}
 
@@ -97,6 +113,7 @@ public class RunGroupGrp extends RunGroupShared implements RunGroup{
 		if ( finishQueue.isEmpty() ) return;
 		
 		Run current = finishQueue.poll();
+		if (finishQueue.isEmpty()) groupSize = 0;
 		current.setState("dnf");
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
