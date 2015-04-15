@@ -27,7 +27,7 @@ public class Command_Export implements Command {
 
 	@Override
 	public void execute() {
-		this.exportToXML();
+	//	this.exportToXML();
 		this.exportToJson();
 		this.updateURL();
 	}
@@ -234,7 +234,7 @@ public class Command_Export implements Command {
 	public void updateURL() {
 		try {
 			//			URL site = new URL("http://harmonlab7.appspot.com/helloworld");
-			URL site = new URL("http://localhost:8888/gae_lab_8");
+			URL site = new URL("http://teambolt361.appspot.com/server");
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
