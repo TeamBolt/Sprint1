@@ -50,8 +50,8 @@ public class Window extends JFrame {
 	
 	public void createContents() {
 		JPanel left = new JPanel(new BorderLayout());
-		JPanel right = new JPanel(new FlowLayout());
-		JPanel center = new JPanel(new FlowLayout());
+		JPanel right = new JPanel(new BorderLayout());
+		JPanel center = new JPanel(new BorderLayout());
 
 		
 		
@@ -118,21 +118,26 @@ public class Window extends JFrame {
 		channels.add(chanCheck7);
 		channels.add(chanCheck8);
 		title.add(new JLabel("Channels"));
+		left.add(title, BorderLayout.NORTH);
 		left.add(channels, BorderLayout.CENTER);
 	
 		// Right
-		printer = new TextArea("",25,38);
+		printer = new TextArea("",26,38);
 		printer.setEditable(false);
 		printer.setBackground(Color.LIGHT_GRAY);
 		printer.setForeground(Color.GREEN);
 		printOnButton = new JButton("Turn Printer On");
 		printOnButton.addActionListener(new PrintOnButtonListener());
-		right.add(printOnButton);
-		right.add(printer);
+		JPanel r1 = new JPanel(new FlowLayout());
+		JPanel r2 = new JPanel(new FlowLayout());
+		r1.add(printOnButton);
+		r2.add(printer);
+		right.add(r1, BorderLayout.NORTH);
+		right.add(r2, BorderLayout.CENTER);
 		
 		
 		// Center
-		display = new TextArea("",23,38);
+		display = new TextArea("",24,38);
 		display.setEditable(false);
 		display.setBackground(Color.LIGHT_GRAY);
 		display.setForeground(Color.GREEN);
@@ -140,13 +145,15 @@ public class Window extends JFrame {
 		textField.addActionListener(new TextListener());
 		JPanel bc1 = new JPanel(new FlowLayout());
 		JPanel bc2 = new JPanel(new FlowLayout());
-		bc1.add(display);
-		bc2.add(textField);
+		JPanel bc3 = new JPanel(new FlowLayout());
 		onButton = new JButton("Turn On");
 		onButton.addActionListener(new OnButtonListener());
-		center.add(onButton);
-		center.add(bc1);
-		center.add(bc2);
+		bc1.add(onButton);
+		bc2.add(display);
+		bc3.add(textField);
+		center.add(bc1, BorderLayout.NORTH);
+		center.add(bc2, BorderLayout.CENTER);
+		center.add(bc3, BorderLayout.SOUTH);
 
 		
 		add(left);

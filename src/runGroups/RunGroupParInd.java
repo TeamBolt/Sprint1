@@ -266,4 +266,12 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 		}
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
 	}
+	
+	/**
+	 * Swap does not make sense for parallel events.
+	 */
+	@Override
+	public void swap(){
+		Printer.print("Swap command does not apply to parallel events.");
+	}
 }
