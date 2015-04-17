@@ -79,16 +79,14 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishListIsEmpty() ) return;
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-		System.out.println("last" + lastStartQueue.size());
-		System.out.println("start" + startQueue.size());
-		System.out.println("comp" + completedRuns.size());
-		System.out.println("fin" + finishListSize());
 		
-		// Clear out any runs from this group that finished.
-		for ( int i = 0; i <= completedRuns.size() - ( groupSize - finishListSize() ); ++i) {
-			tempQueue.add(completedRuns.poll()); //Put the runs we aren't interested in in a temp queue.
+		if ( !completedRuns.isEmpty() ) {
+			// Clear out any runs from this group that finished.
+			for ( int i = 0; i < completedRuns.size() - ( groupSize - finishListSize() ); ++i) {
+				tempQueue.add(completedRuns.poll()); //Put the runs we aren't interested in in a temp queue.
+			}
+			completedRuns = tempQueue; //Essentially deleting our runs from the back of the queue.
 		}
-		completedRuns = tempQueue; //Essentially deleting our runs from the back of the queue.
 		
 		// Canceled all runs.
 		finishList = new Run[8];
@@ -102,15 +100,12 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		startQueue.clear();
 		// Replace startQueue with last startQueue plus any new racers.
 		for ( Run r : lastStartQueue ) {
+			Printer.print("Bib #" + r.getBibNum() + " Canceled");
 			r.setState("waiting");
 			startQueue.add(r);
 		}
 		
 		lastStartQueue.clear();
-		System.out.println("last" + lastStartQueue.size());
-		System.out.println("start" + startQueue.size());
-		System.out.println("comp" + completedRuns.size());
-		System.out.println("fin" + finishListSize());
 	}
 
 	/**

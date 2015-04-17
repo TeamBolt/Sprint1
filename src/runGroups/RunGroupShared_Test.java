@@ -45,6 +45,10 @@ public class RunGroupShared_Test {
 		
 		// Make sure adding a run works.
 		rg.add(1);
+		Printer.getLog().clear();
+		// Make sure we can;t add duplicate bib numbers.
+		rg.add(1);
+		assertEquals("No error was printed.", "Error: Bib number already in use", Printer.getLog().get(0));
 		assertEquals("No run was not added to the startqueue", 1, rg.startQueue.size());
 		assertEquals("Run was given the wrong bibNum", 1, rg.startQueue.peek().getBibNum());
 		assertEquals("Run was given the wrong runNum", 1, rg.startQueue.peek().getRunNum());

@@ -1,6 +1,9 @@
 package runGroups;
 
 import static org.junit.Assert.*;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.junit.Test;
 
 import chronoTimerItems.Channel;
@@ -212,7 +215,7 @@ public class RunGroupParGrp_Test {
 		assertEquals("Run 2 was not second.", 2, rg.startQueue.poll().getBibNum());
 		assertEquals("Run 3 was not last.", 3, rg.startQueue.poll().getBibNum());
 		
-		// Now with runs finished.
+		// Now with runs finished (just #2).
 		rg.add(1);
 		rg.add(2);
 		rg.add(3);
@@ -221,7 +224,26 @@ public class RunGroupParGrp_Test {
 		assertEquals("Run not finised.", 1, rg.completedRuns.size());
 		rg.cancel();
 
-		// Make sure that all runs were canceled, and order reasonably maintained.
+		// Make sure that all runs were canceled, and order maintained.
+		assertEquals("RunGroup was not given correct group size", 0, rg.groupSize );
+		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
+		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
+		assertEquals("Runs were placed in completedruns (wrongly).", 0, rg.completedRuns.size());
+		assertEquals("Run 1 was not first.", 1, rg.startQueue.poll().getBibNum());
+		assertEquals("Run 2 was not second.", 2, rg.startQueue.poll().getBibNum());
+		assertEquals("Run 3 was not last.", 3, rg.startQueue.poll().getBibNum());
+		
+		// Now with runs finished (#3 then #1).
+		rg.add(1);
+		rg.add(2);
+		rg.add(3);
+		rg.trigger(1, 0);
+		rg.trigger(3, 1);
+		rg.trigger(1, 1);
+		assertEquals("Runs not finised.", 2, rg.completedRuns.size());
+		rg.cancel();
+
+		// Make sure that all runs were canceled, and order maintained.
 		assertEquals("RunGroup was not given correct group size", 0, rg.groupSize );
 		assertEquals("Runs were not placed back in startQueue.", 3, rg.startQueue.size());
 		assertEquals("Runs were not removed from finishQueue.", 0, rg.finishQueue.size());
@@ -294,5 +316,152 @@ public class RunGroupParGrp_Test {
 		assertEquals("Run 3 was not given the correct state.", 2, rg.completedRuns.poll().getBibNum());
 		assertEquals("Run 2 was not given the correct state.", "dnf", rg.completedRuns.peek().getState());
 		assertEquals("Run 3 was not given the correct state.", 3, rg.completedRuns.poll().getBibNum());
+	}
+	
+	/**
+	 * Tests that isEmpty properly return true if it has no runs in any of it's queues
+	 * and false otherwise.
+	 */
+	@Test
+	public void testIsEmpty() {
+		// RunGroup is empty.
+		rg = new RunGroupParGrp();
+		assertEquals("getRun did not correctly return if it is empty.", true, rg.isEmpty());
+		
+		// Run is startQueue.
+		rg.add(1);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// Enable channels.
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
+		
+		// Run in finishQueue.
+		rg.trigger(1, 0);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// Run in CompletedRuns.
+		rg.trigger(1, 0);
+		assertEquals("getRun did not correctly return if it is empty.", false, rg.isEmpty());
+		
+		// And empty again.
+		rg.completedRuns.clear();
+		assertEquals("getRun did not correctly return if it is empty.", true, rg.isEmpty());
+	}
+	
+	/**
+	 * Tests that getFinishQueue properly return a COPY of the finishQueue.
+	 */
+	@Test
+	public void testGetFinishQueue() {
+		// Enable channels.
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		
+		rg = new RunGroupParGrp();
+		
+		// Test empty.
+		LinkedBlockingQueue<Run> queue = rg.getFinishQueue();
+		assertEquals("getFinishQueue did not correctly an empty queue.", true, queue.isEmpty());
+		
+		// Test Copy (modify external).
+		queue.add(new Run(1,1));
+		assertEquals("getFinishQueue did not correctly return a copy, as the internal queue has changed.", true, rg.getFinishQueue().isEmpty());
+		
+		// Test Copy (modify internal).
+		queue.clear();
+		rg.add(2);
+		rg.trigger(1, 0);
+		assertEquals("getFinishQueue did not correctly return a populated queue.", false, rg.getFinishQueue().isEmpty());
+		assertEquals("getFinishQueue did not correctly return a copy, as the returned queue has changed.", true, queue.isEmpty());
+		
+		// Test contents.
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 2, rg.getFinishQueue().peek().getBibNum());
+		assertEquals("getFinishQueue did not return a queue with the correct Run in it.", 0, rg.getFinishQueue().peek().getStartTime());
+	}
+	
+	/**
+	 * Tests that end() properly finishes all runs in both the startQueue and finishQueue with state dnf.
+	 */
+	@Test
+	public void testEnd() {
+		rg = new RunGroupParGrp();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		
+		rg.add(1);
+		rg.trigger(1, 0);
+		rg.add(2);
+		Printer.getLog().clear();
+	
+		// Make sure that runs both waiting and running are dnf'd.
+		rg.end();
+		assertEquals("Run was not placed in completedRuns.", 2, rg.completedRuns.size());
+		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().getState());
+		assertEquals("Run was not given the correct state.", "dnf", rg.completedRuns.poll().getState());
+		
+		// And make sure a message was printed.
+		assertEquals("No message was printed to the printer.", 2, Printer.getLog().size());
+		assertEquals("Incorrect message was printed to the printer.", "Bib #2 Did Not Finish", Printer.getLog().get(0));
+		assertEquals("Incorrect message was printed to the printer.", "Bib #1 Did Not Finish", Printer.getLog().get(1));
+	}
+	
+	/**
+	 * Tests that add correctly creates a run and adds it to the end of the start queue.
+	 */
+	@Test
+	public void testAdd() {
+		ChronoTimer.getArchive().clear();
+		rg = new RunGroupParGrp();
+		
+		// Make sure adding a run works.
+		rg.add(1);
+		Printer.getLog().clear();
+		// Make sure we can;t add duplicate bib numbers.
+		rg.add(1);
+		assertEquals("No error was printed.", "Error: Bib number already in use", Printer.getLog().get(0));
+		assertEquals("No run was not added to the startqueue", 1, rg.startQueue.size());
+		assertEquals("Run was given the wrong bibNum", 1, rg.startQueue.peek().getBibNum());
+		assertEquals("Run was given the wrong runNum", 1, rg.startQueue.peek().getRunNum());
+		assertEquals("Run was given the wrong state", "waiting", rg.startQueue.peek().getState());
+		
+		// Make sure adding another run doesn't change who's next in line.
+		rg.add(2);
+		assertEquals("No run was not added to the startqueue", 2, rg.startQueue.size());
+		assertEquals("The next run in line changed", 1, rg.startQueue.peek().getBibNum());
+		
+		// And make sure that the second run added was correct.
+		rg.startQueue.poll();
+		assertEquals("Run 2 was given the wrong bibNum", 2, rg.startQueue.peek().getBibNum());
+		
+		// Make sure we can;t add duplicate bib numbers.
+		rg.trigger(1, 0);
+		Printer.getLog().clear();
+		rg.add(2);
+		assertEquals("No error was printed.", "Error: Bib number already in use", Printer.getLog().get(0));
+	}
+	
+	/**
+	 * Tests that swap is disabled for this event type.
+	 */
+	@Test
+	public void testSwap() { 
+		rg = new RunGroupParGrp();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(1, 0);
+		
+		Printer.getLog().clear();
+		rg.swap();
+		assertEquals("Printer did not print correct message.", "Swap command does not apply to parallel events.", Printer.getLog().get(0));
 	}
 }

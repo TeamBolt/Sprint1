@@ -28,6 +28,7 @@ import commands.Command_Swap;
 import commands.Command_TIME;
 import commands.Command_Toggle;
 import commands.Command_Trig;
+import commands.Command_RCL;
 import runGroups.RunGroup;
 
 
@@ -194,7 +195,7 @@ public class ChronoTimer {
 							break;
 			case "SWAP":	cmdObj = new Command_Swap(timestamp);
 							break;
-			case "RCL":		cmdObj = new Command_NULL();
+			case "RCL":		cmdObj = new Command_RCL(timestamp);
 							break;
 			case "RESET":	cmdObj = new Command_Reset(timestamp);
 							break;

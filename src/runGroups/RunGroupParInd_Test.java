@@ -893,4 +893,28 @@ public class RunGroupParInd_Test {
 		assertEquals("racerTwoIsRunning was incorrect.", false, rg.racerTwoIsRunning);
 		assertEquals("racersSwitched was incorrect.", false, rg.racersSwitched);
 	}
+	
+	/**
+	 * Tests that swap is disabled for this event type.
+	 */
+	@Test
+	public void testSwap() { 
+		rg = new RunGroupParInd();
+		ChronoTimer.getChannels().clear();
+		ChronoTimer.getChannels().add(new Channel(1));
+		ChronoTimer.getChannels().get(0).toggle();
+		ChronoTimer.getChannels().add(new Channel(2));
+		ChronoTimer.getChannels().get(1).toggle();
+		ChronoTimer.getChannels().add(new Channel(3));
+		ChronoTimer.getChannels().get(2).toggle();
+		
+		rg.add(1);
+		rg.add(2);
+		rg.trigger(1, 0);
+		rg.trigger(3, 0);
+		
+		Printer.getLog().clear();
+		rg.swap();
+		assertEquals("Printer did not print correct message.", "Swap command does not apply to parallel events.", Printer.getLog().get(0));
+	}
 }
