@@ -888,6 +888,8 @@ public class TestCommands {
 		assertEquals(100, c.poll().getBibNum());
 		assertEquals(200, c.poll().getBibNum());
 		assertEquals(400, c.poll().getBibNum());
+		
+		
 	}
 	
 	
