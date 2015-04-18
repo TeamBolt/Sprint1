@@ -23,33 +23,13 @@ public class Command_CLR implements Command{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() {
-		//check if in the start queue - if so, call the shared method.
-		for(Run r : ChronoTimer.getCurrent().getStartQueue()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
-				ChronoTimer.getCurrent().clr(bib);
-				return;
-			}			
+		if ( ChronoTimer.getCurrent() != null ) {
+			ChronoTimer.getCurrent().clr(bib);
+		} else {
+			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
-				
-		//check if it is in the finishQueue
-		
-		for(Run r : ChronoTimer.getCurrent().getFinishQueue()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
-				Printer.print("This runner is already in the race and can't be removed.");
-				return;
-			}			
-		}
-				
-		//check if it is in the competedRuns queue
-		for(Run r : ChronoTimer.getCurrent().getCompletedRuns()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
-				Printer.print("This runner has already finished this race and can't be removed.");
-				return;
-			}			
-		}
-		//else it is not an existing bib number
-		Printer.print("Bib number not found.");
 	}
+	
 		
 		
 	
