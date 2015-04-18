@@ -2,12 +2,14 @@ package chronoTimerItems;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import runGroups.Run;
 import runGroups.RunGroup;
 
 /**
@@ -175,6 +177,7 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "CONN GATE 10");
 		assertEquals("Invalid Command Entered.", Printer.log.get(Printer.log.size()-1));
 		
+		//Test connecting a sensor to a channel that already has a sensor.
 		
 	}
 	
@@ -196,6 +199,10 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "DISC 2");
 		assertNotNull(ChronoTimer.channels.get(0).getSensor());
 		assertNull(ChronoTimer.channels.get(1).getSensor());
+		
+		//Test disconnecting a sensor from outside the channel's range
+		
+		//Test disconnecting a sensor from a channel without a sensor.
 		
 	}
 	
@@ -315,9 +322,6 @@ public class TestCommands {
 		assertEquals("RUN      BIB      TIME	    Individual" + "\n" + "1        481      WAITING" + "\n", Printer.log.get(Printer.log.size()-1));
 		//Test runnum==2 and archive size = 2
 		
-		
-		
-		
 	}
 	
 
@@ -357,6 +361,9 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=205, "FIN");
 		assertEquals("Bib #877 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
 		ChronoTimer.readCommand(timestamp+=100, "ENDRUN");
+		//try testing the finishQueue to see if they've been added.
+		//test status of the runners in the queue.
+		
 		
 		//Testing start command twice - with one runner
 		ChronoTimer.readCommand(timestamp+=100, "NEWRUN");
@@ -364,6 +371,7 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "START");
 		assertEquals("Bib #555 Start:  " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
 		ChronoTimer.readCommand(timestamp, "START");
+		//should test to make sure the start time is the same as the original.
 		ChronoTimer.readCommand(timestamp+=1000, "FIN");
 		assertEquals("Bib #555 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
 		
@@ -451,6 +459,8 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp+=1000, "FIN");
 		assertEquals("Bib #555 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));
 		
+		//Should test when disabled
+		
 	}
 	
 	@Test
@@ -492,6 +502,393 @@ public class TestCommands {
 		ChronoTimer.readCommand(timestamp, "NUM 999");
 		ChronoTimer.readCommand(timestamp+=100, "START");
 		ChronoTimer.readCommand(timestamp+=2500, "TRIG 2");
-		assertEquals("Bib #999 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));			
+		assertEquals("Bib #999 Finish: " + SystemTimer.convertLongToString(timestamp), Printer.log.get(Printer.log.size()-1));	
+		//test completed runs queue
 	}
+	
+	@Test
+	public void testSwapOneRunner(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add one runner
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		
+		//Call swap before starting
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("No Run in progress.  A run must be started first.", Printer.log.get(Printer.log.size()-1));
+		
+		//Start race and call swap
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("Not enough runners to swap.  Please add another runner", Printer.log.get(Printer.log.size()-1));
+		assertEquals(100, ChronoTimer.getCurrent().getFinishQueue().peek().getBibNum());
+		
+		
+	}
+	
+	@Test
+	public void testSwapTwoRunners(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add two runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		
+		//Test the two runners are in correct order (100, 200)
+		LinkedBlockingQueue<Run> s = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(100, s.poll().getBibNum());
+		assertEquals(200, s.poll().getBibNum());
+		
+		//Start race and call Swap
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("Not enough runners to swap.  Please add another runner", Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp, "START");
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		
+		//Test the order (200, 100)
+		LinkedBlockingQueue<Run> f = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(200, f.poll().getBibNum());
+		assertEquals(100, f.poll().getBibNum());			
+	}
+	
+	
+	@Test
+	public void testSwapMoreRunners(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+				
+		//Add four runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp, "NUM 300");
+		ChronoTimer.readCommand(timestamp, "NUM 400");
+		
+		//Check for proper Order (100, 200, 300, 400)
+		LinkedBlockingQueue<Run> s = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(100, s.poll().getBibNum());
+		assertEquals(200, s.poll().getBibNum());
+		assertEquals(300, s.poll().getBibNum());
+		assertEquals(400, s.poll().getBibNum());
+		
+		//Start all four and swap first two
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		
+		//Check for proper Order (200, 100, 300, 400)
+		LinkedBlockingQueue<Run> c = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(200, c.poll().getBibNum());
+		assertEquals(100, c.poll().getBibNum());
+		assertEquals(300, c.poll().getBibNum());
+		assertEquals(400, c.poll().getBibNum());
+	}
+	
+	@Test
+	public void testSwapNoRunners(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Test swap command
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("No Run in progress.  A run must be started first.", Printer.log.get(Printer.log.size()-1));
+	}
+	
+	@Test
+	public void testSwapMultipleTimes(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add four runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp, "NUM 300");
+		ChronoTimer.readCommand(timestamp, "NUM 400");
+
+		//Start all four and swap first two
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		
+		//Swap again and test order (100, 200, 300, 400)
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		LinkedBlockingQueue<Run> c = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(100, c.poll().getBibNum());
+		assertEquals(200, c.poll().getBibNum());
+		assertEquals(300, c.poll().getBibNum());
+		assertEquals(400, c.poll().getBibNum());
+		
+		//Finish first racer and swap again - then test order (300, 200, 400)
+		ChronoTimer.readCommand(timestamp+=1220, "FIN");
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		LinkedBlockingQueue<Run> f = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(300, f.poll().getBibNum());
+		assertEquals(200, f.poll().getBibNum());
+		assertEquals(400, f.poll().getBibNum());
+		
+		//Cancel next racer and swap again - then test order (200, 300)
+		ChronoTimer.readCommand(timestamp+=1220, "CANCEL");
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		LinkedBlockingQueue<Run> x = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(200, x.poll().getBibNum());
+		assertEquals(300, x.poll().getBibNum());
+		
+		//Start racer 400 again and swap - then test order (300, 200, 400)
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		LinkedBlockingQueue<Run> q = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(300, q.poll().getBibNum());
+		assertEquals(200, q.poll().getBibNum());
+		assertEquals(400, q.poll().getBibNum());
+		
+		//Swap one more time - then test order (200, 300, 400)
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		LinkedBlockingQueue<Run> l = ChronoTimer.getCurrent().getFinishQueue();
+		assertEquals(200, l.poll().getBibNum());
+		assertEquals(300, l.poll().getBibNum());
+		assertEquals(400, l.poll().getBibNum());
+	}
+	
+	@Test
+	public void testSwapStatuses(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add two runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		
+		//Swap before race starts
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("No Run in progress.  A run must be started first.", Printer.log.get(Printer.log.size()-1));
+		
+		//Start one, then try to swap
+		ChronoTimer.readCommand(timestamp, "START");
+		ChronoTimer.readCommand(timestamp, "SWAP");
+		assertEquals("Not enough runners to swap.  Please add another runner", Printer.log.get(Printer.log.size()-1));
+		
+		//Swap after race ends
+		ChronoTimer.readCommand(timestamp+=20000, "START");
+		ChronoTimer.readCommand(timestamp+=20000, "START");
+		ChronoTimer.readCommand(timestamp+=25035, "FIN");
+		ChronoTimer.readCommand(timestamp+=25035, "FIN");
+		ChronoTimer.readCommand(timestamp+=25035, "SWAP");
+		assertEquals("No Run in progress.  A run must be started first.", Printer.log.get(Printer.log.size()-1));
+	}
+	
+	public void testSwapParInd(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT PARIND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add and start two runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+
+		//Try to swap
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		assertEquals("Swap command does not apply to parallel events.", Printer.log.get(Printer.log.size()-1));
+	}
+	
+	public void testSwapParGrp(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT PARGRP");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add and start two runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+		ChronoTimer.readCommand(timestamp+=1220, "START");
+
+		//Try to swap
+		ChronoTimer.readCommand(timestamp+=1220, "SWAP");
+		assertEquals("Swap command does not apply to parallel events.", Printer.log.get(Printer.log.size()-1));
+	}
+	
+	@Test
+	public void testClr(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add a few runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp, "NUM 300");
+		ChronoTimer.readCommand(timestamp, "NUM 400");
+
+		//Clear out last entry -  test order
+		ChronoTimer.readCommand(timestamp, "CLR 400");
+		LinkedBlockingQueue<Run> s = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(100, s.poll().getBibNum());
+		assertEquals(200, s.poll().getBibNum());
+		assertEquals(300, s.poll().getBibNum());
+		
+		//Add another racer - test order
+		ChronoTimer.readCommand(timestamp, "NUM 500");
+		assertEquals(4, ChronoTimer.getCurrent().getStartQueue().size());
+		LinkedBlockingQueue<Run> x = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(100, x.poll().getBibNum());
+		assertEquals(200, x.poll().getBibNum());
+		assertEquals(300, x.poll().getBibNum());
+		assertEquals(500, x.poll().getBibNum());
+		
+		//Clear out first entry - test order
+		ChronoTimer.readCommand(timestamp, "CLR 100");
+		LinkedBlockingQueue<Run> r = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(200, r.poll().getBibNum());
+		assertEquals(300, r.poll().getBibNum());
+		assertEquals(500, r.poll().getBibNum());
+		
+		//Clear out middle entry - test order
+		ChronoTimer.readCommand(timestamp, "CLR 300");
+		LinkedBlockingQueue<Run> q = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(200, q.poll().getBibNum());
+		assertEquals(500, q.poll().getBibNum());
+		
+		//Clear out non-existing Bib
+		ChronoTimer.readCommand(timestamp, "CLR 999");
+		assertEquals("Bib number not found.", Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp, "CLR 300");
+		assertEquals("Bib number not found.", Printer.log.get(Printer.log.size()-1));
+			
+	}
+	
+	@Test
+	public void testClrInRace(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add a few runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp, "NUM 300");
+		ChronoTimer.readCommand(timestamp, "NUM 400");
+		
+		//Start first runner and try to clear him
+		ChronoTimer.readCommand(timestamp+=2000, "START");
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 100");
+		assertEquals("This runner is already in the race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		
+		//Clear another that hasn't started yet - should let me.
+		ChronoTimer.readCommand(timestamp, "CLR 200");
+		assertEquals(2, ChronoTimer.getCurrent().getStartQueue().size());
+		LinkedBlockingQueue<Run> c = ChronoTimer.getCurrent().getStartQueue();
+		assertEquals(300, c.poll().getBibNum());
+		assertEquals(400, c.poll().getBibNum());
+		
+		//Start next runner and try again to cancel bib 100
+		ChronoTimer.readCommand(timestamp+=2000, "START");
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 100");
+		assertEquals("This runner is already in the race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		
+		//Clear second runner (300)
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 300");
+		assertEquals("This runner is already in the race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		
+		//Cancel second runner (300) and then clear him
+		ChronoTimer.readCommand(timestamp, "CANCEL");
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 300");
+		assertEquals(1, ChronoTimer.getCurrent().getStartQueue().size());
+		
+		//Clear last runner
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 400");
+		assertEquals(0, ChronoTimer.getCurrent().getStartQueue().size());
+	}
+	
+	@Test
+	public void testClrFinishedRace(){
+		//Turn system on
+		long timestamp = SystemTimer.getTime();
+		ChronoTimer.readCommand(timestamp , "ON");
+		ChronoTimer.readCommand(timestamp, "EVENT IND");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 1");
+		ChronoTimer.readCommand(timestamp, "TOGGLE 2");
+		
+		//Add a few runners 
+		ChronoTimer.readCommand(timestamp, "NUM 100");
+		ChronoTimer.readCommand(timestamp, "NUM 200");
+		ChronoTimer.readCommand(timestamp, "NUM 300");
+		ChronoTimer.readCommand(timestamp, "NUM 400");
+		
+		//Start first two runners
+		ChronoTimer.readCommand(timestamp+=2000, "START");
+		ChronoTimer.readCommand(timestamp+=2000, "START");
+
+		//Finish first runner - now have 100 finished, 200 in race, 300 waiting, 400 waiting
+		ChronoTimer.readCommand(timestamp+=2000, "FIN");
+
+		//Clear bib 100 (finished) - shouldn't let me
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 100");
+		assertEquals("This runner has already finished this race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		
+		//Clear bib 200 (running) - shouldn't let me
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 200");
+		assertEquals("This runner is already in the race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		ChronoTimer.readCommand(timestamp+=2000, "FIN");
+		
+		//Clear bib 300 (waiting) - should let me
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 300");
+		assertEquals(1, ChronoTimer.getCurrent().getStartQueue().size());
+		
+		//Start bib 400, DNF, Clear him - shouldn't let me
+		ChronoTimer.readCommand(timestamp+=2000, "START");
+		ChronoTimer.readCommand(timestamp+=2000, "DNF");
+		ChronoTimer.readCommand(timestamp+=2000, "CLR 400");
+		assertEquals("This runner has already finished this race and can't be removed.", Printer.log.get(Printer.log.size()-1));
+		
+		//Test completed runs to see if we have right order (100, 200, 400)
+		LinkedBlockingQueue<Run> c = ChronoTimer.getCurrent().getCompletedRuns();
+		assertEquals(100, c.poll().getBibNum());
+		assertEquals(200, c.poll().getBibNum());
+		assertEquals(400, c.poll().getBibNum());
+	}
+	
+	
 }
