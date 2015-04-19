@@ -134,6 +134,7 @@ public class RunGroupShared {
 			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
 			completedRuns.add(r);
 		}
+		startQueue.clear();
 		
 		// End runs waiting to finish.
 		for ( Run r : finishQueue ) {
@@ -141,6 +142,7 @@ public class RunGroupShared {
 			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
 			completedRuns.add(r);
 		}
+		finishQueue.clear();
 	}
 	
 	/**

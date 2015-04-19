@@ -259,6 +259,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
 			completedRuns.add(r);
 		}
+		startQueue.clear();
 		
 		// End runs waiting to finish.
 		for ( Run r : finishList ) {
@@ -267,6 +268,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 			Printer.print("Bib #" + r.getBibNum() + " Did Not Finish");
 			completedRuns.add(r);
 		}
+		finishList = new Run[8];
 	}
 	
 	/**
