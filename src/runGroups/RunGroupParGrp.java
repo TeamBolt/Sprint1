@@ -79,10 +79,10 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		// Cancel only makes sense if there is a run waiting to finish.
 		if ( finishListIsEmpty() ) return;
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-		
+		int completedSize = completedRuns.size();
 		if ( !completedRuns.isEmpty() ) {
 			// Clear out any runs from this group that finished.
-			for ( int i = 0; i <= completedRuns.size() - ( groupSize - finishListSize() ); ++i) {
+			for ( int i = 0; i < completedSize - ( groupSize - finishListSize() ); ++i) {
 				tempQueue.add(completedRuns.poll()); //Put the runs we aren't interested in in a temp queue.
 			}
 			completedRuns = tempQueue; //Essentially deleting our runs from the back of the queue.
