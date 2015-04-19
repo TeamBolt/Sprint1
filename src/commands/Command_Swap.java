@@ -17,7 +17,10 @@ public class Command_Swap implements Command{
 
 	@Override
 	public void execute() {		
-		
+		if ( ChronoTimer.getCurrent() == null ) {
+			Printer.print("No Current Run, please enter the NEWRUN command");
+			return;
+		} 
 		//test if there are enough racers - if not exit command
 		if(ChronoTimer.getCurrent().getFinishQueue().isEmpty()){
 			Printer.print("No Run in progress.  A run must be started first.");

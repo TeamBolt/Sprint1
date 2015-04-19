@@ -20,7 +20,7 @@ private long timestamp;
 	 */
 	@Override
 	public void execute() {
-		if ( ChronoTimer.getCurrent() == null ) {
+		if ( ChronoTimer.getCurrent() == null || ChronoTimer.getCurrent().isEmpty() ) {
 			if ( ChronoTimer.getEventType().equals("IND") ) {
 				ChronoTimer.setCurrent( new RunGroupInd() );
 			} else if ( ChronoTimer.getEventType().equals("PARIND") ) {

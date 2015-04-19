@@ -82,7 +82,7 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		
 		if ( !completedRuns.isEmpty() ) {
 			// Clear out any runs from this group that finished.
-			for ( int i = 0; i < completedRuns.size() - ( groupSize - finishListSize() ); ++i) {
+			for ( int i = 0; i <= completedRuns.size() - ( groupSize - finishListSize() ); ++i) {
 				tempQueue.add(completedRuns.poll()); //Put the runs we aren't interested in in a temp queue.
 			}
 			completedRuns = tempQueue; //Essentially deleting our runs from the back of the queue.
