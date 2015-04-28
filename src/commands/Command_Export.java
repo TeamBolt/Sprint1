@@ -28,8 +28,6 @@ public class Command_Export implements Command {
 	@Override
 	public void execute() {
 		this.exportToXML();
-		this.formatToJson();
-		this.updateURL();
 	}
 
 
@@ -130,112 +128,5 @@ public class Command_Export implements Command {
 
 	}
 
-	public void formatToJson(){
-		// Takes care of the case that there is no run that corresponds to the given run number
-		if( (ChronoTimer.getCurrent() == null || ChronoTimer.getCurrent().getRun() != runNum) &&
-				( runNum > ChronoTimer.getArchive().size() || runNum <= 0)) {
-			Printer.print("No Run #" + runNum + " found.");
-			return;
-		}
 
-		RunGroup group = null;
-
-		// checks if the run to be exported is the current run or an archived run
-		if(ChronoTimer.getCurrent() != null && ChronoTimer.getCurrent().getRun() == runNum){
-			group =  ChronoTimer.getCurrent();
-		} else if (runNum <=  ChronoTimer.getArchive().size() && runNum > 0 ) {
-			group = ChronoTimer.getArchive().get(runNum-1);
-		}
-
-		String  item = "{\"event\":\"";
-
-		String runs = "\"run\":\"";
-		String bib = "\"bib\":\"";
-		String start = "\"start\":\"";
-		String finish = "\"finish\":\"";
-		String elapsed = "\"elapsed\":\"";
-
-		String toJson = "[";
-
-		// Export completed runs.
-		if ( !group.getCompletedRuns().isEmpty() ) {
-			Iterator<Run> iterator = group.getCompletedRuns().iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-
-				toJson += item + group.getEventType() + "\",";
-				toJson += runs + run.getRunNum() + "\",";
-				toJson += bib + run.getBibNum() + "\",";
-				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
-
-				if(run.getState().equals("dnf")){
-					toJson += finish + "DNF\",";
-					toJson += elapsed + "DNF\"},";
-				} else {
-					toJson += finish + SystemTimer.convertLongToString(run.getFinishTime()) + "\",";
-					toJson += elapsed + run.getElapsed() +"\"},";
-				}
-
-			}
-		}
-
-		// Export inProgress runs.
-		if ( !group.getFinishQueue().isEmpty() ) {
-			Iterator<Run> iterator = group.getFinishQueue().iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-
-				toJson += item + group.getEventType() + "\",";
-				toJson += runs + run.getRunNum() + "\",";
-				toJson += bib + run.getBibNum() + "\",";
-				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
-				toJson += finish + "RUNNING\",";
-				toJson += elapsed + "RUNNING(" + run.getElapsed() + ")\"},";
-
-
-			}
-
-		}
-
-		// Export waiting runs.
-		if ( !group.getStartQueue().isEmpty() ) {
-			Iterator<Run> iterator = group.getStartQueue().iterator();
-			while ( iterator.hasNext() ) {
-				Run run = iterator.next();
-
-				toJson += item + group.getEventType() + "\",";
-				toJson += runs + run.getRunNum() + "\",";
-				toJson += bib + run.getBibNum() + "\",";
-				toJson += start + "WAITING\",";
-				toJson += finish +  "WAITING\",";
-				toJson += elapsed +  "WAITING\"},";
-			}
-
-		}	
-
-		toJson = toJson.substring(0, (toJson.length()-1));
-		toJson += "]";
-		inJson = toJson;
-	}
-
-	public void updateURL() {
-		try {
-			URL site = new URL("http://teambolt361.appspot.com/server");
-			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
-
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-			conn.setRequestMethod("POST");
-
-			String content = "data=" + inJson;
-			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-			out.writeBytes(content);
-			out.flush();
-			out.close();
-
-			new InputStreamReader(conn.getInputStream());
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
-	}
 }

@@ -23,6 +23,7 @@ public class Window extends JFrame {
 	private Timer timer;
 	private ArrayList<JButton> channelButtons = new ArrayList<JButton>();
 	private ArrayList<JCheckBox> channelChecks = new ArrayList<JCheckBox>();
+	private int count = 0;
 
 	public Window() throws HeadlessException {
 		timer = new Timer(1,
@@ -34,6 +35,11 @@ public class Window extends JFrame {
 							if ( ChronoTimer.current != null ) {
 								display.setText(ChronoTimer.current.doPrint());
 							}
+							if ( count >= 1000 ) {
+								ChronoTimer.sendJson();
+								count = 0;
+							}
+							++count;
 						}
 					}					
 				});
@@ -169,7 +175,7 @@ public class Window extends JFrame {
 		public void actionPerformed(ActionEvent e)
 		{	
 			String text = e.getActionCommand();
-			if ( ChronoTimer.isOn == false && !text.equalsIgnoreCase("ON")) {
+			if ( ChronoTimer.isOn == false && !text.equalsIgnoreCase("ON") && !text.equalsIgnoreCase("EXIT")) {
 				textField.setText("Duno Why This Works.");
 				textField.setText("");
 				return;

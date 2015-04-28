@@ -1,10 +1,14 @@
 package chronoTimerItems;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import commands.Command;
 import commands.Command_CLR;
@@ -29,6 +33,7 @@ import commands.Command_TIME;
 import commands.Command_Toggle;
 import commands.Command_Trig;
 import commands.Command_RCL;
+import runGroups.Run;
 import runGroups.RunGroup;
 
 
@@ -213,6 +218,119 @@ public class ChronoTimer {
 		// Execute and add to the eventLog.
 		cmdObj.execute();
 		if ( isOn ) ChronoTimer.eventLog.add(event);
+	}
+	
+	/**
+	 * Formats the current run, or the most recently finished run into json.
+	 * Then calls updateURL.
+	 */
+	public static void sendJson(){
+		if ( !isOn ) return;
+
+		RunGroup group = null;
+
+		if ( current != null && !current.isEmpty() ) {
+			group = current;
+		} else if ( !archive.isEmpty() && !archive.get(archive.size()-1).isEmpty()) {
+			group = archive.get(archive.size()-1);
+		} else {
+			// There is no rungroup with data.
+			return;
+		}
+
+		String  item = "{\"event\":\"";
+
+		String runs = "\"run\":\"";
+		String bib = "\"bib\":\"";
+		String start = "\"start\":\"";
+		String finish = "\"finish\":\"";
+		String elapsed = "\"elapsed\":\"";
+
+		String toJson = "[";
+
+		// Export completed runs.
+		if ( !group.getCompletedRuns().isEmpty() ) {
+			Iterator<Run> iterator = group.getCompletedRuns().iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+
+				toJson += item + group.getEventType() + "\",";
+				toJson += runs + run.getRunNum() + "\",";
+				toJson += bib + run.getBibNum() + "\",";
+				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
+
+				if(run.getState().equals("dnf")){
+					toJson += finish + "DNF\",";
+					toJson += elapsed + "DNF\"},";
+				} else {
+					toJson += finish + SystemTimer.convertLongToString(run.getFinishTime()) + "\",";
+					toJson += elapsed + run.getElapsed() +"\"},";
+				}
+
+			}
+		}
+
+		// Export inProgress runs.
+		if ( !group.getFinishQueue().isEmpty() ) {
+			Iterator<Run> iterator = group.getFinishQueue().iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+
+				toJson += item + group.getEventType() + "\",";
+				toJson += runs + run.getRunNum() + "\",";
+				toJson += bib + run.getBibNum() + "\",";
+				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
+				toJson += finish + "RUNNING\",";
+				toJson += elapsed + "RUNNING(" + run.getElapsed() + ")\"},";
+
+
+			}
+
+		}
+
+		// Export waiting runs.
+		if ( !group.getStartQueue().isEmpty() ) {
+			Iterator<Run> iterator = group.getStartQueue().iterator();
+			while ( iterator.hasNext() ) {
+				Run run = iterator.next();
+
+				toJson += item + group.getEventType() + "\",";
+				toJson += runs + run.getRunNum() + "\",";
+				toJson += bib + run.getBibNum() + "\",";
+				toJson += start + "WAITING\",";
+				toJson += finish +  "WAITING\",";
+				toJson += elapsed +  "WAITING\"},";
+			}
+
+		}	
+
+		toJson = toJson.substring(0, (toJson.length()-1));
+		toJson += "]";
+		updateURL(toJson);
+	}
+
+	/**
+	 * Sends the json to the server.
+	 */
+	private static void updateURL( String json ) {
+		try {
+			URL site = new URL("http://teambolt361.appspot.com/server");
+			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
+
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.setRequestMethod("POST");
+
+			String content = "data=" + json;
+			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+			out.writeBytes(content);
+			out.flush();
+			out.close();
+
+			new InputStreamReader(conn.getInputStream());
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static boolean isOn() {
