@@ -281,7 +281,7 @@ public class ChronoTimer {
 				toJson += bib + run.getBibNum() + "\",";
 				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
 				toJson += finish + "RUNNING\",";
-				toJson += elapsed + "RUNNING(" + run.getElapsed() + ")\"},";
+				toJson += elapsed + run.getElapsed() + "\"},";
 
 
 			}
