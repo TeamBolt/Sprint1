@@ -314,7 +314,8 @@ public class ChronoTimer {
 	 */
 	private static void updateURL( String json ) {
 		try {
-			URL site = new URL("http://teambolt361.appspot.com/server");
+			URL site = new URL("http://teambolttimer.appspot.com/server");
+			//URL site = new URL("http://localhost:8888/server");
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 
 			conn.setDoOutput(true);
