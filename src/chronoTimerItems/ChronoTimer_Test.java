@@ -104,7 +104,7 @@ public class ChronoTimer_Test {
 	}
 	
 	@Test
-	public void testReadCommandOn()
+	public void testReadCommandON()
 	{
 		// Test that command is in eventLog.
 		ChronoTimer.readCommand(0, "ON");
@@ -134,7 +134,7 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		ChronoTimer.readCommand(0, "TOGGLE A"); //invalid parameter
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
-	   // ChronoTimer.readCommand(0, "TOGGLE 14"); //channel number out of range
+	    ChronoTimer.readCommand(0, "TOGGLE 14"); //channel number out of range
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
        
 		//make sure all channels can be toggled
@@ -178,8 +178,8 @@ public class ChronoTimer_Test {
 		assertEquals("Command was found in eventLog (shouldn't have been).", 9, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 8", ChronoTimer.eventLog.get(8));
 		assertEquals("Channel was never toggled.", true, ChronoTimer.channels.get(7).isEnabled());
+/*
 
-/*	
 		ChronoTimer.readCommand(0, "TOGGLE 9");
 		assertEquals("Command was found in eventLog (shouldn't have been).", 10, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "TOGGLE 9", ChronoTimer.eventLog.get(9));
@@ -234,7 +234,7 @@ public class ChronoTimer_Test {
 	{
 		ChronoTimer.readCommand(0, "ON");
 		ChronoTimer.readCommand(0, "RESET 1");
-		System.out.println(ChronoTimer.eventLog.get(ChronoTimer.eventLog.size() - 1));
+	//	System.out.println(ChronoTimer.eventLog.get(ChronoTimer.eventLog.size() - 1));
 		assertEquals("Command was found in eventLog (shouldn't have been).", 1, ChronoTimer.eventLog.size());
 		
 		ChronoTimer.readCommand(0, "RESET A");
@@ -243,7 +243,94 @@ public class ChronoTimer_Test {
 		assertEquals("eventLog size does not match the size it should be.", 1, ChronoTimer.eventLog.size());
 		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "RESET", ChronoTimer.eventLog.get(0));	
 	}
+	@Test
+	public void testReadCommandCONN()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "CONN TEST 1"); //test invalid parameter
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "CONN TEST 1", ChronoTimer.eventLog.get(1));
+		ChronoTimer.readCommand(0, "CONN EYE 2");
+		assertEquals("Error connecting EYE sensor to channel 2", ChronoTimer.channels.get(1).getChannelNum(), 2);
+		assertEquals("Error connecting EYE sensor to channel 2", ChronoTimer.channels.get(1).getSensor().type, "EYE");
+		ChronoTimer.readCommand(0, "CONN GATE 3");
+		assertEquals("Error connecting GATE sensor to channel 3", ChronoTimer.channels.get(2).getChannelNum(), 3);
+		assertEquals("Error connecting GATE sensor to channel 3", ChronoTimer.channels.get(2).getSensor().type, "GATE");
+		ChronoTimer.readCommand(0, "CONN PAD 4");
+		assertEquals("Error connecting PAD sensor to channel 4", ChronoTimer.channels.get(3).getChannelNum(), 4);
+		assertEquals("Error connecting PAD sensor to channel 4", ChronoTimer.channels.get(3).getSensor().type, "PAD");
 
+
+
+	}
+	@Test
+	public void testReadCommandDISC()
+	{
+	   ChronoTimer.readCommand(0, "ON");
+	   ChronoTimer.readCommand(0, "CONN EYE 1");
+	   assertEquals("Error connecting EYE sensor to channel 1", ChronoTimer.channels.get(0).getChannelNum(), 1);
+	   assertEquals("Error connecting EYE sensor to channel 1", ChronoTimer.channels.get(0).getSensor().type, "EYE");
+	   ChronoTimer.readCommand(0, "DISC 1");
+	   //finish
+	   assertEquals("Was unable to disconnect sensor from channel 1 ", ChronoTimer.channels.get(0).getSensor(), null);
+		
+		
+	}
+	@Test
+	public void testReadCommandNEWRUN()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "NEWRUN");
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "NEWRUN", ChronoTimer.eventLog.get(1));
+
+	}
+
+	@Test 
+	public void testReadCommandENDRUN()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "ENDRUN");
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "ENDRUN", ChronoTimer.eventLog.get(1));
+
+	}
+	@Test
+	public void testReadCommandCLR()
+	{
+	   ChronoTimer.readCommand(0, "ON");
+	   ChronoTimer.readCommand(0, "NUM 1");
+	   ChronoTimer.readCommand(0, "NUM 2");
+	   ChronoTimer.readCommand(0, "NUM 3");
+	   assertEquals("...", ChronoTimer.current.getStartQueue().peek().getBibNum(), 1); //check status of start queue
+	   ChronoTimer.readCommand(0, "CLR 1");
+	   assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "CLR 1", ChronoTimer.eventLog.get(4));
+	   
+	   assertEquals("...", ChronoTimer.current.getStartQueue().peek().getBibNum(), 2); //check status of start queue
+	   ChronoTimer.readCommand(0, "CLR 2");
+	   assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "CLR 2", ChronoTimer.eventLog.get(5));
+	   
+	   assertEquals("...", ChronoTimer.current.getStartQueue().peek().getBibNum(), 3); //check status of start queue
+	   ChronoTimer.readCommand(0, "CLR 3");
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "CLR 3", ChronoTimer.eventLog.get(6));  
+	   
+	}
+	@Test 
+	public void testReadCommandSWAP()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "SWAP 1"); //invalid parameter - dont think it should be added to eventLog
+		assertEquals("Command was found in eventLog when shouldnt have been.", 2, ChronoTimer.eventLog.size());
+		ChronoTimer.readCommand(0, "SWAP");
+		assertEquals("Incorrect command found in eventLog.", "18:00:00.0" + "	" + "SWAP", ChronoTimer.eventLog.get(2));  	
+	}
+	@Test 
+	public void testReadCommandRCL()
+	{
+		ChronoTimer.readCommand(0, "ON");
+		ChronoTimer.readCommand(0, "RCL"); //no event triggered...shouldnt be added?
+		assertEquals("Command was found in eventLog when shouldnt have been.", 1, ChronoTimer.eventLog.size());
+
+		
+		
+	}
 	
 }
 
