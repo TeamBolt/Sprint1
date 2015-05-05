@@ -49,7 +49,6 @@ import runGroups.RunGroup;
  * 
  * @author Chris Harmon
  */
-@SuppressWarnings("unused")
 public class ChronoTimer {
 	
 	protected static Window window;
@@ -72,23 +71,9 @@ public class ChronoTimer {
 			java.net.URL url = ChronoTimer.class.getClassLoader().getResource(args[0]);
 			ChronoTimer.readTestFile(url.getPath());
 		} else {
+			// Start the GUI.
 			window = new Window();
-			// Begin looping to read commands from console.
-//			try {
-//				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//				String input;
-//				 
-//				while( ( input = br.readLine() ) != null ) {
-//					long timestamp = SystemTimer.getTime(); //save the timestamp first.
-//					ChronoTimer.readCommand( timestamp, input );
-//				}
-//			} catch (IOException e) {
-//				//e.printStackTrace();
-//				Printer.print("Error reading from console.");
-//			}
 		}
-		
-
 	}
 	
 	/**
@@ -139,9 +124,10 @@ public class ChronoTimer {
 		String event = SystemTimer.convertLongToString(timestamp) + "	" + command;
 		
 		// Gets ints out of the parameters if they are there to get, will be -1 if
-		// no parameter or paramter was not parse-able into an int.
+		// no parameter or parameter was not parse-able into an int.
 		int paramOne = -1;
 		int paramTwo = -1;
+		
 		if ( args.length > 1 && args[1] != null ) {
 			try {
 				paramOne = Integer.parseInt(args[1]); 
@@ -150,6 +136,7 @@ public class ChronoTimer {
 			}
 			
 		}
+		
 		if ( args.length > 2 && args[2] != null ) {
 			try {
 				paramTwo = Integer.parseInt(args[2]); 
@@ -194,7 +181,8 @@ public class ChronoTimer {
 							break;
 			case "ENDRUN":	cmdObj = new Command_Endrun(timestamp);
 							break;
-			case "EXPORT":	cmdObj = new Command_Export(paramOne);
+			case "EXPORT":	if ( paramOne <= 0 ) cmdObj = new Command_Export();
+							if ( paramOne > 0) cmdObj = new Command_Export(paramOne);
 							break;
 			case "CLR":		cmdObj = new Command_CLR(timestamp, paramOne);
 							break;
@@ -257,7 +245,14 @@ public class ChronoTimer {
 				toJson += item + group.getEventType() + "\",";
 				toJson += runs + run.getRunNum() + "\",";
 				toJson += bib + run.getBibNum() + "\",";
-				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
+				
+				// Handle the special case of a person who is DNF but never started, 
+				// only happens when a RunGroup.end is called.
+				if ( run.getStartTime() == 0 ) {
+					toJson += start + "DNF\",";
+				} else {
+					toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
+				}
 
 				if(run.getState().equals("dnf")){
 					toJson += finish + "DNF\",";
@@ -266,7 +261,6 @@ public class ChronoTimer {
 					toJson += finish + SystemTimer.convertLongToString(run.getFinishTime()) + "\",";
 					toJson += elapsed + run.getElapsed() +"\"},";
 				}
-
 			}
 		}
 
@@ -282,10 +276,7 @@ public class ChronoTimer {
 				toJson += start + SystemTimer.convertLongToString(run.getStartTime()) + "\",";
 				toJson += finish + "RUNNING\",";
 				toJson += elapsed + run.getElapsed() + "\"},";
-
-
 			}
-
 		}
 
 		// Export waiting runs.
@@ -301,7 +292,6 @@ public class ChronoTimer {
 				toJson += finish +  "WAITING\",";
 				toJson += elapsed +  "WAITING\"},";
 			}
-
 		}	
 
 		toJson = toJson.substring(0, (toJson.length()-1));
@@ -315,7 +305,6 @@ public class ChronoTimer {
 	private static void updateURL( String json ) {
 		try {
 			URL site = new URL("http://teambolttimer.appspot.com/server");
-			//URL site = new URL("http://localhost:8888/server");
 			HttpURLConnection conn = (HttpURLConnection) site.openConnection();
 
 			conn.setDoOutput(true);
@@ -330,7 +319,7 @@ public class ChronoTimer {
 
 			new InputStreamReader(conn.getInputStream());
 		} catch ( Exception e ) {
-			e.printStackTrace();
+			Printer.print("Error updating server");
 		}
 	}
 	

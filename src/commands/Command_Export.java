@@ -24,6 +24,10 @@ public class Command_Export implements Command {
 	public Command_Export(int num){
 		runNum = num;
 	}
+	
+	public Command_Export(){
+		runNum = 0;
+	}
 
 	@Override
 	public void execute() {
@@ -32,23 +36,27 @@ public class Command_Export implements Command {
 
 
 	public void exportToXML(){
-		// Takes care of the case that there is no run that corresponds to the given run number
-		if( (ChronoTimer.getCurrent() == null || ChronoTimer.getCurrent().getRun() != runNum) &&
-				( runNum > ChronoTimer.getArchive().size() || runNum <= 0)) {
-			Printer.print("No Run #" + runNum + " found.");
-			return;
-		}
-
 		RunGroup group = null;
 
-		// checks if the run to be exported is the current run or an archived run
-		if(ChronoTimer.getCurrent() != null && ChronoTimer.getCurrent().getRun() == runNum){
-			group =  ChronoTimer.getCurrent();
-		} else if (runNum <=  ChronoTimer.getArchive().size() && runNum > 0 ) {
-			group = ChronoTimer.getArchive().get(runNum-1);
+		if ( runNum == 0 || ( ChronoTimer.getCurrent() != null && runNum == ChronoTimer.getCurrent().getRun() ) ) {
+			if ( ChronoTimer.getCurrent() != null ) {
+				group = ChronoTimer.getCurrent();
+			} else if ( !ChronoTimer.getArchive().isEmpty() ){
+				group = ChronoTimer.getArchive().get(ChronoTimer.getArchive().size()-1);
+			} else {
+				Printer.print("No Run to Export.");
+				return;
+			}
+		} else {
+			if ( ChronoTimer.getArchive().size() >= runNum ) {
+				group = ChronoTimer.getArchive().get( runNum-1 );
+			} else {
+				Printer.print("No Run #" + runNum + " found.");
+				return;
+			}
 		}
 
-		String fileName = "RUN #" + runNum;
+		String fileName = "RUN #" + group.getRun();
 		File outFile = new File(fileName);
 
 		String  item = "<item event=" + group.getEventType() + ">\n";
@@ -73,7 +81,14 @@ public class Command_Export implements Command {
 					toXml += item;
 					toXml += runs + run.getRunNum() + "</run>\n";
 					toXml += bib + run.getBibNum() + "</bib>\n";
-					toXml += start + SystemTimer.convertLongToString(run.getStartTime()) + "</start>\n";
+					
+					// Handle the special case of a person who is DNF but never started, 
+					// only happens when a RunGroup.end is called.
+					if ( run.getStartTime() == 0 ) {
+						toXml += start + "DNF</finish>\n";
+					} else {
+						toXml += start + SystemTimer.convertLongToString(run.getStartTime()) + "</start>\n";
+					}
 
 					if(run.getState().equals("dnf")){
 						toXml += finish + "DNF</finish>\n";
@@ -122,8 +137,9 @@ public class Command_Export implements Command {
 
 			fw.write(toXml);
 			fw.close();
+			Printer.print("Export complete.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			Printer.print("Export error.");
 		}
 
 	}
