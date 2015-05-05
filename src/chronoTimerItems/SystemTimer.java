@@ -43,7 +43,7 @@ public class SystemTimer {
 			cal.setTime(date);
 			timestamp = cal.getTimeInMillis();
 		} catch (ParseException e) {
-			System.out.println("Invalid time entered.");
+			Printer.print("Invalid time entered.");
 		}
 		
 		return timestamp;

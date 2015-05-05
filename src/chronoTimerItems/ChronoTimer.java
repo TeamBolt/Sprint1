@@ -170,7 +170,7 @@ public class ChronoTimer {
 			case "PRINT":	if ( paramOne <= 0 ) cmdObj = new Command_Print();
 							if ( paramOne > 0) cmdObj = new Command_Print(paramOne);
 							break;
-			case "DISC":	if ( paramOne > 0) cmdObj = new Command_Disc(paramOne);
+			case "DISC":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Disc(paramOne);
 							break;
 			case "CANCEL":	cmdObj = new Command_Cancel();
 							break;
@@ -183,7 +183,7 @@ public class ChronoTimer {
 			case "EXPORT":	if ( paramOne <= 0 ) cmdObj = new Command_Export();
 							if ( paramOne > 0) cmdObj = new Command_Export(paramOne);
 							break;
-			case "CLR":		cmdObj = new Command_CLR(paramOne);
+			case "CLR":		if ( paramOne > 0) cmdObj = new Command_CLR(paramOne);
 							break;
 			case "SWAP":	cmdObj = new Command_Swap();
 							break;
