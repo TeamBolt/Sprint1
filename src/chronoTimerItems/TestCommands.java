@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
