@@ -8,7 +8,6 @@ import chronoTimerItems.Printer;
 import chronoTimerItems.SystemTimer;
 
 
-
 /**
  * The class represents and individual run group. It knows how to add, start, 
  * finish, cancel, and dnf runs, as well as how to print itself.
@@ -18,7 +17,6 @@ import chronoTimerItems.SystemTimer;
  * @author Chris Harmon
  */
 public class RunGroupInd extends RunGroupShared implements RunGroup{
-
 	protected int startChannel;
 	protected int finishChannel;
 	
@@ -122,7 +120,5 @@ public class RunGroupInd extends RunGroupShared implements RunGroup{
 		current.setState("dnf");
 		completedRuns.add(current);
 		Printer.print("Bib #" + current.getBibNum() + " Did Not Finish");
-		
 	}
-
 }

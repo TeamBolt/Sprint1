@@ -1,9 +1,11 @@
 package runGroups;
+
 import chronoTimerItems.ChronoTimer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
 import chronoTimerItems.Printer;
+
 
 /**
  * This class contains all fields and methods which are shared between the 
@@ -27,7 +29,6 @@ import chronoTimerItems.Printer;
  * @author Chris
  */
 public class RunGroupShared {
-	// Fields
 	protected int runNum;
 	protected String eventType;
 	protected LinkedBlockingQueue<Run> startQueue;
@@ -160,11 +161,11 @@ public class RunGroupShared {
 		tempQueue = new LinkedBlockingQueue<Run>();
 		
 		int count = 1;
-		//loop through queue and add to the tempQueue
+		// Loop through queue and add to the tempQueue.
 		while( !finishQueue.isEmpty() ) {
 			Run current = finishQueue.poll();
 			if( count == 2 ){
-				secondRunner = current;	//save second runner for swapping.
+				secondRunner = current;	// Save second runner for swapping.
 			} else {
 				tempQueue.add(current);
 			}
@@ -182,7 +183,7 @@ public class RunGroupShared {
 	 * Get if the RunGroup is empty.
 	 */
 	public boolean isEmpty(){
-		return (startQueue.isEmpty() && finishQueue.isEmpty() && completedRuns.isEmpty());
+		return ( startQueue.isEmpty() && finishQueue.isEmpty() && completedRuns.isEmpty() );
 	}
 	
 	/**
@@ -216,14 +217,13 @@ public class RunGroupShared {
 	/**
 	 * Clears bib number if found in startingQueue.
 	 */
-	
 	public void clr(int bib) {
 		Run current;
 		tempQueue = new LinkedBlockingQueue<Run>();
 		
-		//check if in the start queue - if so, call the shared method.
-		for(Run r : ChronoTimer.getCurrent().getStartQueue()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
+		// Check if in the start queue, if so call the shared method.
+		for( Run r : ChronoTimer.getCurrent().getStartQueue() ) {
+			if( r.getBibNum() == bib ) { // It is in startQueue, we need to remove it.
 				while( !startQueue.isEmpty() ) {
 					current = startQueue.poll();
 					if( current.getBibNum() != bib ) {
@@ -235,23 +235,23 @@ public class RunGroupShared {
 			}			
 		}
 	
-		//check if it is in the finishQueue
-		
-		for(Run r : ChronoTimer.getCurrent().getFinishQueue()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
+		// Check if it is in the finishQueue.
+		for( Run r : ChronoTimer.getCurrent().getFinishQueue() ) {
+			if( r.getBibNum() == bib ) { // It is in finishQueue, we can't remove it.
 				Printer.print("This runner is already in the race and can't be removed.");
 				return;
 			}			
 		}
 				
-		//check if it is in the competedRuns queue
+		// Check if it is in the competedRuns queue.
 		for(Run r : ChronoTimer.getCurrent().getCompletedRuns()){
-			if(r.getBibNum()==bib){		//it is in startQueue - need to remove it
+			if(r.getBibNum()==bib){ // It is in competedRuns, we can't remove it.
 				Printer.print("This runner has already finished this race and can't be removed.");
 				return;
 			}			
 		}
-		//else it is not an existing bib number
+		
+		// It is not an existing bib number.
 		Printer.print("Bib number not found.");
 	}
 }

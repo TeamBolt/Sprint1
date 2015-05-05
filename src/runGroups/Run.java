@@ -1,5 +1,7 @@
 package runGroups;
+
 import chronoTimerItems.SystemTimer;
+
 
 /**
  * Run class represents on Run for a competitor (with bib number) in a RunGroup.
@@ -53,8 +55,6 @@ public class Run {
 		state = s;
 	}
 	
-	
-	
 	/**
 	 * Creates a run for the:
 	 * @param int run 	run number, associated with a RunGroup.
@@ -93,6 +93,4 @@ public class Run {
 		
 		return output;
 	}
-	
-
 }

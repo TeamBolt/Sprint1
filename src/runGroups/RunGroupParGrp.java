@@ -7,6 +7,7 @@ import chronoTimerItems.ChronoTimer;
 import chronoTimerItems.Printer;
 import chronoTimerItems.SystemTimer;
 
+
 /**
  * The class represents and Group run group. It knows how to start, 
  * finish, cancel, and dnf runs.
@@ -16,7 +17,6 @@ import chronoTimerItems.SystemTimer;
  * @author Chris Harmon
  */
 public class RunGroupParGrp extends RunGroupShared implements RunGroup{
-
 	protected Run[] finishList;
 	protected LinkedBlockingQueue<Run> lastStartQueue;
 	protected int groupSize;
@@ -177,25 +177,25 @@ public class RunGroupParGrp extends RunGroupShared implements RunGroup{
 		return out;
 	}
 	
+	/**
+	 * Turns the finish list into a queue and returns it.
+	 */
 	@Override
 	public LinkedBlockingQueue<Run> getFinishQueue() {
 		LinkedBlockingQueue<Run> tempQueue = new LinkedBlockingQueue<Run>();
-		/*for ( Run r : finishList ) {
-			tempQueue.add(r);
-		}
-		return tempQueue;*/
-		
-		for(int i=0; i<finishList.length; i++){
-			if(finishList[i]!=null) {
+
+		for( int i = 0; i < finishList.length; i++ ) {
+			if( finishList[i] != null ) {
 				tempQueue.add(finishList[i]);
 			}
-		} return tempQueue;
+		} 
+		return tempQueue;
 	}
 	
 	/**
 	 * Adds a new run with the given bib number to the startQueue.
 	 * 
-	 * @param int bib	bib number for this run.
+	 * @param int bib number for this competitor.
 	 */
 	@Override
 	public void add(int bib) {

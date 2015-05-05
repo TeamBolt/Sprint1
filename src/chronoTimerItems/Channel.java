@@ -1,5 +1,6 @@
 package chronoTimerItems;
 
+
 /**
  * The Channel class represents a channel in the timer. It can be enabled or not
  * and can have a sensor attached. Channels default to disable.

@@ -7,6 +7,7 @@ import chronoTimerItems.ChronoTimer;
 import chronoTimerItems.Printer;
 import chronoTimerItems.SystemTimer;
 
+
 /**
  * The class represents and parallel individual run group. It knows how to add, start, 
  * finish, cancel, and dnf runs, as well as how to print itself.
@@ -16,7 +17,6 @@ import chronoTimerItems.SystemTimer;
  * @author Chris Harmon
  */
 public class RunGroupParInd extends RunGroupShared implements RunGroup{
-
 	protected int startChannelOne;
 	protected int finishChannelOne;
 	protected int startChannelTwo;
@@ -28,7 +28,6 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 	protected boolean racersSwitched;
 	protected boolean raceInProgress;
 
-	
 	/**
 	 * This sets up the RunGroup to the default values, and gives it it's run number.
 	 */
@@ -195,8 +194,6 @@ public class RunGroupParInd extends RunGroupShared implements RunGroup{
 				if ( !finishQueue.isEmpty() ) { second = finishQueue.poll(); }
 			}
 		}
-		
-		
 		
 		// Set state(s).
 		if ( first != null )first.setState("waiting");

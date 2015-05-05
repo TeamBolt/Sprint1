@@ -2,8 +2,9 @@ package runGroups;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+
 /**
- * Interface for RunGroup, we will later have the following implementations:
+ * Interface for RunGroup, we have the following implementations:
  * 		RunGroupInd
  * 		RunGroupParInd
  * 		RunGroupGrp
@@ -45,5 +46,4 @@ public interface RunGroup {
 	public void swap();
 
 	public void clr(int bib);
-
 }
