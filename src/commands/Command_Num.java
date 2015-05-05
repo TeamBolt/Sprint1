@@ -5,18 +5,15 @@ import chronoTimerItems.Printer;
 
 public class Command_Num implements Command {
 	private int bib;
-	private long timestamp;
 	
-	public Command_Num(long t, int b){
+	public Command_Num(int b){
 		bib = b;
-		timestamp = t;
 	}
 	
 	/**
 	 * Attempts to add a run with bibnum 'bib' to the current rungroup.
 	 * Prints error if no current rungroup.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null ) {
 			ChronoTimer.getCurrent().add(bib);
@@ -24,5 +21,4 @@ public class Command_Num implements Command {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
 	}
-
 }

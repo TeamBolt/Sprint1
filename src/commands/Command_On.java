@@ -5,18 +5,13 @@ import runGroups.RunGroupInd;
 
 
 public class Command_On implements Command {
-	private long timestamp;
 	
-	
-	public Command_On(long t) {
-		timestamp = t;
-	}
+	public Command_On() {}
 
 	/**
 	 * Turns the system on, sets up default values, instantiates channels, but only if
 	 * the system was not already on.
 	 */
-	@Override
 	public void execute() {
 		
 		// Check first if it is already on.  If it is, then we don't want to do anything extra.
@@ -35,10 +30,4 @@ public class Command_On implements Command {
 		ChronoTimer.setEventType("IND");
 		ChronoTimer.setCurrent( new RunGroupInd() );
 	}
-	
-	
-	
-	
-	
-	
 }

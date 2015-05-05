@@ -4,15 +4,13 @@ import chronoTimerItems.Printer;
 
 
 public class Command_Print implements Command {
-	private long timestamp;
-	private int run = 0;
+	private int run;
 	
-	public Command_Print(long t) {
-		timestamp = t;
+	public Command_Print() {
+		run = 0;
 	}
 	
-	public Command_Print(long t, int r) {
-		timestamp = t;
+	public Command_Print(int r) {
 		run = r;
 	}
 	
@@ -20,7 +18,6 @@ public class Command_Print implements Command {
 	 * Prints the current rungroup (or prints error if none exists) if no run specified,
 	 * otherwise prints the specified run (or error if the run doesn't exist).
 	 */
-	@Override
 	public void execute() {
 
 		if ( run == 0 || ( ChronoTimer.getCurrent() != null && run == ChronoTimer.getCurrent().getRun() ) ) {

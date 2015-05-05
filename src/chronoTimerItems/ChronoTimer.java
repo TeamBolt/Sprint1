@@ -1,4 +1,5 @@
 package chronoTimerItems;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -35,7 +36,6 @@ import commands.Command_Trig;
 import commands.Command_RCL;
 import runGroups.Run;
 import runGroups.RunGroup;
-
 
 
 /**
@@ -147,50 +147,49 @@ public class ChronoTimer {
 		
 		// Create the appropriate command object if the correct parameters exist.
 		switch (name.toUpperCase()){
-			case "TIME": 	if ( args.length > 1 ) cmdObj = new Command_TIME(timestamp, args[1]);
+			case "TIME": 	if ( args.length > 1 ) cmdObj = new Command_TIME(args[1]);
 							break;
-			case "ON":		cmdObj = new Command_On(timestamp);
+			case "ON":		cmdObj = new Command_On();
 							break;
-			case "OFF":		cmdObj = new Command_Off(timestamp);
+			case "OFF":		cmdObj = new Command_Off();
 							break;
-			case "CONN":	if ( paramTwo > 0 && paramTwo < 9 ) cmdObj = new Command_Conn(timestamp, args[1], paramTwo);
+			case "CONN":	if ( paramTwo > 0 && paramTwo < 9 ) cmdObj = new Command_Conn(args[1], paramTwo);
 							break;
-			case "TOGGLE":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Toggle(timestamp, paramOne);
+			case "TOGGLE":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Toggle(paramOne);
 							break;
 			case "TRIG":	if ( paramOne > 0 && paramOne < 9 ) cmdObj = new Command_Trig(timestamp, paramOne);
 							break;
-			case "NUM":		if ( paramOne > 0 ) cmdObj = new Command_Num(timestamp, paramOne);
+			case "NUM":		if ( paramOne > 0 ) cmdObj = new Command_Num(paramOne);
 							break;
 			case "START":	cmdObj = new Command_Start(timestamp);
 							break;
 			case "FIN":		cmdObj = new Command_Fin(timestamp);
 							break;
-			case "DNF":		cmdObj = new Command_DNF(timestamp);
+			case "DNF":		cmdObj = new Command_DNF();
 							break;
-			case "PRINT":	if ( paramOne <= 0 ) cmdObj = new Command_Print(timestamp);
-							if ( paramOne > 0) cmdObj = new Command_Print(timestamp, paramOne);
+			case "PRINT":	if ( paramOne <= 0 ) cmdObj = new Command_Print();
+							if ( paramOne > 0) cmdObj = new Command_Print(paramOne);
 							break;
-			case "DISC":	if ( paramOne > 0) cmdObj = new Command_Disc(timestamp, paramOne);
+			case "DISC":	if ( paramOne > 0) cmdObj = new Command_Disc(paramOne);
 							break;
-			case "CANCEL":	cmdObj = new Command_Cancel(timestamp);
+			case "CANCEL":	cmdObj = new Command_Cancel();
 							break;
-			// The rest of these we don't necessarily need yet.
 			case "EVENT":	if ( args.length > 1 ) cmdObj = new Command_Event(args[1]);
 							break;
-			case "NEWRUN":	cmdObj = new Command_Newrun(timestamp);
+			case "NEWRUN":	cmdObj = new Command_Newrun();
 							break;
-			case "ENDRUN":	cmdObj = new Command_Endrun(timestamp);
+			case "ENDRUN":	cmdObj = new Command_Endrun();
 							break;
 			case "EXPORT":	if ( paramOne <= 0 ) cmdObj = new Command_Export();
 							if ( paramOne > 0) cmdObj = new Command_Export(paramOne);
 							break;
-			case "CLR":		cmdObj = new Command_CLR(timestamp, paramOne);
+			case "CLR":		cmdObj = new Command_CLR(paramOne);
 							break;
-			case "SWAP":	cmdObj = new Command_Swap(timestamp);
+			case "SWAP":	cmdObj = new Command_Swap();
 							break;
-			case "RCL":		cmdObj = new Command_RCL(timestamp);
+			case "RCL":		cmdObj = new Command_RCL();
 							break;
-			case "RESET":	cmdObj = new Command_Reset(timestamp);
+			case "RESET":	cmdObj = new Command_Reset();
 							break;
 			default:		cmdObj = new Command_NULL();;
 							break;
@@ -362,5 +361,4 @@ public class ChronoTimer {
 	public static ArrayList<String> getEventLog() {
 		return eventLog;
 	}
-	
 }

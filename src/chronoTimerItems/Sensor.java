@@ -17,6 +17,11 @@ public class Sensor extends JFrame {
 	protected String type;
 	protected int channelNum;
 	
+	/**
+	 * Sets up the sensor and generates the gui representation.
+	 * @param Strin t - The type of sensor.
+	 * @param int c   - The channel the sensor is connected to.
+	 */
 	public Sensor(String t, int c ){
 		type = t;
 		channelNum = c;
@@ -32,10 +37,12 @@ public class Sensor extends JFrame {
 	
 	private class buttonListener implements ActionListener {
 
+		/**
+		 * Generates a trigger command on the channel this sensor is connected to.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			ChronoTimer.readCommand(SystemTimer.getTime(), "trig " + channelNum );
 		}
-		
 	}
 }

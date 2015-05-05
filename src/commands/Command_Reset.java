@@ -7,14 +7,11 @@ import runGroups.RunGroupInd;
 
 public class Command_Reset implements Command {
 	
-	private long timestamp;
-	
-	public Command_Reset(long t)
-	{
-		timestamp = t;
-	}
+	public Command_Reset() {}
 
-	@Override
+	/**
+	 * Turns the system off, and back on again. reseting archive, channels, eventlog, eventType, and current.
+	 */
 	public void execute() {
 			// Clear out the archive, channels, and eventLog.
 			ChronoTimer.getArchive().clear();
@@ -33,7 +30,4 @@ public class Command_Reset implements Command {
 			ChronoTimer.setCurrent(new RunGroupInd());
 			ChronoTimer.setOn(true); //Since commands don't work unless the system is already on, this should do nothing.
 	}
-	
-	
-
 }

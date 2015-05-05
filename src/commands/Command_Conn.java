@@ -6,20 +6,17 @@ import chronoTimerItems.Sensor;
 
 
 public class Command_Conn implements Command {
-	private long timestamp;
 	private String sensor;
 	private int channelNum;
 	
-	public Command_Conn(long t, String snsr, int chnl) {
-		sensor = snsr;		//BK - Set new Sensor type to this string.
+	public Command_Conn(String snsr, int chnl) {
+		sensor = snsr;		//Set new Sensor type to this string.
 		channelNum = chnl;
-		timestamp = t;
 	}
 	
 	/**
 	 * Attempts to connect a sensor to a channel, prints error if unable.
 	 */
-	@Override
 	public void execute() {
 		// Get channel from ArrayList.
 		Channel channel = ChronoTimer.getChannels().get(channelNum-1);

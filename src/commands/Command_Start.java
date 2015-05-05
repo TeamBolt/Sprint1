@@ -13,7 +13,6 @@ public class Command_Start implements Command {
 	/**
 	 * Attempts to trigger channel 1, or prints error if no current rungroup.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null ) {
 			ChronoTimer.getCurrent().trigger( 1, timestamp );
@@ -21,5 +20,4 @@ public class Command_Start implements Command {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
 	}
-
 }

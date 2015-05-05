@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+
 /**
  * This is the UI for the ChronoTimer.
  * 
@@ -14,7 +15,6 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 public class Window extends JFrame {
-	
 	private TextArea display;
 	private TextArea printer;
 	private TextField textField;
@@ -25,6 +25,11 @@ public class Window extends JFrame {
 	private ArrayList<JCheckBox> channelChecks = new ArrayList<JCheckBox>();
 	private int count = 0;
 
+	/**
+	 * Constructor for the window. Instantiates the timer which updates the display
+	 * as well as the server, then calls createContents to get the window built.
+	 * @throws HeadlessException
+	 */
 	public Window() throws HeadlessException {
 		timer = new Timer(1,
 				new ActionListener()
@@ -54,15 +59,15 @@ public class Window extends JFrame {
 		setVisible(true);
 	}
 	
+	/**
+	 * Creates the window and adds action listeners.
+	 */
 	public void createContents() {
 		JPanel left = new JPanel(new BorderLayout());
 		JPanel right = new JPanel(new BorderLayout());
 		JPanel center = new JPanel(new BorderLayout());
 
-		
-		
-		// Left
-
+		// Left Panel.
 		JPanel title = new JPanel(new FlowLayout());
 		JPanel channels = new JPanel( new GridLayout(8,2));
 		JButton chanButt1	= new JButton("Trig 1");
@@ -81,7 +86,6 @@ public class Window extends JFrame {
 		JCheckBox chanCheck6	= new JCheckBox("Enabled 6");
 		JCheckBox chanCheck7	= new JCheckBox("Enabled 7");
 		JCheckBox chanCheck8	= new JCheckBox("Enabled 8");
-		
 		channelButtons.add(chanButt1);
 		channelButtons.add(chanButt2);
 		channelButtons.add(chanButt3);
@@ -90,7 +94,6 @@ public class Window extends JFrame {
 		channelButtons.add(chanButt6);
 		channelButtons.add(chanButt7);
 		channelButtons.add(chanButt8);
-		
 		channelChecks.add(chanCheck1);
 		channelChecks.add(chanCheck2);
 		channelChecks.add(chanCheck3);
@@ -99,14 +102,12 @@ public class Window extends JFrame {
 		channelChecks.add(chanCheck6);
 		channelChecks.add(chanCheck7);
 		channelChecks.add(chanCheck8);
-		
 		for ( JButton b : channelButtons ) {
 			b.addActionListener(new ChannelButtonListener());
 		}
 		for ( JCheckBox c : channelChecks ) {
 			c.addActionListener(new ChannelCheckListener());
 		}
-
 		channels.add(chanButt1);
 		channels.add(chanButt2);
 		channels.add(chanCheck1);
@@ -127,7 +128,7 @@ public class Window extends JFrame {
 		left.add(title, BorderLayout.NORTH);
 		left.add(channels, BorderLayout.CENTER);
 	
-		// Right
+		// Right Panel.
 		printer = new TextArea("",26,38);
 		printer.setEditable(false);
 		printer.setBackground(Color.LIGHT_GRAY);
@@ -142,7 +143,7 @@ public class Window extends JFrame {
 		right.add(r2, BorderLayout.CENTER);
 		
 		
-		// Center
+		// Center Panel.
 		display = new TextArea("",24,38);
 		display.setEditable(false);
 		display.setBackground(Color.LIGHT_GRAY);
@@ -161,15 +162,16 @@ public class Window extends JFrame {
 		center.add(bc2, BorderLayout.CENTER);
 		center.add(bc3, BorderLayout.SOUTH);
 
-		
+		// Now add all the panels to the window.
 		add(left);
 		add(center);
 		add(right);
-		
 		refresh();
-
 	}
 	
+	/**
+	 * Action listener for the text input.
+	 */
 	private class TextListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -188,6 +190,9 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * Action listener for the ON button.
+	 */
 	private class OnButtonListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -202,6 +207,9 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * Action listener for the channel buttons.
+	 */
 	private class ChannelButtonListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -217,6 +225,9 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * Action listener for the channel check boxes.
+	 */
 	private class ChannelCheckListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -232,6 +243,9 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * Action listener for the printer ON button.
+	 */
 	private class PrintOnButtonListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -248,6 +262,9 @@ public class Window extends JFrame {
 		}
 	}
 	
+	/**
+	 * Private method used to update the window after any changes.
+	 */
 	private void refresh() {
 		if ( ChronoTimer.isOn == true ) {
 			display.setBackground(Color.BLACK);
@@ -277,14 +294,12 @@ public class Window extends JFrame {
 		
 		display.setText("Duno Why This Works.");
 		display.setText("");
-		
-		//revalidate();
-		//repaint();
 	}
 	
+	/**
+	 * Prints the given text to the printer text area.
+	 */
 	public void updatePrinter(String text) {
 		printer.append(text + "\n");
 	}
 }
-
-

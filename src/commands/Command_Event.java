@@ -14,7 +14,10 @@ public class Command_Event implements Command {
 		event = e.toUpperCase();
 	}
 	
-	@Override
+	/**
+	 * Sets the event type to the given event type (if it's valid) and creates a new
+	 * runGroup of that type if there is no current runGroup, or it is empty.
+	 */
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null && !ChronoTimer.getCurrent().isEmpty() ) {
 			Printer.print("End the current run with ENDRUN to create an event of the new type.");
@@ -43,5 +46,4 @@ public class Command_Event implements Command {
 			ChronoTimer.setCurrent( new RunGroupParGrp() );
 		}
 	}
-
 }

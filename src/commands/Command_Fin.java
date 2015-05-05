@@ -13,7 +13,6 @@ public class Command_Fin implements Command {
 	/**
 	 * Attempts to trigger channel 2, prints error if no current rungroup.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null ) {
 			ChronoTimer.getCurrent().trigger( 2, timestamp );

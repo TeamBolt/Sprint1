@@ -6,18 +6,13 @@ import chronoTimerItems.Printer;
 
 
 public class Command_RCL implements Command {
-private long timestamp;
 	
-	public Command_RCL(long t) {
-		timestamp = t;
-	}
+	public Command_RCL() {}
 	
 	/**
 	 * Attempts to end the current run, prints error if there is no current run to end.
 	 */
-	@Override
 	public void execute() {
-		
 		// Generate an iterator. Start just after the last element.
 		ListIterator<String> li = ChronoTimer.getEventLog().listIterator(ChronoTimer.getEventLog().size());
 

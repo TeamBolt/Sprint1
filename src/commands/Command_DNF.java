@@ -4,16 +4,12 @@ import chronoTimerItems.Printer;
 
 
 public class Command_DNF implements Command {
-	private long timestamp;
 	
-	public Command_DNF(long t) {
-		timestamp = t;
-	}
+	public Command_DNF() {}
 	
 	/**
 	 * Attempts to DNF the current run, prints error if no current rungroup.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null ) {
 			ChronoTimer.getCurrent().dnf();
@@ -21,5 +17,4 @@ public class Command_DNF implements Command {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
 	}
-
 }

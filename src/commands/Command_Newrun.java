@@ -8,17 +8,13 @@ import runGroups.RunGroupParGrp;
 
 
 public class Command_Newrun implements Command {
-private long timestamp;
 	
-	public Command_Newrun(long t) {
-		timestamp = t;
-	}
+	public Command_Newrun() {}
 	
 	/**
 	 * Attempts to create a new run, prints error if there is already a current run.
 	 * Also prints error if the event type is one we haven't implemented yet.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() == null || ChronoTimer.getCurrent().isEmpty() ) {
 			if ( ChronoTimer.getEventType().equals("IND") ) {

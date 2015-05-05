@@ -4,16 +4,12 @@ import chronoTimerItems.Printer;
 
 
 public class Command_Cancel implements Command {
-	private long timestamp;
 	
-	public Command_Cancel(long t) {
-		timestamp = t;
-	}
+	public Command_Cancel() {}
 	
 	/**
 	 * Attempt to cancel the current run, or prints error if no current rungroup.
 	 */
-	@Override
 	public void execute() {
 		if ( ChronoTimer.getCurrent() != null ) {
 			ChronoTimer.getCurrent().cancel();
@@ -21,5 +17,4 @@ public class Command_Cancel implements Command {
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
 	}
-
 }

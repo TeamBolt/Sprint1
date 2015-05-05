@@ -4,7 +4,6 @@ import chronoTimerItems.Printer;
 
 
 public class Command_Trig implements Command{
-	
 	private long timestamp;
 	private int channelNum;
 	
@@ -24,5 +23,4 @@ public class Command_Trig implements Command{
 			Printer.print("No Current Run, please enter the NEWRUN command");
 		}
 	}
-
 }

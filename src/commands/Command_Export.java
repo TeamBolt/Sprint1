@@ -1,13 +1,9 @@
 package commands;
 
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Iterator;
 
 import chronoTimerItems.ChronoTimer;
@@ -15,6 +11,7 @@ import chronoTimerItems.Printer;
 import chronoTimerItems.SystemTimer;
 import runGroups.Run;
 import runGroups.RunGroup;
+
 
 public class Command_Export implements Command {
 
@@ -29,12 +26,13 @@ public class Command_Export implements Command {
 		runNum = 0;
 	}
 
-	@Override
 	public void execute() {
 		this.exportToXML();
 	}
 
-
+	/**
+	 * Formats the data as xml and prints it to an appropriately named file.
+	 */
 	public void exportToXML(){
 		RunGroup group = null;
 
