@@ -17,7 +17,13 @@ public class Command_Swap implements Command{
 			return;
 		} 
 		
-		//Test if there are enough racers, if not exit command.
+		// Don't event check queues if it's pargrp or parind.
+		if ( ChronoTimer.getEventType().equals("PARGRP") || ChronoTimer.getEventType().equals("PARIND") ) {
+			if ( ChronoTimer.getCurrent() != null ) ChronoTimer.getCurrent().swap();
+			return;
+		}
+		
+		// Test if there are enough racers, if not exit command.
 		if(ChronoTimer.getCurrent().getFinishQueue().isEmpty()){
 			Printer.print("No Run in progress.  A run must be started first.");
 		} else if(ChronoTimer.getCurrent().getFinishQueue().size()<2){
